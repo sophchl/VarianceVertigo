@@ -9,6 +9,7 @@ Created on Sun Mar 29 09:07:17 2020
 
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 #from datetime import datetime
 
 #%% global variables
@@ -55,14 +56,16 @@ tb2['date'] = pd.to_datetime(tb2['date'])
 tb2['rfm'] = ((1+(tb2.nomytm)/100)**(1/12))-1
 tb2['rfy'] = tb2.nomytm/100
 
-data_all = pd.merge(tb2[['date', 'rfm', 'rfy']], data_all, on = 'date')
+#data_all = pd.merge(tb2[['date', 'rfm', 'rfy']], data_all, on = 'date')
 
 #%% process/add tbill (tb3)
 
 tb3.columns = ['date', 'rfm', 'level']
 tb3['date']= pd.to_datetime(tb3['date'], format='%Y%m%d')
 
-#data_all = pd.merge(tb3[['date', 'rfm']], data_all, on = 'date')
+tb3['rfy'] = (1+tb3.rfm)**(12)-1
+
+data_all = pd.merge(tb3[['date', 'rfm', 'rfy']], data_all, on = 'date')
 
 #%% read spx
 
@@ -89,27 +92,49 @@ data_all = pd.merge(spx[['date', 'rtrnm', 'rtrny', 'logrtnm', 'logrtny']], data_
 
 #%% work on whole dataset
 
+# some desparate attempts to get their numbers
+
 # difference of absolute return and rf and log afterwards
 data_all['excessm1'] = data_all.rtrnm - data_all.rfm
-data_all['logexcessm1'] = np.log(1 + data_all.excessm1)
-data_all['logexcessmy1'] = data_all.logexcessm1*12
-data_all['excessy1'] = data_all.rtrny - data_all.rfy
+data_all['excessy1'] = (1 + data_all.excessm1)**(12) - 1
 data_all['logexcessy1'] = np.log(1 + data_all.excessy1)
 
-# difference of log return to absolutre risk free rate (though it does not make much sense)
-data_all['logexcessm2'] = data_all.logrtnm - data_all.rfm
-data_all['logexcessy2'] = data_all.logrtny - data_all.rfy
- 
+data_all['logexcessm2'] = np.log(1 + data_all.excessm1)
+data_all['logexcessy2'] = data_all.logexcessm2*12
+
+data_all['excessy3'] = data_all.rtrny - data_all.rfy
+data_all['logexcessy3'] = np.log(1 + data_all.excessy3)
+
 # differnce of log return and log rf
-data_all['logexcessm3'] = data_all.logrtnm - np.log(1 + data_all.rfm)
-data_all['logexcessmy3'] = data_all.logexcessm3*12
-data_all['logexcessy3'] = data_all.logrtny - np.log(1 + data_all.rfy)
+data_all['logexcessm4'] = data_all.logrtnm - np.log(1 + data_all.rfm)
+data_all['logexcessy4'] = data_all.logexcessm4*12
+
+data_all['logexcessy5'] = data_all.logrtny - np.log(1 + data_all.rfy)
+
+# or they calculated some kind of relative excess return
+data_all['excessm3'] = (data_all.rtrnm - data_all.rfm)/data_all.rfm
+
+# maybe they did a mistake?
+#data_all['mistake1'] = data_all.logrtnm - data_all.rfm
+#data_all['mistake2'] = data_all.logrtny - data_all.rfy
+#data_all['mistake3'] = data_all.rtrnm - data_all.rfy
+#data_all['mistake4'] = data_all.logrtnm - data_all.rfy
 
 
 data_rep = my_time_filter(data_all, start_date, end_date)
-print(data_rep.mean()*100)
+print(data_rep.mean(axis = 0)*100)
 print(data_rep)
 
-#%% sorted
+data_precrisis = my_time_filter(data_all, start_date, '2007-12-31')
+print(data_precrisis.mean(axis = 0)*100)
 
-# 
+#%% some plots
+
+plt.plot(data_all.date, data_all.rtrnm)
+plt.plot(data_all.date, data_all.rfm)
+plt.title('monthly returns')
+plt.show()
+
+plt.plot(data_all.date, data_all.rtrny)
+plt.plot(data_all.date, data_all.rfy)
+plt.title('annualized monthly returns')
