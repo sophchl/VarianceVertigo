@@ -1,0 +1,163 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+    \geometry{
+    a4paper,
+    total={170mm,257mm},
+    left=20mm,
+    top=20mm,
+    }
+\setlength\parindent{0pt}
+\usepackage{amsmath}
+\newcommand*\diff{\mathop{}\!\mathrm{d}}
+
+\title{Volatility indices under the risk-neutral measure}
+%\author{}
+%\date{April 2020}
+
+\begin{document}
+
+\maketitle
+
+\section{Chang et al (2013) Appenndix A: Extracting option-implied moments}
+
+\section{Andersen, Bondarenko (2007): Construction and Interpretation of the model-free implied volatility}
+
+\subsection{Introduction}
+
+different volatility indices
+\begin{itemize}
+    \item historic volatility (HV): use past realized volatility to estimate future realized volatility
+    \item Black-Scholes implied volatility (BSIV): use the BS model, enter option prices, solve for volatility
+    \item Corridor implied volatility (CIV) 
+    \item Model-free implied volatility (MFIV): extract volatility from option prices using only no-arbitrage arguments 
+\end{itemize}
+
+\textit{Note: I remember having read elsewhere (sorry unscientific quoting) that even though the indexes are called ''volatility`` indexes, they rather measure the return variation/quadratic variation than the volatility of the underlying stochastic process, which is unobserved. I think however they are a good estimate for the volatility.}\\
+
+Discussion MFIV
+\begin{itemize}
+\item ''aims to measure the expected integrated variance, or more generally return variation, over the coming month, evaluated under the so-called risk-neutral or pricing (Q) measure``
+\item no assumptions made regarding underlying return dynamics in contrast to BSIV
+\item however, needs strikes spanning full range of possible values for underlying asset - data requirements often not met, hence approximations have to be made
+\item MFIV will often differ from return variation under P, hence not a pure volatility forecast but adds uncertainty surrounding that forecast $\rightarrow$ will contain a premium compensating for exposure to equity-index volatility
+\end{itemize}
+
+Some dimensions that all volatility indices have to meet
+\begin{itemize}
+    \item risk-neutral density must satisfy NoA constraints, e.g. risk-neutral density must be positive
+    \item how to handle tails of the distribution?
+    \begin{itemize}
+        \item CBOE's VIX: truncate the tail (according to the authors, that makes VIX more an imperfect CIV index than a MFIV measure)
+        \item alternative: extend the risk-neutral density in the tails
+    \end{itemize}
+\end{itemize}
+
+\subsection{Theoretical Background: Barrier variance and corridor variance contracts}
+
+Notation
+\begin{itemize}
+    \item 
+\end{itemize}
+
+Option-prices can be computed using risk-neutral density (RND) $h_{t}(F_{t})$
+\begin{align*}
+P_{t}(K) = E_{t}^{Q}[(K - F_{T})^{+}] = \int_{0}^{\infty} (K-F_{T})^{+} h_{t}(F_{T}) \diff F_{T} \\
+C_{t}(K) = E_{t}^{Q}[(F_{T} - K)^{+}] = \int_{0}^{\infty} (F_{T} - K)^{+} h_{t}(F_{T}) \diff F_{T}
+\end{align*}
+
+RND is as in Breeden-Litzenberger (1978)
+\begin{align*}
+    h_{t}(F_{T} = \frac{\partial^{2} P_{t}(K)}{\partial K^{2}} \big\rvert_{K = F_{T}} = \frac{\partial^{2} C_{t}(K)}{\partial K^{2}} \big\rvert_{K = F_{T}} 
+\end{align*}
+
+According to Carr-Madan (1998) we can write the paypoff $g(F_{T})$ (assuming finite second derivatives a.e.) as
+\begin{align*}x) + g'(x)(F_{T} - x) + \int_{0}^{F_{0}} g''(K)P_{0}(K) \diff K + \int_{F_{0}}^{\infty} g''(K)C_{0}(K) \diff K
+\end{align*}
+
+set $x = F_{0}$ and take the expectation
+
+\begin{align}\label{eq:po1}
+    E_{0}^{Q}[d(F_{T})] = g(F_{0}) + \int_{0}^{\infty} g''(K)M_{0}(K) \diff K
+\end{align}
+with $M_{0}(K) = min(P_{t}(K), C_{t}(K))$ (hence the OTM option).\\
+
+In the current setting, $F_{t}$ is a martingale under $Q$. Assume the diffusion
+\begin{align}
+    \frac{\diff F_ {t}}{F_{t}} = \sigma \diff W_{t}
+\end{align}
+
+By Itos Lemma we get for the payoff
+\begin{align*}
+    g(F_{T}) = g(F_{0}) + \int_{0}^{T} g'(F_{t}) \diff F_{t} + \frac{1}{2}\int_{0}^{T} g''(F_{t})F_{t})^{2} \sigma_{t}^{2} \diff t
+\end{align*}
+Hence
+\begin{align}\label{eq:po2}
+    E_{0}^{Q}[g(F_{T})] = g(F_{0}) + \frac{1}{2} E_{0}^{Q} \left[ \int_{0}^{T} g''(F_{t}) F_{t}^{2} \sigma_{t}^{2} \diff t \right]
+\end{align}
+
+setting \ref{eq:po1} and \ref{eq:po2} equal we obtain
+\begin{align}\label{eq:narela}
+    E_{0}^{Q} \left[ \int_{0}^{T} g''(F_{t}) F_{t}^{2} \sigma_{t}^{2} \diff t \right] = 2 \int_{0}^{\infty} g''(K)M_{0}(K) \diff K
+\end{align}
+
+\subsubsection{Introduction of Barrier ocntracts}
+
+\textbf{Contract for deriving MFIV}
+
+Consider a contract that pays at time T the realized variance only when the futures price lies below the barrier
+\begin{align*}
+BIVAR_{B}(0,T) = \int_{0}^{T} \sigma_{t}^{2} I_{t}(B) \diff t
+\end{align*}
+with 
+\begin{align*}
+I_{t} = I_{t}(B) = 1[F_{t} \leq B]
+\end{align*}
+If $B \rightarrow \infty$ the payoff approaches the standard integrated variance
+\begin{align*}
+IV AR(0,T) = \int_{0}^{T} \sigma_{t}^{2} \diff t
+\end{align*}
+
+Suppose that the function $g(F_{T})$ is choosen as
+\begin{align*}
+g(F_{T}) = g(F_{T};B) = \left (1 - ln\frac{F_{T}}{B} + \frac{F_{T}}{B} - 1 \right) I_{T}
+\end{align*}
+The NoA value of the contract can be derived from equation \ref{eq:narela} as
+\begin{align*}
+BV AR_{0}(B) = E_{0}^{Q} \left [\int_{0}^{T} \sigma_{t}^{2} I_{t} dt \right] = 2 \int_{0}^{B} \frac{M_{0}(K)}{K^{2}} \diff K
+\end{align*}
+
+The square-root can be interpreted as the option-implied barrier volatility
+\begin{align*}
+BIV_{0}(B) = \sqrt{\int_{0}^{B} \frac{M_{0}(K)}{K^{2}} \diff K}
+\end{align*}
+
+\textit{Note: So actually the volatility index is a standard deviation?}\\
+
+In the limiting case of $B = \infty$ the barrier implied volatiltiy coincides with the $MFIV_{0}$ (developed by Dupire (1993), Neuberger (1994)).\\
+
+\textbf{Contract for deriving CIV}\\
+
+The contract which pays corridor variance can be constructed from two barrier variance contracts with different barriers, here $B_{1}$ and $B_{2}$ lower and upper barrier
+
+\begin{align*}
+CIV AR_{B_{1}, B_{2}}(0,T) = \int_{0}^{T} \sigma_{t}^{1}I_{t}(B_{1}, B_{2}) \diff t
+\end{align*}
+with 
+\begin{align*}
+I_{t}(B_{1}, B_{2}) = I_{t} = 1[B_{1} \leq F_{t} \leq B_{2}]
+\end{align*}
+
+Hence the ocntracts pays the \textit{corridor variance} when the futures price lies between the barriers. The value of the contract is
+
+\begin{align*}
+CV AR_{0}(B_{1}, B_{2}) = E_{0}^{Q} \left[ \int_{0}^{\infty} \sigma_{t}^{2} I_{t} \diff t \right] = 2 \int_{B_{1}}^{B_{2}} \frac{M_{0}(K)}{K^{2}} \diff K
+\end{align*}
+
+In the limiting case where $\Delta (B_{1}, B_{2}) \rightarrow 0$ the value of the contract approches the value of a contract that pays the future variance only \textit{along} a strike. 
+
+\begin{align*}
+SV AR_{0}(B) = \lim_{\Delta B \rightarrow 0} \frac{B}{\Delta B} CV AR_{0}(B, B + \Delta B) = 2 \frac{M_{0}(B)}{B}
+\end{align*}
+
+\end{document}
