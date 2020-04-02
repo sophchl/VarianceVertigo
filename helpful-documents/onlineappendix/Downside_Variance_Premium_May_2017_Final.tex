@@ -1,0 +1,2009 @@
+
+\documentclass[11pt]{article}
+
+%\usepackage{graphicx,grffile}
+\usepackage[dvips]{graphicx}
+\usepackage{setspace}
+\usepackage{amsmath, amsfonts, amssymb}
+\usepackage{bbm}
+\usepackage[authoryear]{natbib}
+\usepackage{url}
+\usepackage{rotating}
+\usepackage{multicol}
+\usepackage{multirow}
+\usepackage{subfig}
+\usepackage{pifont}
+\usepackage{colortbl}
+\usepackage{color}
+\usepackage[dvipsnames]{xcolor}
+%\usepackage{arydshln}
+\usepackage{enumitem}
+\usepackage[top=1in, bottom=1in, left=1in, right=1in]{geometry}
+\usepackage[normalem]{ulem} % either use this package to strikeout a text
+
+\newtheorem{theor}{Theorem}
+\newtheorem{proposition}{Proposition}
+
+\renewcommand{\labelenumi}{\bfseries\arabic{enumi}.}
+\newenvironment{wsjsize}{\footnotesize}
+
+\newcommand{\Qm}{\mathbb{Q}}
+\newcommand{\Pm}{\mathbb{P}}
+\newcommand{\PP}{\mathcal{P}}
+\newcommand{\RR}{\mathbf{R}}
+\newcommand{\EE}{\mathcal{E}}
+\newcommand{\MM}{\mathcal{M}}
+\newcommand{\NN}{\mathcal{N}}
+\newcommand{\JJ}{\mathcal{J}}
+\newcommand{\XX}{\mathcal{X}}
+\newcommand{\ZZ}{\mathcal{Z}}
+\newcommand{\Ss}{\scriptstyle}
+\newcommand{\red}{\textcolor[rgb]{1.00,0.00,0.00}}
+
+\makeatletter
+\renewcommand\paragraph{\@startsection%
+    {paragraph}{4}{0mm}{-0\baselineskip}{-0.5\baselineskip}{\bf\normalsize}}
+\renewcommand\subsubsection{\@startsection%
+    {subsubsection}{3}{0mm}{-0\baselineskip}{0.25\baselineskip}{\itshape\large}}
+\renewcommand\subsection{\@startsection%
+    {subsection}{2}{0mm}{-0.25\baselineskip}{0.25\baselineskip}{\bfseries\large}}
+\renewcommand\section{\@startsection%
+    {section}{1}{0mm}{-0.5\baselineskip}{0.5\baselineskip}{\bfseries\Large}}
+\makeatother
+
+\renewcommand\thesection{\arabic{section}}
+\renewcommand\thesubsection{\thesection.\arabic{subsection}}
+\renewcommand\thesubsubsection{\thesubsection.\arabic{subsubsection}}
+\renewcommand\thetable{\arabic{table}}
+\renewcommand\thesubtable{\Alph{subtable}}
+\renewcommand\thesubfigure{\Alph{subfigure}}
+\renewcommand{\theparagraph}{\bf({\bit\alph{paragraph}}\bf )} \newcounter{result}[section]
+\renewcommand{\theresult}{\thesection.\arabic{result}}
+
+\renewcommand\subtablename{Panel}
+\DeclareRobustCommand{\robustsubref*}{\subref*}
+
+\setlength{\parskip}{2mm plus1mm minus1mm}
+\renewcommand{\baselinestretch}{1.0}
+
+\captionsetup[table]{position=top, font=normalsize, textfont=bf}
+\captionsetup[subtable]{labelfont=rm, textfont=rm}
+\captionsetup[figure]{position=bottom, textfont=rm, font=footnotesize}
+%\captionsetup[subfigure]{textfont=rm}
+
+\graphicspath{{Figures/}}
+
+\setlength{\columnsep}{12pt}
+\setlength{\columnseprule}{0.5pt}
+
+
+\begin{document}
+\title{Downside Variance Risk Premium}
+\author{\begin{tabular}{ccc}
+  Bruno Feunou\thanks{Bank of Canada, 234 Wellington St., Ottawa, Ontario, Canada K1A 0G9. e-mail:
+\textcolor[rgb]{0.00,0.00,0.51}{\texttt{feun@bankofcanada.ca}}.} & Mohammad R. Jahan-Parvar\thanks{Federal Reserve Board, 20th Street and Constitution Avenue NW, Washington, DC 20551 United States. e-mail: \textcolor[rgb]{0.00,0.00,0.51}{\texttt{Mohammad.Jahan-Parvar@frb.gov}}.}& C\'{e}dric Okou\thanks{Corresponding Author: \'{E}cole des Sciences de la Gestion, University of Quebec at Montreal, 315 Sainte-Catherine Street East, Montreal, Quebec, Canada H2X 3X2. e-mail: \textcolor[rgb]{0.00,0.00,0.51}{\texttt{okou.cedric@uqam.ca}}.} \thanks{We gratefully acknowledge financial support from the Bank of Canada, UQAM research funds, and the
+%Institut de la Finance Structur\'{e}e et des Instruments D\'{e}riv\'{e}s de Montr\'{e}al
+IFSID. We thank Federico Bandi (the editor) and an anonymous referee for many insightful comments that improved the paper. We also thank seminar participants at the Federal Reserve Board, Johns Hopkins Carey Business School, Manchester Business School, University of North Carolina - Chapel Hill, University of Massachusetts at Amherst (Isenberg), Midwest Econometric Group Meeting 2013, CFE 2013, SNDE 2014, CIREQ 2015, SoFiE 2015, the Econometric Society World Congress 2015, and FMA 2015. We are grateful for conversations with Diego Amaya, Torben Andersen, Sirio Aramonte, Nikos Artavanis, Geert Bekaert, Bo Chang, Peter Christoffersen, Eric Engstrom, Nicola Fusari, Maren Hansen, Jianjian Jin, Olga Kolokolova, Lei Lian, Hening Liu, Bruce Mizrach, Yang-Ho Park, Benoit Perron, Roberto Ren\`{o}, George Tauchen, and Alex Taylor. We thank James Pinnington for research assistance. We also thank Bryan Kelly and Seth Pruitt for sharing their cross-sectional book-to-market index data. The views expressed in this paper are those of the authors. No responsibility for them should be attributed to the Bank of Canada or the Federal Reserve Board. Remaining errors are ours.}  \\
+  \textit{Bank of Canada} & \textit{Federal Reserve Board}& \textit{UQAM}\\
+\end{tabular}}
+\date{First Draft: December 2014\\This Draft: May 2017}
+
+\maketitle \vspace{-0.5 cm}
+\begin{abstract}
+\noindent We propose a new decomposition of the variance risk premium ($VRP$) in terms of upside and downside $VRP$s. These components reflect market compensation for changes in good and bad uncertainties. Empirically, we establish that the downside $VRP$ is the main component of the $VRP$. We find a positive and significant link between the downside $VRP$ and the equity premium, and a negative but statistically insignificant link between the upside $VRP$ and the equity premium. The opposite relationships between these two components and the equity premium explains the stronger link found between the downside $VRP$ and the equity premium compared with the well-established relationship between $VRP$ and the equity premium. A simple equilibrium consumption-based asset pricing model, fitted to the U.S. data, supports our decomposition.
+\end{abstract}
+
+
+\thispagestyle{empty}
+
+\vspace{0.1in}
+
+\noindent {\small \textbf{Keywords:} Risk-neutral volatility, Realized volatility, Downside and upside variance risk premium, Skewness risk premium}
+
+\noindent {\small\textbf{JEL Classification:}  C58, G12}
+
+%\noindent {\small\textbf{Bank Classification: Econometric and statistical methods; Asset pricing}}
+\vspace{0.2in}
+\newpage
+\setcounter{equation}{0}
+\setcounter{footnote}{0}
+\setcounter{page}{1}
+ \doublespacing
+
+\newpage
+
+
+\section{Introduction}\label{SecIntro}
+
+A fundamental relationship in asset pricing posits a positive relation between risk and asset returns; see \cite{Merton73RRTO}. This relationship holds over long horizons, as shown empirically by \cite{BandiPerron08JoE} and \cite{JacquierOkouJFEC13}, and theoretically  by \citet*{BandiPTT} through decomposing the predictive relationship at different time scales. In short horizons, however, measures of risk based on historical asset prices lead to inconclusive estimates of this relation.\footnote{Among many studies, \cite{BrandtKang04JFE} observe a negative relation between realized market risk and returns. \cite{GhyselsSCVal05JFE} and \cite{LudvigsonNg07JFE} find a positive relation. On the other hand, \cite{BaillieDeGen} and \cite{BollerZhou06JEc} document mixed results.}
+
+Two recent strands of the asset pricing literature have had success in addressing these conflicting short-horizon results caused by using historical measures of risk in empirical exercises. In one line of research, several studies have documented the asymmetry of risk-return trade off in response to negative and positive realizations in the financial markets. Among them, studies by \citet*{BonomoGarciaTedongapMeddahi10RFS}; \citet*{FJPT13RoF}; and \cite{RossiTimmermann15RFS} are related to our work. In particular, \cite{FJPT13RoF} explicitly model the upside and downside volatilities (the risk borne by market participants if realized returns exceed or fall below a certain threshold), document the impact of asymmetries on risk-return trade off, and highlight the role of downside risk. They develop a methodology that delivers an empirically robust, positive relation between risk and returns by allowing a time-varying market price of risk and asymmetric return distributions. In a second line of research, studies such as \cite{Bakshi01042003}; \cite{Carr01032009}; and \cite{BolTauchZhou09RFS} rely on the information in option prices to measure time-varying risk compensations in the data. In particular, \citet*{BolTauchZhou09RFS} (henceforth, BTZ) study the variance risk premium ($VRP$), defined as the difference between the risk-neutral and physical expectations of return variation. The $VRP$, as  formalized and studied by BTZ, is a robust predictor of asset returns at maturities of 3 to 6 months. Because of its significant predictive power for short-term asset returns, the $VRP$ is often viewed as reflecting investors' appraisals of changes in near-future volatility.
+
+In this paper, we bridge the gap between these two strands of the literature. We propose a new decomposition of the $VRP$ in terms of upside and downside variance risk premia ($VRP^{U}$ and $VRP^{D}$, respectively).\footnote{We define the downside (upside) variance as the realized variance of the stock market returns for negative (positive) returns. The downside (upside) variance risk premium is the difference between option-implied and realized downside (upside) variance. Decomposing variance in this way was pioneered by \citet*{BNKinnShep}. } Our proposed decomposition is motivated by a simple assumption: Investors like good uncertainty as it increases the potential of substantial gains, but dislike bad uncertainty, as it increases the likelihood of severe losses. We define ``good uncertainty'' and ``bad uncertainty'' as volatility associated with positive and negative stock market returns, respectively. Given that investors dislike bad uncertainty, they are willing to pay a premium (the $VRP^{D}$) to hedge against variation in bad uncertainty. Hence we expect the $VRP^{D}$ to be generally positive-valued. Conversely, because investors like good uncertainty, they should be willing to pay a premium ($VRP^{U}$) to be exposed to variation in good uncertainty. Thus, we expect a mostly negative-valued $VRP^{U}$. Thus, the (total) $VRP$ that sums these two components lumps together market participants' (asymmetric) views about good and bad uncertainties. As a result, a positive (total) $VRP$ reflects the investors' willingness to pay more in order to hedge against changes in bad uncertainty than for exposure to variations in good uncertainty. Hence, focusing on the (total) $VRP$ does not provide a clear view of the trade-off between good and bad uncertainties, as a small positive $VRP$ quantity does not necessarily imply a lower level of risk and/or risk aversion. Rather, it is an indication of a smaller difference between what agents are willing to pay for downside variation hedging versus upside variation exposure.
+
+Using a non-parametric framework, we measure $VRP^{D}$ and $VRP^{U}$ and confirm our assertion. We further investigate whether disentangling the $VRP$ improves the equity premium predictability. We find a positive and significant link between the $VRP^D$ and the equity premium, and a negative but statistically insignificant link between the $VRP^U$ and the equity premium. The stronger empirical link between the $VRP^D$ and the equity premium (compared to the well-established relationship between $VRP$ and the equity premium) is accounted by these opposite-signed relationships between $VRP^D$ and $VRP^U$ and the equity premium.
+
+Theoretically, we support our empirical findings with a simple consumption-based equilibrium asset pricing model, where the representative agent is endowed with \cite{EZ89Econometrica} preferences, and where the consumption growth process is affected by distinct upside and downside shocks. Our model shares some features with \cite{BansalYaron04JF}; BTZ; \cite{ShaliastovichYaronSegal14}; and \cite{BekaertEngstrom14}; among others. We fit this model to the U.S. data and show that its implications are consistent with the documented salient regularities.
+
+
+\subsection{Related literature} \label{SubsecLitRev}
+This paper is related to the mounting literature on the properties of the $VRP$, as discussed in earlier works by \cite{Bakshi01042003}; \cite{Vilkov08WP}; and \cite{Carr01032009}, among others. Theoretical attempts to rationalize the observed dynamics of the $VRP$ have led to both reduced-form and general equilibrium models in the literature. Within the reduced-form framework, two papers have made significant contributions. An early study by \cite{Todorov10RFS} focuses on the temporal dependence of continuous versus discontinuous $VRP$ components within a semiparametric stochastic volatility model. He documents that both components exhibit nontrivial dynamics driven by \emph{ex ante} volatility changes over time, coupled with \emph{unanticipated} extreme swings in the market. Recently, \cite{BandiReno} focused on the role of a particular source of skewness in stock returns: the co-jumps (the dependence between discontinuous changes in asset prices and contemporaneous, discontinuous changes in volatility). The authors find that the co-jumps modify the mean of the return distribution while also inducing a $VRP$.
+
+In a general equilibrium setting, BTZ design a simple model where time-varying volatility-of-volatility of consumption growth is the key determinant of the $VRP$. \cite{DrechslerYaron11RFS} provide an equilibrium specification that features long-run risks and discontinuities in the stochastic volatility process governing the level of uncertainty about the cash flows. They extend the model of \cite{BansalYaron04JF} by introducing a compound Poisson jump process in the state variable specification, thus departing from BTZ's assumption of Gaussian economic shocks. Our theoretical framework also extends BTZ's model, as we specify asymmetric predictable consumption growth components and differences of centered Gamma shocks to fundamentals.
+
+Another strand of the literature explores the explanatory ability of the $VRP$. Along the time-series dimension, BTZ, \cite{DrechslerYaron11RFS}, and \cite{KellyJiang14TailRisk}, among others, show that the $VRP$ can help forecast the temporal variation in the aggregate stock market returns with high (low) premia predicting high (low) future returns, especially on a within-the-year time-scale. \citet*{JOFI:JOFI836}, and \citet*{JOFI:JOFI12220}, among others, find that the price of variance risk successfully explains a large set of expected stock returns in the cross-section of assets.
+
+Drawing on the decomposition of the quadratic variation of stock returns in terms of continuous and discontinuous variation, \cite{BollerTodorov11JF} decompose the $VRP$ in terms of the diffusive and jump risk compensations. The authors show that the contribution of the jump tail risk premium is sizable. Our work is based on the alternative decomposition of the quadratic variation proposed by \cite{BNKinnShep}. The authors decompose the realized variance in terms of upside and downside semi-variances obtained by summing high-frequency positive and negative squared returns, respectively. Other authors have used the same decomposition of the realized variance with a focus on either realized variance predictability (\citeauthor{PattonSheppard13REStat}, \citeyear{PattonSheppard13REStat}) or on equity risk premium predictability (\citeauthor{GuoWangZhou15GoodBadJump}, \citeyear{GuoWangZhou15GoodBadJump}). These studies focus exclusively on realized measures and do not use option prices to infer the risk neutral counterparts and deduce the corresponding premia. In comparison, our work clearly evaluates the premia associated with upside and downside semi-variances, both realized and risk-neutral. In an independent and concurrent study, \cite{KilicShaliastovich15} consider an alternative decomposition of the variance premium into the components associated with \emph{good} and \emph{bad} events and provide an economic model that explains their empirical findings.
+
+Other related studies aim at decomposing the variance of macroeconomic variables. \cite{ShaliastovichYaronSegal14} study the impact of changes in \emph{good} versus \emph{bad} uncertainty on aggregate consumption growth and asset values. These authors demonstrate that these different types of uncertainties have opposite effects, with \emph{good} (\emph{bad}) economic risk implying a rise (decline) in future wealth or consumption growth. They characterize the role of asymmetric uncertainties in the determination of the economic activity level. Similarly, we develop and estimate a consumption-based equilibrium asset pricing model to highlight the roles that upside and downside variances play in pricing a risky asset in an otherwise standard model.
+
+The rest of the paper proceeds as follows.  In Section \ref{SecDecompose}, we present our decomposition of the $VRP$ and the method for construction of risk-neutral and realized semi-variances. Section \ref{SecData} details the data used in this study and the empirical construction of predictive variables used in our analysis. We present and discuss our main empirical results in Section \ref{SecEmpiricalResults}. Specifically, we intuitively describe the components of variance risk premia, discuss their predictive ability, and explore the robustness of our findings. In Section \ref{SecTheoreticalModel}, we introduce and estimate a simple equilibrium consumption-based asset pricing model that supports our empirical results. We evaluate the predictive ability of the difference between the $VRP^{U}$ and $VRP^{D}$ (labeled the skewness risk premium) in Section \ref{SecSkewPremDec}. Section \ref{SecConclusion} concludes. Further results regarding the extraction of risk-neutral quantities from options and robustness analysis are contained in an online Appendix.
+
+
+\section{Decomposition of the variance risk premium}\label{SecDecompose}
+
+In what follows, we decompose equity price changes into positive and negative returns with respect to a suitably chosen threshold. We set the threshold, $\kappa$, to zero in this study. It can assume other values, given the questions to be answered. We sequentially build measures for upside and downside semi-variances and for skewness. When taken to data, these measures are constructed non-parametrically.
+
+We posit that equity market indices such as the S\&P 500, $S$, are defined over the physical probability space characterized by $(\Omega, \mathbb{P}, \mathcal{F})$, where $\{\mathcal{F}_t\}_{t=0}^\infty\in\mathcal{F}$ are progressive filters on $\mathcal{F}$.  The risk-neutral probability measure $\mathbb{Q}$ is related to the physical measure $\mathbb{P}$ through Girsanov's change of measure relation $\frac{d\mathbb{Q}}{d\mathbb{P}}|_{\mathcal{F}_T}=Z_T, T<\infty$. At time $t$, we denote total equity returns as $R^e_t = (S_{t}+D_{t}-S_{t-1})/S_{t-1}$, where $D_t$ is the dividend paid out in period $[t-1, t]$. In sufficiently high sampling frequencies, $D_t$ is equal to zero. Then, we denote the log of prices by $s_t = \ln S_t$, log-returns by $r_t = s_t - s_{t-1}$, and excess log-returns by $r_t^{e} = r_t - r^f_t$, where $r^f_t$ is the risk-free rate observed at time $t-1$. We obtain cumulative excess returns by summing one-period excess returns, $r_{t\rightarrow t+k}^{e}=\sum^k_{j=0}r_{t+j}^{e}$, where $k$ is our prediction horizon.
+
+We build the $VRP$ components following the steps in BTZ as the difference between option-implied and realized variances. Alternatively, these two components could be viewed as variances under risk-neutral and physical measures, respectively. In our approach, this construction requires three distinct steps: building the upside and downside realized variances, computing their expectations under the physical measure, and then doing the same under the risk-neutral measure.
+
+\subsection{Construction of the realized variance components}\label{SecRealVolDec}
+
+Following \cite{ABDL03Econometrica, ABDE01JFE}, we construct the realized variance of returns on any given trading day $t$ as $RV_t = \sum_{j=1}^{n_t}r^2_{j,t}$, where $r^2_{j,t}$ is the $j^{th}$ intraday squared log-return and $n_t$ is the number of intraday returns recorded on that day. We add the squared overnight log-return (the difference in log price between when the market opens at $t$ and when it closes at $t-1$), and we scale the $RV_t$ series to ensure that the sample average realized variance equals the sample variance of daily logarithmic returns. For a given threshold $\kappa$, we decompose the realized variance into upside and downside realized variances following \cite{BNKinnShep}:
+
+\begin{eqnarray}
+% \nonumber to remove numbering (before each equation)
+  RV^U_t(\kappa) &=&\sum_{j=1}^{n_t}r^2_{j,t}\mathbb{I}_{[r_{j,t}>\kappa]}, \\
+  RV^D_t(\kappa) &=&\sum_{j=1}^{n_t}r^2_{j,t}\mathbb{I}_{[r_{j,t}\leq\kappa]}.
+\end{eqnarray}
+
+We add the squared overnight ``positive'' log-return (exceeding the threshold $\kappa$) to the upside realized variance $RV^U_t$, and the squared overnight ``negative'' log-return (falling below the threshold $\kappa$) to the downside realized variance $RV^D_t$. As the daily realized variance sums the upside and the downside realized variances, we apply the same scale to the two components of the realized variance. Specifically, we multiply both components by the ratio of the sample variance of daily log-returns over the sample average of the (pre-scaled) realized variance.
+
+For a given horizon $h$, we obtain the cumulative realized quantities by summing the one-day realized quantities over $h$ periods:
+\begin{eqnarray}
+RV_{t,h}^{U}(\kappa )&=&\sum_{j=1}^{h}RV^U_{t+j}(\kappa),\nonumber\\
+RV_{t,h}^{D}(\kappa )&=&\sum_{j=1}^{h}RV^D_{t+j}(\kappa),\nonumber\\
+RV_{t,h}&=&\sum_{j=1}^{h}RV_{t+j}(\kappa ).\label{AggregationRV}
+\end{eqnarray}
+By construction, the cumulative realized variance adds up the cumulative realized upside and downside variances:
+\begin{equation}
+RV_{t,h}\equiv RV_{t,h}^{U}(\kappa )+ RV_{t,h}^{D}(\kappa ).\label{EqDecomposeRV}
+\end{equation}
+
+\cite{BNKinnShep} laid down the theoretical underpinning of this decomposition by relying on a jump-diffusion process for the stock price
+\begin{equation*}
+    ds_{t}=\mu_{t}dt+\sigma_{t}dW_{t}+\Delta s_{t},
+\end{equation*}
+where $dW_{t}$ is an increment of the standard Brownian motion and $\Delta s_{t}\equiv s_{t}-s_{t-}$ refers to the jump component. The instantaneous variance can be defined as $\widetilde{\sigma}_{t}^2=\sigma_{t}^2+\left(\Delta s_{t}\right)^2$. Under this general assumption on the instantaneous return process, and for $\kappa=0$, the authors use infill asymptotics to demonstrate that
+\begin{eqnarray*}
+% \nonumber to remove numbering (before each equation)
+  RV_{t,h}^{U}(0) &\overset{p}{\rightarrow}& \frac{1}{2}\int_{t}^{t+h}\sigma_{\upsilon}^2 d\upsilon+\sum_{t\leq \upsilon\leq t+h} \left(\Delta s_{\upsilon}\right)^2 \mathbb{I}_{[\Delta s_{\upsilon} > 0]}, \\
+  RV_{t,h}^{D}(0) &\overset{p}{\rightarrow}& \frac{1}{2}\int_{t}^{t+h}\sigma_{\upsilon}^2 d\upsilon +\sum_{t\leq \upsilon\leq t+h} \left(\Delta s_{\upsilon}\right)^2 \mathbb{I}_{[\Delta s_{\upsilon}\leq 0]}.
+\end{eqnarray*}
+
+
+\subsection{Construction of the variance risk premium components}\label{SecVolPremDec}
+
+Next, we characterize the $VRP$ of BTZ through premia accrued to bearing upside and downside variance risks, following these steps:
+\begin{eqnarray}
+VRP_{t,h} &=&\mathbb{E}_{t}^{\mathbb{Q}}[RV_{t,h}]-\mathbb{E}_{t}^{\mathbb{P}}[RV_{t,h}],  \notag \\
+&=& \left(\mathbb{E}_{t}^{\mathbb{Q}}[RV_{t,h}^{U}(\kappa )]-\mathbb{E}_{t}^{\mathbb{P}}[RV_{t,h}^{U}(\kappa )] \right)+\left(\mathbb{E}_{t}^{\mathbb{Q}}[RV_{t,h}^{D}(\kappa )]-\mathbb{E}_{t}^{\mathbb{P}}[RV_{t,h}^{D}(\kappa )]\right),\notag\\
+VRP_{t,h} &\equiv& VRP_{t,h}^{U}(\kappa )+VRP_{t,h}^{D}(\kappa ). \label{EqVarRiskPremUpDownDecompose}
+\end{eqnarray}
+Eq. (\ref{EqVarRiskPremUpDownDecompose}) represents the decomposition of the VRP of BTZ into upside and downside variance risk premia -- $VRP_{t,h}^{U}(\kappa )$ and $VRP_{t,h}^{D}(\kappa )$, respectively -- that lies at the heart of our analysis.
+
+\subsubsection{Construction of $\mathbb{P}$-expectation}\label{SecPexp}
+The goal here is to evaluate $\mathbb{E}_{t}^{\mathbb{P}}[RV_{t,h}^{U}(\kappa )]$ and $\mathbb{E}_{t}^{\mathbb{P}}[RV_{t,h}^{D}(\kappa )]$. To this end, we consider three specifications: random walk (RW), upside/downside heteroscedastic autoregressive realized variance (U/D-HAR), and multivariate heteroscedastic autoregressive realized variance (M-HAR).
+
+Both U/D-HAR and M-HAR specifications mimic \cite{Corsi09HAR}'s HAR-RV model. To get genuine expected values for realized measures that are not contaminated by forward bias or the use of contemporaneous data, we perform an out-of-sample forecasting exercise to predict the three realized variances, at different horizons, corresponding to 1, 2, 3, 6, 9, 12, 18, and 24 months ahead. We find that these alternative specifications provide qualitatively similar results, likely due to persistence in volatility. Hence, for simplicity and to save space, we only report the results based on the random walk model.
+
+The random walk model is specified as $$\mathbb{E}_{t}^{\mathbb{P}}[RV_{t,h}^{U/D}(\kappa )]=RV_{t-h,h}^{U/D}(\kappa ),$$ where $U/D$ stands for ``$U$ or $D$''. This is the model used in BTZ.\footnote{Specifications for U/D-HAR and M-HAR models are available from the authors upon request.}
+
+
+%\begin{itemize}
+%  \item Random Walk $$\mathbb{E}_{t}^{\mathbb{P}}[RV_{t,h}^{U/D}(\kappa )]=RV_{t-h,h}^{U/D}(\kappa ),$$ where $U/D$ stands for ``$U$ or $D$''; this is the model used in BTZ.
+%  \item U/D-HAR $$\mathbb{E}_{t}^{\mathbb{P}}[RV_{t+1}^{U/D}(\kappa )]=\omega^{U/D}+\beta_{d}^{U/D}RV_{t}^{U/D}(\kappa )+\beta_{w}^{U/D}RV_{t,5}^{U/D}(\kappa )+\beta_{m}^{U/D}RV_{t,20}^{U/D}(\kappa ).$$
+%  \item M-HAR $$\mathbb{E}_{t}^{\mathbb{P}}[MRV_{t+1}(\kappa )]=\omega+\beta_{d}MRV_{t}(\kappa )+\beta_{w}MRV_{t,5}(\kappa )+\beta_{m}MRV_{t,20}(\kappa ),$$ where $MRV_{t,h}(\kappa)\equiv (RV_{t,h}^{U}(\kappa ), RV_{t,h}^{D}(\kappa ))'$.
+%\end{itemize}
+
+
+\subsubsection{Construction of $\mathbb{Q}$-expectation}\label{SecQexp}
+
+Let $F_{t}=S_t\exp(r_{t}^f h)$ denote the price of a future contract at time $t$, with maturity $h$. To build the risk-neutral expectation of $RV_{t,h}$, we follow the methodology of \cite{AndersenBondarenko07}:
+\begin{eqnarray}
+\mathbb{E}_t^{\mathbb{Q}}[RV^{U}_{t,h}(\kappa)]&\approx& \mathbb{E}_t^{%
+\mathbb{Q}}\Big[\int_t^{t+h}\widetilde{\sigma}^2_\upsilon\mathbb{I}_{[\ln(F_\upsilon/F_t)>\kappa_{F}]}d\upsilon%
+\Big], \notag \\
+&=&\mathbb{E}_t^{\mathbb{Q}}\Big[\int_t^{t+h}\widetilde{\sigma}^2_\upsilon\mathbb{I}%
+_{[F_\upsilon>F_t\exp(\kappa_{F})]}d\upsilon\Big],    \notag
+\end{eqnarray}
+where $\kappa_{F}$ is a threshold used to compute risk-neutral expectations of semi-variances.\footnote{Note that $\kappa_{F}$ should be set to $(\kappa-r_{t}^f)h$ to get consistent thresholds when computing realized and option-implied quantities.}
+Thus,
+\begin{eqnarray}
+\mathbb{E}_t^{\mathbb{Q}}[RV^{U}_{t,h}(\kappa)] &\approx& 2\int_{F_t\exp(\kappa_{F})}^{\infty}\frac{M_0(\underline{S})}{\underline{S}^2}d\underline{S}, \label{EqUpEMM} \\
+M_0(\underline{S}) &=& \min(P_t(\underline{S}), C_t(\underline{S})), \notag
+\end{eqnarray}
+where, $P_t(\underline{S}), C_t(\underline{S})$, and $\underline{S}$ are prices of European put and call options (with maturity $h$), and the strike price of the underlying asset, respectively. Similarly for $\mathbb{E}_t^{\mathbb{Q}}[RV^{D}_{t,h}(\kappa)]$, we get
+\begin{equation}  \label{EqDownEMM}
+\mathbb{E}_t^{\mathbb{Q}}[RV^{D}_{t,h}(\kappa)] \approx
+2\int^{F_t\exp(\kappa_{F})}_{0}\frac{M_0(\underline{S})}{\underline{S}^2}d\underline{S}.
+\end{equation}
+Intuitively, one can view the above equalities as replicating option portfolios weighted across moneyness above (upside) and below (downside) a given threshold.
+
+We simplify our notation by renaming $\mathbb{E}_t^{\mathbb{Q}}[RV^{U}_{t,h}(\kappa)]$ and $\mathbb{E}_t^{\mathbb{Q}}[RV^{D}_{t,h}(\kappa)]$ as
+\begin{eqnarray}
+% \nonumber to remove numbering (before each equation)
+  IV^{U}_{t,h} &=& \mathbb{E}_t^{\mathbb{Q}}[RV^{U}_{t,h}(\kappa)], \label{EqIV+}\\
+  IV^{D}_{t,h} &=& \mathbb{E}_t^{\mathbb{Q}}[RV^{D}_{t,h}(\kappa)]. \label{EqIV-}
+\end{eqnarray}
+We refer to $IV^{U/D}_{t,h}$ as the ``risk-neutral semi-variance'' or ``implied semi-variance'' of returns. These quantities are conditioned on the threshold value $\kappa$, which we suppress to simplify notation. As evident in this section, our measures of realized and implied volatility are model-free.
+
+A number of recent studies have raised concerns about the accuracy of traditional methods for evaluating risk-neutral expectations of realized higher moments. For instance, papers by \cite{Orlowski} and \cite{SchneiderTrojani2015} document that a non-trivial fraction of information appears to be lost at short maturities (typically one week), as the traditional approach uses a feasible incomplete-market replicating option portfolio with a discrete set of options to approximate a complete market form, which requires a compact set of options.\footnote{This is due to the fact that a continuum of traded options in not available in the market. The feasible incomplete market approach in the traditional risk-neutral expectation assessment may imply a sizable discretization error. Instead, the authors argue that $\mathbb{Q}$-expectations should be obtained from the prices of dynamically hedged trading strategies that exactly deliver the realized moment (typically, realized variance and its up/down components) as a payoff. This alternative technology dynamically optimizes the option portfolio weights by minimizing the discrepancy between the hedged quantity and the received payoff. } In our study, we focus on maturities of one month or longer. In an online Appendix, we document that both approaches yield similar (highly correlated, with correlation above 0.95) risk-neutral times-series dynamics at a monthly horizon and beyond. Thus, we expect our construction of upside and downside $VRP$ components (at a one-month horizon and beyond) as well as their links to the equity premium to be robust to the incomplete-market discretization error.
+%The approximation generates a discretization error in the traditional risk-neutral expectation assessment with potentially important implications on the computed variance risk-premium. Instead, the authors argue that $\mathbb{Q}$-expectations should be obtained from the prices of dynamically hedged trading strategies delivering exactly the realized moment (typically, realized variance and its up/down components) as a payoff. This alternative technology dynamically optimizes the option portfolio weights by minimizing the discrepancy between the hedged quantity and the received payoff. Thus, the proposed approach is expected to improve the robustness of computed risk neutral expectations even when option markets are incomplete.}
+
+
+
+\section{Data}\label{SecData}
+
+In this study, we adapt BTZ's methodology and use modified measures introduced in Section \ref{SecVolPremDec}. We thus need suitable data to construct excess returns, realized semi-variances ($RV^{U/D}$), and risk-neutral semi-variances ($IV^{U/D}$). Throughout the study, we set $\kappa =0$.
+
+\subsection{Excess returns}
+
+ We first compute the excess returns by subtracting three-month U.S. Treasury bill rates from log-differences in the S\&P 500 composite index, sampled at the end of each month. We downloaded monthly S\&P 500 index returns and three-month T-Bill rates from the CRSP data base. As our study requires reliable high-frequency data and option-implied volatilities, our sample runs from September 1996 to March 2015. Panel A of Table \ref{TabSummaryStats} reports the descriptive statistics of monthly S\&P 500 excess return series.
+
+\subsection{High-frequency data and realized variance components}
+
+We then use intraday S\&P 500 data downloaded from the Institute of Financial Markets, to construct the daily $RV^{U/D}$ series. We sum the five-minute squared negative returns for the downside realized variance ($RV^{D}$) and the five-minute squared positive returns for the upside realized variance ($RV^{U}$). We next add the daily squared overnight negative returns to the downside semi-variance, and the daily squared overnight positive returns to the upside realized variance. The overnight returns are computed for 4:00 p.m. to 9:30 a.m. The total realized variance is obtained by adding the downside and the upside realized variances.\footnote{For the three series, we use a multiplicative scaling of the average total realized variance series to match the unconditional variance of S\&P 500 returns. \cite{HansenLunde06JBES} discuss various approaches to adjusting open-to-close $RV$s.} To construct physical expectations of volatility measures, we use a random walk model to forecast the three realized variances at horizons ranging between 1 and 24 months ahead.
+
+\subsection{Options data and risk-neutral variances}
+We extract risk-neutral quantities from daily data of European-style put and call options on the S\&P 500 index, available through the OptionMetrics Ivy database. To obtain consistent risk-neutral moments, we preprocess the data by applying the same filters as in \cite{ChangChristoffersenJacobs13JFE}. Risk-neutral upside and downside variances ($IV^{U/D}$) are constructed using the model-free ``corridor'' implied volatility methodology discussed in \cite{AndersenBondarenkoGonzalez14CorridorVol}; \cite{AndersenBondarenko07}; and \cite{CarrMadan99OptionPriceFormula}, among others.\footnote{Our data set contains a large set of option contracts. Moreover, the sample features comparable numbers of out-of-the-money (OTM) put and call contracts (especially in longer-horizon maturities from 18 to 24 months) that enable a precise computation of risk-neutral semi-variances. A detailed description of options data is provided in an online Appendix.}
+
+Panel B of Table \ref{TabSummaryStats} shows that risk-neutral volatility measures are persistent -- $AR(1)$ parameters are all above 0.60 -- and demonstrate significant skewness and excess kurtosis. It is also clear that the main factor behind volatility behavior is the downside variance.
+%Figure \ref{FigRiskNeutralVol} provides a stark demonstration of this point.
+The contribution of upside volatility to risk-neutral volatility is considerably less than that of downside volatility.
+
+\subsection{Data for structural estimation}
+
+In Section \ref{SecEstimatingStructuralModel}, we fit the theoretical model developed throughout Section \ref{SecTheoreticalModel} to the U.S. macroeconomic and financial data. We use data sampled at a monthly frequency. Excess returns, realized and risk-neutral volatility components, and (upside and downside) variance risk premia are constructed as described earlier in this section. We use seasonally adjusted, monthly, per capita consumption growth, deflated based on chained 2009 prices and downloaded from the Federal Reserve Bank of St. Louis FRED II data bank, to compute log-growth rates of consumption.  This series spans January 1999 to March 2015. Our measure for the risk-free rate is the three-month U.S. Treasury Bill rate. To construct the real risk-free rate, we regress the ex-post real three-month Treasury Bill yield on the nominal rate and past annualized inflation, available from the WRDS Treasury and Inflation database. The fitted values from this regression are the proxy for the ex-ante real interest rates. Panel E of Table \ref{TabSummaryStats} reports the descriptive statistics of consumption growth data.
+
+\section{Empirical Results}\label{SecEmpiricalResults}
+
+In this section, we provide economic intuition and empirical support for our proposed decomposition of the $VRP$. First, we describe the intuitively expected behavior of the components of the $VRP$, as well as some salient features of the size and variability of these components. As our approach is nonparametric, these facts stand as guidelines for realistic models (reduced-form and general equilibrium). Second, we provide an extensive investigation of the predictability of the equity premium based on the $VRP$ and its components. We empirically demonstrate the contribution of downside risk premium and characterize the sources of $VRP$ predictability documented by BTZ. Third, we provide a comprehensive robustness study.
+
+\subsection{Description of the variance risk premium components}\label{SecFacts}
+
+We view the $VRP$ as the premium that a market participant is willing to pay to hedge against variations in future realized volatilities. It is expected to be positive, as rationalized within equilibrium frameworks in Section \ref{SubsecLitRev}. We confirm these findings by reporting the summary statistics for the $VRP$ in Table \ref{TabSummaryStats}. We also plot the time series of the $VRP$ and its components in Figure \ref{FigDSVRP-SkewnessPremTS}. We present measures based on random walk and univariate U/D-HAR forecasts of realized volatility and its components under the physical measure. Constructions of quantities based on multivariate HAR (M-HAR) are virtually identical to those obtained from univariate HAR.\footnote{U/D-HAR and M-HAR forecasts of realized volatility and its components are based on the methodology of \cite{Corsi09HAR}.} To save space, and because the results obtained from either the random walk or HAR methods are qualitatively similar, we only report findings based on random walk forecasts of realized volatility. The series plotted in Figure \ref{FigDSVRP-SkewnessPremTS} demonstrate that while HAR-based quantities are more volatile than time series based on the random walk, the difference is mainly due to the magnitude of fluctuations, but not the fluctuations themselves. This observation may explain the similarities in empirical findings. As expected, from 1996 to 2015, we can see that the $VRP$ is positive most of the time and remains high in uncertain episodes. It is important to emphasize that the economics of the $VRP$ may be richer than that induced by the volatility-of-volatility. Alternative approaches reveal additional $VRP$ drivers such as co-jumps, as formalized in \cite{BandiReno}. Using high-frequency data and infinitesimal cross-moments, the authors elicit both theoretically and empirically, how contemporaneous (anti-correlated) large discontinuities in the joint dynamics of return and volatility contribute to the time variation of the $VRP$.
+
+We argued in Section \ref{SecIntro} that we intuitively expect negative-valued $VRP^U$ and positive-valued $VRP^D$. Table \ref{TabSummaryStats} clearly illustrates these intuitions, as the average $VRP^{U}$ is about $-2.60\%$. Moreover, Figure \ref{FigDSVRP-SkewnessPremTS} confirms that $VRP^{U}$ is usually negative through our sample period. The same table reports an average $VRP^D$ of roughly $5.21\%$, and in Figure \ref{FigDSVRP-SkewnessPremTS} we observe that $VRP^{D}$ is usually positive. In Section \ref{SecTheoreticalModel}, we show that under mild assumptions these expectations about $VRP$ components are supported by our theoretical model.
+
+Table \ref{TabSummaryStats} also reveals highly persistent, negatively skewed, and fat-tailed empirical distributions for (downside/upside) variance premia. Nonetheless, upside variance appears more left-skewed and leptokurtic compared with (total) variance and downside variance risk premia.
+
+\subsection{Predictability of the equity premium}\label{SecPredictEquityPremium}
+
+BTZ derive a theoretical model where the $VRP$ emerges as the main driver of time variation in the equity premium. They show both theoretically and empirically that a higher $VRP$ predicts higher future excess returns. Because the $VRP$ sums downside and upside variance risk premia, BTZ's framework entails imposing the same coefficient on both (upside and downside) components of the $VRP$ when they are jointly included in a predictive regression of excess returns. However, such a constraint seems very restrictive given the asymmetric views of investors on good uncertainty (preference for upward variability) versus bad uncertainty (aversion to downward variability). Sections \ref{SecFacts} and \ref{SecTheoreticalModel} document that both $VRP^{D}$ and $VRP^{U}$ have intrinsically different features.
+
+Our results are based on a simple linear regression of $k$-steps-ahead cumulative S\&P 500 excess returns on values of a set of predictors that include the $VRP$, $VRP^U$, and $VRP^D$. Following the results of \cite{AngBekaert07RFS}, reported Student's $t$-statistics are based on heteroscedasticity and serial correlation consistent standard errors that explicitly take into account the overlap in the regressions, as advocated by \cite{Hodrick92RFS}. The model used for our analysis is simply
+
+\begin{equation}\label{EqForecastRegreession}
+    r_{t\rightarrow t+k}^{e} = \beta_0+\beta_1 x_t(h) +\epsilon_{t\rightarrow t+k},
+\end{equation}
+where $r_{t\rightarrow t+k}^{e}$ is the cumulative excess returns between time $t$ and $t+k$, $x_t(h)$ is one of the predictors discussed in Section \ref{SecVolPremDec} at time $t$, $h$ is the construction horizon of $x_t(h)$, and $\epsilon_{t\rightarrow t+k}$ is a zero-mean error term. We focus our discussion on the significance of the estimated slope coefficients ($\beta_1$s), determined by the robust Student's-$t$ statistics. We report the predictive ability of regressions, measured by the corresponding adjusted $R^2$s. For highly persistent predictor variables, the $R^2$s for the overlapping multi-period return regressions must be interpreted with caution, as noted by BTZ and \cite{JacquierOkouJFEC13}, among others.\footnote{We consider alternative measures of model assessment, such as \cite{GoyalWelch08RFS} out-of-sample root mean squared errors ($RMSE_{OOS}$) in our robustness study. A complete set of results is available upon request, but is not reported to save space. }
+
+%Building on the work of \cite{Valkanov03JFE}, \cite{BandiPerron08JoE} discuss the inferential challenges of long-run predictive regressions with persistent predictors. The authors recommend to conduct inference based on \emph{rescaled} versions of standard test statistics, which exhibit improved finite sample properties. However, our analysis differs from theirs as our predictors (premia) involve risk-neutral expectations of realized variance components that are extracted, at any given point in time and for any specific maturity, from the cross-section (set of observed strikes) of options. Moreover, we only consider horizons up to two years, because option contracts with extra long maturities are not liquid.
+
+%Following our discussion of the observed mildly cyclical behavior of the VRP and those of $VRP^U$ and $VRP^D$ in Section \ref{SecCountercyclicalRiskFactors}, and given the counter-cyclical behavior of the equity premium, we expect to observe positive slope parameters in the regression model in equation (\ref{EqForecastRegreession}), when $x_t(h)$ is one of variance risk premia quantities.
+
+We decompose the contribution of our predictors to show that (1) predictability results documented by BTZ are driven by the $VRP^D$ and (2) predictability results are mainly driven by risk-neutral expectations -- thus, risk-neutral measures contribute more than realized measures.
+
+Our empirical findings, presented in Tables \ref{TabReturnRegressionResults} to \ref{TabOverLappingJointRegressionResults}, support our claims. In Panel A of Table \ref{TabReturnRegressionResults}, we show that the two main regularities uncovered by BTZ, the hump-shaped increase in robust Student's-$t$ statistics and adjusted $R^2$s reaching their maximum at $k=3$ (one quarter ahead), are present in the data.
+%Both regularities are visible in the upper-left-hand-side plots in Figures \ref{FigNonoverlappingRegression_t-Stat} and \ref{FigNonoverlappingRegression_Rsquare}.
+These effects, however, weaken as the aggregation horizon ($h$) increases from one month to three months or more; the predictability pattern weakens and then largely disappears for $h>6$.
+
+Panel B of Table \ref{TabReturnRegressionResults} reports the predictability results based on using $VRP^{D}$ as the predictor.
+%A visual representation of these results is available in the upper-right-hand-side plots in Figures \ref{FigNonoverlappingRegression_t-Stat} and \ref{FigNonoverlappingRegression_Rsquare}. It is immediately obvious that both regularities observed in the VRP predictive regressions are preserved.
+We observe the hump-shaped pattern for Student's $t$-statistics and the adjusted $R^2$s reaching their maximum between $k=3$ or $k=6$ months. Moreover, these results are more robust to the aggregation horizon of the predictor. We notice that, in contrast to the $VRP$ results -- where predictability is only present for monthly or quarterly constructed risk premia -- the $VRP^{D}$ results are largely robust to aggregation horizons; the slope parameters are statistically different from zero even for annually constructed downside variance risk premia ($h=12$). Moreover, the $VRP^{D}$ results yield higher adjusted $R^2$s compared with the $VRP$ regressions at similar prediction horizons, an observation that we interpret as the superior ability of the $VRP^D$ to explain the variation in aggregate excess returns. Finally, we notice a gradual shift in prediction results from the familiar one-quarter-ahead peak of predictability documented by BTZ to 9-to-12-month-ahead peaks once we increase the aggregation horizon $h$. Based on these results, we infer that the $VRP^{D}$ is the likely candidate to explain the predictive power of $VRP$, documented by BTZ.
+
+Our results for predictability based on the $VRP^{U}$, reported in Panel C of Table \ref{TabReturnRegressionResults},
+%and the two lower left-hand-side plots in Figures \ref{FigNonoverlappingRegression_t-Stat} and \ref{FigNonoverlappingRegression_Rsquare},
+are weak. The hump-shaped pattern in both robust Student's $t$-statistics and in adjusted $R^2$s, while present, is significantly weaker than the results reported by BTZ. Once we increase the aggregation horizon, $h$, these results are lost. We conclude that bearing upside variance risk does not appear to be an important contributor to the equity premium and,  hence, is not a good predictor of this quantity. In addition, we interpret these findings as the $VRP^{U}$ having a low contribution to overall $VRP$.
+
+At this point, it is natural to inquire about including both $VRP$ components in a predictive regression. We present the empirical evidence from this estimation in Panel A of Table \ref{TabOverLappingJointRegressionResults}. After inclusion of the $VRP^{U}$ and $VRP^{D}$ in the same regression, the statistical significance of the $VRP^{U}$'s slope parameters are broadly lost. We also notice a sign change in Student's $t$-statistics associated with the estimated slope parameters of the $VRP^{U}$ and $VRP^{D}$. This observation is not surprising. As we show in our equilibrium model, and also intuitively, risk-averse investors like variability in positive outcomes of returns but dislike it in negative outcomes. Hence, in a joint regression, we expect the coefficient of $VRP^{D}$ to be positive and that of $VRP^{U}$ to be negative.
+
+We claim that the patterns discussed earlier -- and, hence, the predictive power of the $VRP$, and $VRP^{D}$ -- are rooted in expectations. That is, the driving force behind our results, as well as those of BTZ, is expected risk-neutral measures of the volatility components. To show the empirical findings supporting our claim, we run predictive regressions using equation (\ref{EqForecastRegreession}). Instead of using the premia employed so far, we use realized and risk-neutral measures of variances, up- and downside variances, and skewness for $x_t$ based on our discussions in Section \ref{SecDecompose}, respectively.
+
+Our empirical findings using risk-neutral volatility measures are available in Table \ref{TabRiskNeutralOverLappingRegressionResults}. In Panel A, we report the results of running a predictive regression when the predictor is the risk-neutral variance obtained from direct application of the \cite{AndersenBondarenko07} method. It is clear that the estimated slope parameters are statistically different from zero for $k\geq3$ at most construction horizons $h$. The reported adjusted $R^2$s also imply that the predictive regressions have explanatory power for aggregate excess return variations at $k\geq 3$. The same patterns are discernible for risk-neutral downside and upside variances (Panels B and C). Reported adjusted $R^2$s  are lower than those reported in Table  \ref{TabReturnRegressionResults}, and these measures of variation yield statistically significant slope parameters at longer prediction horizons than what we observe for the $VRP$ and its components. Taken together, these observations imply that using the premium (rather than the risk-neutral variation) yields better predictions.
+
+However, in comparison with realized (physical) variation measures, risk-neutral measures yield better results. The analysis using realized variation measures is available in Table \ref{TabRealizedVolRegressionResults}. It is obvious that, by themselves, the realized measures do not yield reasonable predictability, an observation corroborated by the empirical findings of \cite{BekaertEngstromErmolov14JEc}.  The majority of the estimated slope parameters are statistically indistinguishable from zero, and the adjusted $R^2$s are low, especially at short horizons. Inclusion of both risk-neutral and realized variance components does not change our findings dramatically, as demonstrated in Panels B and C of Table \ref{TabOverLappingJointRegressionResults}.
+
+%A visual representation of the prediction power of risk-neutral and physical variation components is available in Figure \ref{FigRNRealizedAdjRsquare}.
+Given the weak performance of realized measures, it is easy to conclude that realized variation plays a secondary role to risk-neutral variation measures in driving the predictability results documented by BTZ or in this study. However, we need both elements in the construction of the variance or skewness risk premia, as realized or risk-neutral  measures individually possess inferior prediction power.
+
+\subsection{Robustness} \label{SecRobustness}
+
+We perform extensive robustness exercises to document the prediction power of the $VRP^D$ for aggregate excess returns in the presence of traditional predictor variables. The goal is to highlight the contribution of our proposed variables in a wider empirical context. Simply put, we observe that the predictive power does not disappear when we include other pricing variables, implying that the $VRP^D$ is not simply a proxy for other well-known pricing ratios.
+
+Following BTZ and \cite{FFTT14RoF}, among many others, we include equity pricing measures such as the log price--dividend ratio ($\log(p_t/d_t)$), lagged log price--dividend ratio ($\log(p_{t-1}/d_t$)), and log price--earnings ratio ($\log(p_t/e_t)$); yield and spread measures such as term spread ($tms_t$), the difference between 10-year U.S. Treasury Bond yields and 3-month U.S. Treasury Bill yields; default spread ($dfs_t$), defined as the difference between BBB and AAA corporate bond yields; CPI inflation ($infl_t$); the skewness risk premium ($srp_t,$ introduced in Section \ref{SecSkewPremDec}); and, finally, \cite{KellyPruit13JF} partial least-squares-based, cross-sectional in-sample and out-of-sample predictors ($kpis_t$ and $kpos_t$, respectively).
+
+We consider two periods for our analysis: our full sample -- September 1996 to December 2010 -- and a pre-Great Recession sample, September 1996 to December 2007. The latter ends at the time as the BTZ sample. We report our empirical findings in Tables \ref{TabRobustnessIndividualSemiAnnual} to \ref{TabRobustnessFullSemiAnnual2007}. These results are based on semi-annually aggregated excess returns and estimated for the one-month-ahead prediction horizon.\footnote{A complete set of robustness checks, including monthly, quarterly, and annually aggregated excess returns results, are available in an online Appendix.} In this robustness study, we scale the cumulative excess returns; we use $r^e_{t\rightarrow t+6}/6$ as the predicted value and regress it on a one-month lagged predictive variable.
+
+Full-sample simple predictive regression results are available in Table \ref{TabRobustnessIndividualSemiAnnual}. Among $VRP$ components, only the downside $VRP$ ($dvrp_t$) has slope parameters that are statistically different from zero and adjusted $R^2$s comparable in magnitude with other pricing variables. Once we use $dvrp_t$ along with other pricing variables, we observe the following regularities in Table \ref{TabRobustnessFullSemiAnnual}, which reports the joint multivariate regression results. First, the estimated slope parameter for $dvrp_t$ is statistically different from zero in all cases. Second, these regressions yield adjusted $R^2$s that range between 3.10\% (for $dvrp_t$ and $tms_t$, in line with findings of BTZ that report weak predictability for $tms_t$) and 25.71\% (for $dvrp_t$ and $infl_t$).\footnote{The dynamics of inflation during the Great Recession period mimic the behavior of our variance risk premia. \cite{GSSZ14WP} meticulously study the behavior of this variable in the period from 2007 to 2009.  According to their study, both full and matched PPI inflation in their model display an aggregate drop in 2008 and 2009, while the reactions of financially sound and weak firms are asymmetric, with the former lowering prices and the latter raising prices in this period. Thus, the predictive power of this variable, given the inherent asymmetric responses, is not surprising.} The downside $VRP$ in conjunction with the $VRP$ or upside $VRP$ remains statistically significant and yields adjusted $R^2$s that are around 7\%.
+
+We obtain adjusted $R^2$s that are lower than those reported by BTZ for quarterly and annually aggregated multivariate regressions. These differences are driven by the inclusion of the Great Recession period data in our full sample. To illustrate this point, we repeat our estimation with the data ending in December 2007. Simple predictive regression results based on these data are available in Table \ref{TabRobustnessReducedSemiAnnual2007}. Excluding the Great Recession period data improves even the univariate predictive regression adjusted $R^2$s across the board. The estimated slope parameters are also closer to BTZ estimates and are generally statistically significant.
+
+In Table \ref{TabRobustnessFullSemiAnnual2007}, we report multivariate regression results, based on data from 1996 to 2007. We notice that once $dvrp_t$ is included in the regression model, the $VRP$ and  the upside $VRP$ are no longer statistically significant. Other pricing variables -- except for term spread, default spread, and inflation -- yield slope parameters that are statistically significant. Thus, inflation seems to lack prediction power in this sub-sample. We do not observe statistically insignificant slope parameters for the downside variance risk premium except when we include $vrp_t$. Across the board, adjusted $R^2$s are high in this sub-sample.
+
+\section{A simple equilibrium model}\label{SecTheoreticalModel}
+In this section, we present an equilibrium consumption-based asset pricing model that supports the proposed decomposition of the $VRP$ in terms of upside and downside components. We estimate this model, using a maximum likelihood procedure. We view this exercise as one possible theoretical motivation for our empirical findings, and it is important to stress that this is not the only way. We rely on BTZ, but could have built on \cite{BandiReno} or \cite{DrechslerYaron11RFS} as well. Our main objective is to highlight the roles that upside and downside variances play in pricing a risky asset in an otherwise standard asset pricing model. In particular, we show that the model, under standard and mild assumptions yields closed-form solutions for $VRP$ components that align well with empirical regularities. In addition, fitting the model to the data yields empirical results that align well with model predictions, empirical regularities discussed in Section \ref{SecEmpiricalResults}, and with BTZ findings. To save space, we only report the main results. Appendix A reports step-by-step derivations of the theoretical findings and the estimation procedure.
+
+\subsection{Preferences}
+
+We consider an endowment economy in discrete time. The representative agent's
+preferences over the future consumption stream are characterized by \cite{KrepsPorteus78Econometrica} intertemporal preferences, as formulated by \cite{EZ89Econometrica} and \cite{Weil89JME},
+
+\begin{equation}
+U_{t}=\left[ (1-\delta )C_{t}^{\frac{1-\gamma }{\theta }}+\delta \left(
+\mathbb{E}_{t}U_{t+1}^{1-\gamma }\right) ^{\frac{1}{\theta }}\right] ^{\frac{%
+\theta }{1-\gamma }},  \label{EqEZUtility}
+\end{equation}%
+where $C_{t}$ is the consumption bundle at time $t$, $\delta$ is the
+subjective discount factor, $\gamma $ is the coefficient of risk aversion,
+and $\psi $ is the elasticity of intertemporal substitution (IES).\footnote{Our theoretical findings do not depend on our choice of preferences. We use EZ in order to make our results comparable with BTZ; \cite{ShaliastovichYaronSegal14}; or other similar papers. We have not attempted this exercise, but one can follow \cite{BekaertEngstrom14} and use habit-based preferences to obtain very similar theoretical results. The only additional ingredient needed in the Bekaert and Engstrom ``BE-GE'' set up is time-varying dynamics for both volatility-of-volatility components.} Parameter
+$\theta $ is defined as $\theta \equiv \frac{1-\gamma }{1-\frac{1}{\psi }}$.
+If $\theta =1$, then $\gamma =1/\psi $ and \citeauthor{KrepsPorteus78Econometrica} preferences collapse to
+the expected power utility, which implies an agent who is indifferent to the
+timing of the resolution of the consumption path uncertainty. With $\gamma
+>1/\psi $, the agent prefers an early resolution of uncertainty. For $\gamma
+<1/\psi $, the agent prefers a late resolution of uncertainty. \cite{EZ89Econometrica} show that the logarithm of the stochastic discount factor
+(SDF) implied by these preferences is given by
+\begin{equation}
+\ln M_{t+1}=m_{t+1}=\theta \ln \delta -\frac{\theta }{\psi }\Delta
+c_{t+1}+(\theta -1)r_{c,t+1},  \label{EqEZlogSDF}
+\end{equation}%
+where $\Delta c_{t+1}=\ln \left( \frac{C_{t+1}}{C_{t}}\right) $ is the log
+growth rate of aggregate consumption, and $r_{c,t}$ is the log return of the
+asset that delivers aggregate consumption as dividends. This asset
+represents the returns on a wealth portfolio. The Euler equation states that
+\begin{equation}
+\mathbb{E}_{t}\left[ \exp \left( m_{t+1}+r_{i,t+1}\right) \right] =1,
+\label{EqEulerEquation4ConsAsset}
+\end{equation}%
+where $r_{c,t}$ represents the log returns for the consumption-generating asset. The risk-free rate, which represents the returns on an asset
+that delivers a unit of consumption in the next period with certainty, is
+defined as
+\begin{equation}
+r_{t}^{f}=\ln \left[ \frac{1}{\mathbb{E}_{t}(M_{t+1})}\right] .
+\label{EqPrimaryRFREulerEquation}
+\end{equation}
+
+\subsection{Consumption dynamics under the physical measure}
+
+Our specification of consumption dynamics incorporates elements from \cite%
+{BansalYaron04JF}; BTZ; \cite{FJPT13RoF}; \cite{ShaliastovichYaronSegal14}; and \cite{BekaertEngstrom14}.
+
+Fundamentally, we follow \cite{BansalYaron04JF} in assuming that consumption
+growth has a predictable component. We differ from Bansal and Yaron in
+assuming that the predictable component is proportional to consumption
+growth's upside and downside volatility components. Thus, we are closer to \cite{ShaliastovichYaronSegal14}.\footnote{\cite{FJPT13RoF}, and \cite{BekaertEngstrom14} consider variations of this assumption in their studies.} As a result, we have
+\begin{equation}  \label{EqConsGrowth}
+\Delta c_{t+1} =
+\mu_0+\mu_1V_{u,t}+\mu_2V_{d,t}+\sigma_c\left(\varepsilon_{u,t+1}-%
+\varepsilon_{d,t+1}\right),
+\end{equation}
+where $\mu_1, \mu_2\in \mathbb{R}$, $\varepsilon_{u,t+1}$ and $\varepsilon_{d,t+1}$ are two mean-zero
+shocks that affect both the realized and expected consumption growth.%
+\footnote{%
+This assumption is for the sake of brevity. Violating this assumption adds
+to algebraic complexity but does not affect our analytical findings.} $%
+\varepsilon_{u,t+1}$ represents upside shocks to consumption growth, and $%
+\varepsilon_{d,t+1}$ denotes downside shocks. Following \cite{BekaertEngstrom14} and \cite{ShaliastovichYaronSegal14}, we
+assume that these shocks have a demeaned Gamma distribution and model them
+as
+\begin{equation}  \label{EqGammaErrorDefs}
+\varepsilon_{i,t+1}=\tilde{\varepsilon}_{i,t+1}-V_{i,t}, ~ i=\{u,d\},
+\end{equation}
+where $\tilde{\varepsilon}_{i,t+1}\sim \Gamma(V_{i,t},1)$.\footnote{We use demeaned Gamma distributions is for the sake of tractability. One can use a number of alternative distributions with positive support and fat tails. For example, one may choose from compound Poisson, $\chi^2$, inverse Gaussian, or L\'{e}vy distributions.} These
+distributional assumptions imply that volatilities of upside and downside
+shocks are time varying and driven by shape parameters $V_{u,t}$ and $%
+V_{d,t} $. In particular, we have
+\begin{equation}  \label{EqGammaErrosVariances}
+Var_t[\varepsilon_{i,t+1}] = V_{i,t}, ~i=\{u, d\}.
+\end{equation}
+Naturally, the total conditional variance of consumption growth when $\varepsilon_{u,t+1}$
+and $\varepsilon_{d,t+1}$ are conditionally independent is simply $%
+\sigma_c^2\left(V_{u,t}+V_{d,t}\right) $.
+
+The distribution of the shock to return shares similar properties with the difference of the demeaned Gamma in equation (\ref{EqConsGrowth}): (i) the variance is the sum of the variances of upside and downside shocks, and (ii) the skewness is (up to a scaling factor) the difference between the variances of upside and downside shocks.
+
+The sign and size of $\mu _{1}$ and $\mu _{2}$ matter in this
+context. With $\mu _{1}=\mu _{2}$, we have a stochastic volatility component in the conditional mean of the consumption growth process, similar to the classic GARCH-in-Mean
+structure for modeling risk-return trade-off in equity returns. With both slope parameters equal to zero,
+the model yields the BTZ unpredictable consumption growth.\footnote{A consumption-based asset pricing model with a representative agent endowed with \cite{EZ89Econometrica} preferences and an unpredictable consumption growth process does not support the existence of distinct upside and downside variance risk premia with the expected signs. In particular, we have found that such a setting always yields a positive upside $VRP$.} If $|\mu
+_{1}|=|\mu _{2}|$, with $\mu _{1}>0$ and $\mu_2<0$, we have Skewness-in-Mean, similar in
+spirit to the \cite{FJPT13RoF} formulation for equity returns. With $\mu
+_{1}\neq \mu _{2}$, we have free parameters that have an impact on loadings
+of risk factors on risky asset returns and the stochastic discount factor. Intuitively, we expect $\mu_1>0$: A rise in upside volatility at time $t$ implies higher consumption growth at time $t+1$, all else being equal. By the same logic, we intuitively expect a negative-valued $\mu_2$, implying an expected fall in consumption growth following an uptick in downside volatility -- following bad economic outcomes, households curb their consumption.% In what follows, we buttress our intuition with theory and derive the analytical bounds on these parameters that ensure consistency with our intuitions.
+
+We observe that
+\begin{equation}  \label{EqDefGammaCommulantExpectation}
+\ln\mathbb{E}_t\exp\left(\nu \varepsilon_{i, t+1}\right)=f(\nu)V_{i,t},
+\end{equation}
+where $f(\nu)=-(\ln(1-\nu)+\nu)$. Both \cite{BekaertEngstromErmolov14JEc} and \cite{ShaliastovichYaronSegal14} use this compact functional form for the Gamma distribution cumulant. It simply follows that $f(\nu)>0, f^{\prime\prime }(\nu)>0$, and $f(\nu)>f(-\nu)$ for all $\nu>0$.
+
+We assume that $V_{i,t}$ follows a time-varying, square root process with
+time-varying volatility-of-volatility, similar to the specification of the volatility process in BTZ:
+\begin{eqnarray}
+V_{u,t+1} &=& \alpha_u+\beta_u V_{u,t}+\sqrt{q_{u,t}}z^u_{t+1}, \\
+q_{u, t+1} &=& \gamma_{u,0}+\gamma_{u,1}q_{u,t}+\varphi_u\sqrt{q_{u,t}}%
+z^1_{t+1}, \\
+V_{d,t+1} &=& \alpha_d+\beta_d V_{d,t}+\sqrt{q_{d,t}}z^d_{t+1}, \\
+q_{d, t+1} &=& \gamma_{d,0}+\gamma_{d,1}q_{d,t}+\varphi_d\sqrt{q_{d,t}}%
+z^2_{t+1},
+\end{eqnarray}
+where $z^i_{t}$ are standard normal innovations, and $i=\{u, d, 1, 2\}$. The
+parameters must satisfy the following restrictions: $\alpha_u >0, \alpha_d >0,
+\gamma_{u,0}>0, \gamma_{d,0}>0, |\beta_u|<1, |\beta_d|<1, |\gamma_{u,1}|<1,
+|\gamma_{d,1}|<1, \varphi_u>0,$ and $ \varphi_d>0$. In addition, we assume that $%
+\left\{z^u_{t}\right\}, \left\{z^d_{t}\right\}, \left\{z^1_{t}\right\}$, and $%
+\left\{z^2_{t}\right\}$ are $i.i.d. \sim N(0,1)$ and
+jointly independent from $\{\varepsilon_{u,t}\}$ and $\{\varepsilon_{d,t}\}$.
+
+The assumptions above yield time-varying uncertainty and asymmetry in
+consumption growth. Through volatility-of-volatility processes $q_{u,t}$ and
+$q_{d,t}$, the setup induces additional temporal variation in consumption
+growth. Temporal variation in the volatility-of-volatility process is necessary
+for generating a sizable $VRP$. Asymmetry is needed to generate
+upside and downside variance risk premia.
+
+We solve the model following the methodology proposed by \cite{BansalYaron04JF}, BTZ, and many others. We consider that the logarithm of the wealth--consumption ratio $w_t$ or the
+price--consumption ratio ($pc_t=\ln\left(\frac{P_t}{C_t}\right)$) for the
+asset that pays the consumption endowment $\{C_{t+i}\}_{i=1}^\infty$ is affine with respect to state variables $V_{i,t}$ and $q_{i,t}$.
+
+We then posit that the consumption-generating returns are approximately
+linear with respect to the log price-consumption ratio, as popularized by \cite{CampbellShiller88RFS}:
+\begin{eqnarray*}
+r_{c,t+1} &=&\kappa _{0}+\kappa _{1}w_{t+1}-w_{t}+\Delta c_{t+1},
+\label{EqAffineReturns} \\
+w_{t} &=&A_{0}+A_{1}V_{u,t}+A_{2}V_{d,t}+A_{3}q_{u,t}+A_{4}q_{d,t},
+\label{EqAffinePriceConsumptionLoadings}
+\end{eqnarray*}%
+where $\kappa_0$ and $\kappa_1$ are log-linearization coefficients, and $%
+A_{0},A_{1},A_{2},A_{3}$, and $A_{4}$ are factor-loading coefficients to be
+determined. We solve for the consumption--generating asset returns, $r_{c,t}$%
+, using the Euler equation (\ref{EqEulerEquation4ConsAsset}). Following standard arguments (see Appendix A-1), we find
+the equilibrium values of coefficients $A_0$ to $A_4$:
+\begin{eqnarray}
+A_{1} &=&-\frac{f\bigg[\sigma _{c}(1-\gamma )\bigg]+(1-\gamma )\mu _{1}}{%
+\theta (\kappa _{1}\beta _{u}-1)}, \\
+A_{2} &=&-\frac{f\bigg[-\sigma _{c}(1-\gamma )\bigg]+(1-\gamma )\mu _{2}}{%
+\theta (\kappa _{1}\beta _{d}-1)}, \\
+A_{3} &=&\frac{(1-\kappa _{1}\gamma _{u,1})-\sqrt{(1-\kappa _{1}\gamma
+_{u,1})^{2}-\theta ^{2}\varphi _{u}^{2}\kappa _{1}^{4}A_{1}^{2}}}{\theta
+\kappa _{1}^{2}\varphi _{u}^{2}}, \\
+A_{4} &=&\frac{(1-\kappa _{1}\gamma _{d,1})-\sqrt{(1-\kappa _{1}\gamma
+_{d,1})^{2}-\theta ^{2}\varphi _{d}^{2}\kappa _{1}^{4}A_{2}^{2}}}{\theta
+\kappa _{1}^{2}\varphi _{d}^{2}}, \\
+A_{0} &=&\frac{\ln \delta +\big(1-\frac{1}{\psi }\big)\mu _{0}+\kappa
+_{0}+\kappa _{1}\big(\alpha _{u}A_{1}+\alpha _{d}A_{2}+\gamma
+_{u,0}A_{3}+\gamma _{d,0}A_{4}\big)}{1-\kappa _{1}}.
+\end{eqnarray}
+
+It is easy to see that while $A_3$ and $A_4$ are negative-valued, the signs of $A_1$ and $A_2$ depend on the signs and sizes of $\mu_1$ and $\mu_2$. We report the conditions that ensure $A_1>0$ and $A_2<0$ after deriving the dynamic of the model under the risk-neutral measure.
+
+\subsection{Risk-neutral dynamics and the premia}
+Combining the historical dynamic and the stochastic discount factor imply the risk-neutral dynamic  and closed-form expression for different risk  premia (see Appendix A-2 for details on the mathematical derivations). Starting with the equity risk premium, we have
+\begin{eqnarray}
+ERP_{t}&\equiv &\mathbb{E}_{t}\left[ r_{c,t+1}\right] -\mathbb{E}_{t}^{%
+\mathbb{Q}}\left[ r_{c,t+1}\right]\nonumber \\
+&=& \frac{\gamma \sigma _{c}^{2}}{1+\gamma \sigma _{c}}V_{u,t}+%
+\frac{\gamma \sigma _{c}^{2}}{1-\gamma \sigma _{c}}V_{d,t}\nonumber \\
+&&+(1-\theta)\kappa
+_{1}^{2}\left( A_{1}^{2}+A_{3}^{2}\varphi _{u}^{2}\right)
+q_{u,t}+(1-\theta)\kappa _{1}^{2}\left( A_{2}^{2}+A_{4}^{2}\varphi
+_{d}^{2}\right) q_{d,t}.\label{EqEqPremFinal}
+\end{eqnarray}
+This expression for the equity risk premium shows that our
+model implies unequal loadings for upside and downside volatility factors. The slope coefficients for volatility-of-volatility
+factors are also, in general, unequal. To derive the upside and downside variance risk premia, we need to decompose the total variance of $r_{c,t+1}$ . The total conditional variance ($\sigma _{r,t}^{2} \equiv Var_{t}\left[r_{c,t+1}\right]$) is given by
+\begin{equation*}
+\sigma _{r,t}^{2} =\sigma _{c}^{2}V_{u,t}+\sigma _{c}^{2}V_{d,t}+\kappa _{1}^{2}\left( A_{1}^{2}+A_{3}^{2}\varphi _{u}^{2}\right)
+q_{u,t}+\kappa _{1}^{2}\left( A_{2}^{2}+A_{4}^{2}\varphi _{d}^{2}\right)
+q_{d,t}.
+\end{equation*}%
+The upside and downside variances are%
+\begin{eqnarray}
+\left( \sigma _{r,t}^{u}\right) ^{2} &=&\sigma _{c}^{2}V_{u,t}+\kappa
+_{1}^{2}\left( A_{1}^{2}+A_{3}^{2}\varphi _{u}^{2}\right) q_{u,t},
+\label{EqUpsideVariance} \\
+\left( \sigma _{r,t}^{d}\right) ^{2} &=&\sigma _{c}^{2}V_{d,t}+\kappa
+_{1}^{2}\left( A_{2}^{2}+A_{4}^{2}\varphi _{d}^{2}\right) q_{d,t}.
+\label{EqDownsideVariance}
+\end{eqnarray}%
+Hence, the upside and downside variance
+risk premia are given by
+\begin{eqnarray}
+VRP_{t}^{U} \equiv \mathbb{E}_{t}^{\mathbb{Q}}\left[ \left( \sigma _{r,t+1}^{u}\right) ^{2}\right]-\mathbb{E}_{t}\left[ \left( \sigma _{r,t+1}^{u}\right) ^{2}\right]&=&(\theta -1)\left( \sigma _{c}^{2}\kappa _{1}A_{1}+\kappa _{1}^{3}\left(A_{1}^{2}+A_{3}^{2}\varphi _{u}^{2}\right) A_{3}\varphi _{u}^{2}\right)q_{u,t},  \nonumber\\
+VRP_{t}^{D} \equiv \mathbb{E}_{t}^{%
+\mathbb{Q}}\left[ \left( \sigma _{r,t+1}^{d}\right) ^{2}\right]- \mathbb{E}_{t}\left[ \left( \sigma _{r,t+1}^{d}\right) ^{2}\right]&=&(\theta -1)\left( \sigma _{c}^{2}\kappa _{1}A_{2}+\kappa _{1}^{3}\left(A_{2}^{2}+A_{4}^{2}\varphi _{d}^{2}\right) A_{4}\varphi _{d}^{2}\right)q_{d,t}.  \nonumber
+\end{eqnarray}
+As discussed before, we expect $VRP_{t}^{U}<0$ and \ $VRP_{t}^{D}>0$. It
+follows that%
+\begin{eqnarray}
+\sigma _{c}^{2}\kappa _{1}A_{1}+\kappa _{1}^{3}\left(
+A_{1}^{2}+A_{3}^{2}\varphi _{u}^{2}\right) A_{3}\varphi _{u}^{2} &>&0,\label{EqCond1} \\
+\sigma _{c}^{2}\kappa _{1}A_{2}+\kappa _{1}^{3}\left(
+A_{2}^{2}+A_{4}^{2}\varphi _{d}^{2}\right) A_{4}\varphi _{d}^{2} &<&0\label{EqCond2}.
+\end{eqnarray}%
+In the appendix A-3 we discuss the necessary and sufficient conditions ensuring that both inequalities (\ref{EqCond1}) and (\ref{EqCond2}) hold. We can express these conditions in a very simple and intuitive way:
+\begin{itemize}
+  \item A sufficient condition for $VRP_{t}^{d}>0$ is $\mu _{2}\leq 0,$
+  \item A necessary condition for $VRP_{t}^{u}<0$ is $\mu _{1}\geq \frac{f\left( \sigma _{c}(1-\gamma )\right) }{\gamma -1} \geq 0.$
+\end{itemize}
+Our estimation delivers structural parameter estimates that satisfy all the theoretically expected restrictions -- inducing $VRP_{t}^{U}<0$ and \ $VRP_{t}^{D}>0$ --, and are consistent with the facts discussed in depth in the first part of the paper. Since equation (\ref{EqEqPremFinal}) implies that the equity risk premium loads positively on both $q_{u,t}$ and $q_{d,t}$, and because $VRP_{t}^{U}<0$ is negatively proportional to $q_{u,t}$ while\ $VRP_{t}^{D}>0$ is positively proportional to $q_{d,t}$, the equity risk premium loads positively on the downside $VRP$ but negatively on the upside $VRP$. This feature of the general equilibrium model is also consistent with the empirical regularities documented in the predictability analysis.
+
+\subsection{Estimation}
+
+To appraise the empirical performance of our general equilibrium, we implement a maximum likelihood estimation procedure. Namely, we maximize the joint likelihood of consumption growth, stock market return, and risk-free rate series. The following steps provide a brief description of the estimation. The shocks to consumption growth and stock return are \begin{eqnarray*}
+\Delta c_{t+1}-\mathbb{E}_{t}\left[ \Delta c_{t+1}\right] &=&\epsilon
+_{1,t+1}, \\
+r_{c,t+1}-\mathbb{E}_{t}(r_{c,t+1}) &=&\epsilon _{1,t+1}+\epsilon _{2,t+1},
+\end{eqnarray*}where
+\begin{eqnarray*}
+\epsilon _{1,t+1} &\equiv &\sigma _{c}(\varepsilon _{u,t+1}-\varepsilon
+_{d,t+1}), \\
+\epsilon _{2,t+1} &\equiv &\kappa _{1}\left[ \left( A_{1}z_{t+1}^{u}+\varphi
+_{u}A_{3}z_{t+1}^{1}\right) \sqrt{q_{u,t}}+\left( A_{2}z_{t+1}^{d}+\varphi
+_{d}A_{4}z_{t+1}^{2}\right) \sqrt{q_{d,t}}\right],
+\end{eqnarray*}and
+$\epsilon _{1,t+1}$, $\epsilon _{2,t+1}$ are conditionally independent random variables. Note that%
+\begin{equation*}
+\epsilon _{2,t+1}\sim N\left( 0,\kappa _{1}^{2}\left( A_{1}^{2}+\varphi
+_{u}^{2}A_{3}^{2}\right) q_{u,t}+\kappa _{1}^{2}\left( A_{2}^{2}+\varphi
+_{d}^{2}A_{4}^{2}\right) q_{d,t}\right).
+\end{equation*} Hence, the joint density function of consumption and return writes%
+\begin{equation*}
+f_{\left( c,r_{c}\right) }\left( \Delta c_{t+1},r_{c,t+1}\right)
+=f_{\epsilon _{1}}\left( \Delta c_{t+1}-\mathbb{E}_{t}\left[ \Delta c_{t+1}%
+\right] \right) f_{\epsilon _{2}}\left( r_{c,t+1}-\Delta c_{t+1}-\left(
+\mathbb{E}_{t}(r_{c,t+1})-\mathbb{E}_{t}(r_{c,t+1})\right) \right),
+\end{equation*} where $f_{\epsilon _{1}}$ and $f_{\epsilon _{2}}$ are the marginal densities
+of $\epsilon _{1,t+1}$ and $\epsilon _{2,t+1}$, respectively. These marginal densities can be computed according to
+\begin{equation*}
+f_{\epsilon _{1}}\left( \epsilon _{1,t+1}\right) =\frac{1}{\pi }%
+\int_{0}^{\infty }Re\left[ \exp \left( -i\nu \epsilon _{1,t+1}+f(i\sigma
+_{c}\nu )V_{u,t}+f(-i\sigma _{c}\nu )V_{d,t}\right) \right] d\nu ,
+\end{equation*} and%
+\begin{eqnarray*}
+\ln \left[ f_{\epsilon _{2}}\left( \epsilon _{2,t+1}\right) \right] &=&-%
+\frac{1}{2}\ln \left( 2\pi \right) -\frac{1}{2}\ln \left( \kappa
+_{1}^{2}\left( A_{1}^{2}+\varphi _{u}^{2}A_{3}^{2}\right) q_{u,t}+\kappa
+_{1}^{2}\left( A_{2}^{2}+\varphi _{d}^{2}A_{4}^{2}\right) q_{d,t}\right) \\
+&&-\frac{1}{2}\frac{\epsilon _{2,t+1}^{2}}{\kappa _{1}^{2}\left(
+A_{1}^{2}+\varphi _{u}^{2}A_{3}^{2}\right) q_{u,t}+\kappa _{1}^{2}\left(
+A_{2}^{2}+\varphi _{d}^{2}A_{4}^{2}\right) q_{d,t}}.
+\end{eqnarray*} It follows that the joint log-likelihood of consumption and return is calculated as%
+\begin{equation}
+\ln L^{\left( C,R\right) }=\sum_{t=0}^{T-1}\ln \left( f_{\left(
+c,r_{c}\right) }\left( \Delta c_{t+1},r_{c,t+1}\right) \right),
+\label{LikePhys}
+\end{equation} where $T$ denotes the sample size. The risk-free rate distribution is based on a Gaussian error likelihood
+\begin{equation*}
+\ln L^{RF}\varpropto -\frac{1}{2}\sum_{t=1}^{T}\left\{ \ln \left(
+RFRMSE^{2}\right) +e_{t}^{2}/RFRMSE^{2}\right\} ,
+\end{equation*} where the error term is computed as $e_{t}=rf_{t}^{observed}-rf_{t}^{Model},$ and the corresponding root-mean-square error is given by $
+RFRMSE\equiv \sqrt{\frac{1}{T}\sum_{t=1}^{T}e_{t}^{2}}.$ Finally, all the parameters are estimated by maximizing the joint likelihood of consumption growth,
+stock return, and risk-free rate
+\begin{equation}
+\ln L^{\left( C,R\right) }+\ln L^{RF}.  \label{jointlik}
+\end{equation}
+To effectively implement our estimation strategy, we need $V_{u,t},$  $V_{d,t},$ $q_{u,t}$ and $q_{d,t}$ that are latent factors in the model. To circumvent this challenge, we assume that observed one-month ahead upside $VRP$ ($VRP_{t}^{U}$), downside $VRP$ ($VRP_{t}^{D}$), conditional upside stock return variance ($\mathbb{E}_{t}^{\mathbb{P}}[RV_{t+1}^{U}]$), and conditional downside stock return variance ($\mathbb{E}_{t}^{\mathbb{P}}[RV_{t+1}^{D}]$) are measured without error. This assumption entails that the observed quantities exactly match their theoretical counterparts, thus allowing to infer the latent factors as
+\begin{eqnarray*}
+q_{u,t} &=&-\frac{1}{(1-\theta )\kappa _{1}\left( \sigma
+_{c}^{2}A_{1}+\kappa _{1}^{2}\left( A_{1}^{2}+A_{3}^{2}\varphi
+_{u}^{2}\right) A_{3}\varphi _{u}^{2}\right) }VRP_{t}^{U}\equiv \varsigma
+_{u}VRP_{t}^{U}, \\
+q_{d,t} &=&-\frac{1}{(1-\theta )\kappa _{1}\left( \sigma
+_{c}^{2}A_{2}+\kappa _{1}^{2}\left( A_{2}^{2}+A_{4}^{2}\varphi
+_{d}^{2}\right) A_{4}\varphi _{d}^{2}\right) }VRP_{t}^{D}\equiv \varsigma
+_{d}VRP_{t}^{D},
+\end{eqnarray*}%and
+\begin{eqnarray*}
+V_{u,t} &=&-\frac{\kappa _{1}^{2}}{\sigma _{c}^{2}}\left(
+A_{1}^{2}+A_{3}^{2}\varphi _{u}^{2}\right) \frac{\gamma _{u,0}}{\beta _{u}}-%
+\frac{\alpha _{u}}{\beta _{u}}+\frac{1}{\beta _{u}\sigma _{c}^{2}}\mathbb{E}_{t}^{\mathbb{P}}[RV_{t+1}^{U}]-\frac{\kappa
+_{1}^{2}}{\sigma _{c}^{2}}\left( A_{1}^{2}+A_{3}^{2}\varphi _{u}^{2}\right)
+\frac{\gamma _{u,1}}{\beta _{u}}\varsigma _{u}VRP_{t}^{U}, \\
+&\equiv &\varpi _{u}+\vartheta _{u}\mathbb{E}_{t}^{\mathbb{P}}[RV_{t+1}^{U}]+\varrho _{u}VRP_{t}^{U},
+\end{eqnarray*}
+\begin{eqnarray*}
+V_{d,t} &=&-\frac{\kappa _{1}^{2}}{\sigma _{c}^{2}}\left(
+A_{2}^{2}+A_{4}^{2}\varphi _{d}^{2}\right) \frac{\gamma _{d,0}}{\beta _{d}}-%
+\frac{\alpha _{d}}{\beta _{d}}+\frac{1}{\beta _{d}\sigma _{c}^{2}}\mathbb{E}_{t}^{\mathbb{P}}[RV_{t+1}^{D}]-\frac{\kappa
+_{1}^{2}}{\sigma _{c}^{2}}\left( A_{2}^{2}+A_{4}^{2}\varphi _{d}^{2}\right)
+\frac{\gamma _{d,1}}{\beta _{d}}\varsigma _{d}VRP_{t}^{D}, \\
+&\equiv &\varpi _{d}+\vartheta _{d}\mathbb{E}_{t}^{\mathbb{P}}[RV_{t+1}^{D}]+\varrho_{d}VRP_{t}^{D}.
+\end{eqnarray*}
+Table (\ref{TabGEEstimation}) reports the structural parameter estimates of the general equilibrium model and their corresponding standard errors. These results clearly show that our general equilibrium model yields accurate parameter estimates that are consistent with the empirical evidence. Specifically, the estimated values confirm that $\mu_1 > 0$, $\mu_2 < 0$, and both parameters with different magnitudes ($|\mu_1| < |\mu_2|$) are economically and statistically significant.
+
+
+\subsection{Confronting the model with data}\label{SecEstimatingStructuralModel}
+
+In implementing our structural estimation procedure, we show that model-implied upside equity returns variance, downside equity returns variance, and their corresponding premia perfectly match the observed series. Thus, there are at least three remaining empirical challenges for the equilibrium model: comparing structural model-implied to observed  (1) predictive regression slopes of excess return on variance risk-premium components, (2) equity returns and consumption growth expectations, and (3) consumption growth variance dynamics.
+
+Figure (\ref{FigGEResult}) graphically summarizes additional performance results of the equilibrium model. It shows that the predictive regression slopes as per equation (\ref{EqForecastRegreession}) lie within the observed 95\% confidence bounds. We also see that the equilibrium model-implied conditional variance of consumption growth tracks the EGARCH forecasts remarkably well. Overall, the proposed general equilibrium model yields significant empirical support for its theoretical implications.
+
+\section{Skewness or signed jump risk premium}\label{SecSkewPremDec}
+
+The difference between realized upside and downside variance is also known as the signed jump variation, see \cite{PattonSheppard13REStat}. The signed jump variation can be interpreted as a measure of (realized) skewness, see \citet*{FJPT13RoF, FJPT14EJF}, since its expectation (under mild conditions) equals the conditional skewness.\footnote{Refer to Appendix B for details.} As a result, we use the terms ``signed jump'' and ``realized skewness'' interchangeably. The realized skewness between $t$ and $t+h$ is computed as:
+\begin{eqnarray}
+RSV_{t,h}(\kappa) &=&RV_{t,h}^{U}(\kappa )-RV_{t,h}^{D}(\kappa).  \label{EqDSSV}
+\end{eqnarray}
+While the predictive ability of $RSV_{t,h}(0)$ has been studied in the literature (for example, by \citealp{GuoWangZhou15GoodBadJump}), to be the best of our knowledge, this is the first study to investigate its premium. We define the skewness (or signed jump) risk premium (denoted by $SRP$) as the difference between the risk-neutral and physical expectations of the realized skewness (or signed jumps). It can be shown that this measure of the skewness risk premium is the spread between the upside and downside components of the $VRP$:
+\begin{eqnarray}
+SRP_{t,h} &=&\mathbb{E}^{\mathbb{Q}}_{t}[RSV_{t,h}]-\mathbb{E}^{\mathbb{P}}_{t}[RSV_{t,h}], \nonumber\\
+SRP_{t,h}&=&VRP_{t,h}^{U}(\kappa )-VRP_{t,h}^{D}(\kappa ).\label{EqSkewRiskPrem}
+\end{eqnarray}
+If $RSV_{t,h}<0$, we view $SRP_{t,h}$ as a skewness premium -- the compensation for an agent who bears downside risk. Alternatively, if $RSV_{t,h}>0$, we view $SRP_{t,h}$ as a skewness discount -- the amount that the agent is willing to pay to secure a positive return on an investment. This measure of the skewness risk premium is nonparametric and model-free. Table \ref{TabSummaryStats} reports that the average skewness risk premium is $-7.8\%$. In Figure \ref{FigDSVRP-SkewnessPremTS}, we observe that $SRP$ is generally negative-valued.
+
+We study the predictive power of signed jump or skewness risk premium for aggregate returns by estimating Eq.~(\ref{EqForecastRegreession}). The equity premium prediction results using the $SRP$ are reported in Panel D of Table \ref{TabReturnRegressionResults}. It is clear that the $SRP$ displays a stronger predictive power at longer horizons than the $VRP$. For monthly excess returns, the $SRP$ slope coefficient is statistically different from zero at prediction horizons of 6 months ahead or longer. At $k=6$, the adjusted $R^2$ of the $SRP$ is comparable in size with that of the $VRP$ (2.30\% against 3.65\%, respectively) and is strictly greater thereafter. At $k=6$, the adjusted $R^2$ for the monthly excess return regression based on the $SRP$ is smaller than that of the $VRP^D$. However, their sizes are comparable at $k=9$ and $k=12$ months ahead. Both trends strengthen as we consider higher aggregation levels for excess returns. At the semi-annual construction level ($h=6$), the $SRP$ already has more predictive power than both the $VRP$ and $VRP^D$ at a quarter-ahead prediction horizon. The increase in adjusted $R^2$s of the $SRP$ is not monotonic in the construction horizon level. We can detect a maximum at a roughly three-quarters-ahead prediction window for semi-annual and annually constructed $SRP$. This observation implies that the $SRP$ is the intermediate link between one-quarter-ahead predictability using the $VRP$ uncovered by BTZ and the long-term predictors such as the price--dividend ratio, dividend yield, or consumption-wealth ratio of \cite{LettauLudvigson01CAY}. Given the generally unfavorable findings of \cite{GoyalWelch08RFS} regarding long-term predictors of equity premium, our findings regarding the predictive power of the $SRP$ are particularly encouraging.
+
+Panel D of Table \ref{TabRealizedVolRegressionResults} and Panel C of Table \ref{TabOverLappingJointRegressionResults} report statistically significant slope parameters and notable adjusted $R^2$s for realized skewness in long prediction horizons ($k\geq 6$) and for construction horizons ($h\geq 6$). Compared with the \textit{SRP}, the realized skewness lacks predictive power in low construction or prediction horizons. Based on the results presented in Table \ref{TabReturnRegressionResults}, we argue that the $SRP$ (and not the realized skewness) is a superior predictor, as it overcomes these shortcomings.
+
+\section{Conclusion}\label{SecConclusion}
+
+In this study, we have decomposed the variance risk premium -- arguably one of the most successful short-term predictors of excess equity returns -- to show that its prediction power stems from the downside $VRP$ embedded in this measure. Market participants seem more concerned with market downturns and demand a premium for bearing that risk. By contrast, they seem to favor upward uncertainty in the market. We support this intuition through a simple equilibrium consumption-based asset pricing model able to replicate the main stylized facts observed in our empirical investigation.
+
+Empirically, the downside $VRP$ demonstrates significant prediction power (that is at least as powerful as the $VRP$, and often stronger) for excess returns. We also show that the difference between upside and downside variance risk premia -- the skewness risk premium -- is a powerful predictor of excess returns. The skewness risk premium performs well for intermediate prediction steps beyond the reach of short-run predictors such as downside variance risk or variance risk premia and long-term predictors such as price--dividend or price--earnings ratios alike.
+
+
+\clearpage
+\newpage
+
+
+%\GATHER{referencesSVPort.bib}   % For Gather Purpose Only
+% \setlinespacing{1.00}
+%\bibliographystyle{elsarticle-harv}
+\bibliographystyle{rfs}
+\singlespace
+\bibliography{FJPO_DownsideVarPremBiB}
+
+
+\clearpage
+\newpage
+
+\section*{Appendix}
+
+\begin{small}
+\subsection*{Appendix A: Details on equilibrium derivations}
+
+\subsubsection*{Appendix A-1: Deriving the log price-consumption ratio coefficients}
+We solve for the consumption-generating asset returns, $r_{c,t}$%
+, using the Euler equation (\ref{EqEulerEquation4ConsAsset}):
+\begin{equation*}
+\mathbb{E}_t\left[\exp\left[\theta\ln\delta-\frac{\theta}{\psi}\Delta
+c_{t+1}+(\theta-1)r_{c, t+1}+r_{c,t+1}\right]\right]=1
+\end{equation*}
+and
+\begin{equation*}
+\ln\mathbb{E}_t\left[\exp\left[\theta\ln\delta-\frac{\theta}{\psi}\Delta
+c_{t+1}+\theta r_{c, t+1}\right]\right]=0.
+\end{equation*}
+Substituting for $\Delta c_{t+1}, r_{c, t+1}, V_{i, t+1}$ and $q_{i, t+1}$,
+we get:
+\begin{equation}
+\begin{split}
+\ln\mathbb{E}_t&\Bigg[\exp\Big[\theta\ln\delta+(1-\gamma)\left[%
+\mu_0+\mu_1V_{u,t}+\mu_2V_{d,t}\right]+\theta[\kappa_0+(\kappa_1-1)A_0]%
++\theta(\alpha_uA_1+\alpha_dA_2+\gamma_{u,0}A_3+\gamma_{d,0}A_4) \\
+&+(1-\gamma)\sigma_c(\varepsilon_{u,t+1}-\varepsilon_{d,t+1}) \\
+&+\theta\Big[A_1(\kappa_1\beta_u-1)V_{u,t}+A_2(\kappa_1%
+\beta_d-1)V_{d,t}+A_3(\kappa_1\gamma_{u,1}-1)q_{u,d}+A_4(\kappa_1%
+\gamma_{d,1}-1)q_{d,t}\Big] \\
+&+\theta\kappa_1\bigg(A_1\sqrt{q_{u,t}}z^u_{t+1}+A_2\sqrt{q_{d,t}}%
+z^d_{t+1}+A_3\varphi_u\sqrt{q_{u,t}}z^1_{t+1}+A_4\varphi_d\sqrt{q_{d,t}}%
+z^d_{t+1}\bigg)\bigg]\Bigg]=0,
+\end{split}%
+\end{equation}
+and then proceed to compute the expectations and coefficients, as follows:
+
+\begin{enumerate}
+\item $\ln\mathbb{E}_t\Bigg[\exp\bigg[\sigma_c(1-\gamma)\varepsilon_{u,t+1}%
+\bigg]\Bigg]=f\big[\sigma_c(1-\gamma)\big]V_{u,t}$,
+
+\item $\ln\mathbb{E}_t\Bigg[\exp\bigg[-\sigma_c(1-\gamma)\varepsilon_{d,t+1}%
+\bigg]\Bigg]=f\big[-\sigma_c(1-\gamma)\big]V_{d,t}$
+
+\item $\ln\mathbb{E}_t\Bigg[\exp\bigg[\theta\kappa_1\big(A_1\sqrt{q_{u,t}}%
+z^u_{t+1}+A_2\sqrt{q_{d,t}}z^d_{t+1}+A_3\varphi_u\sqrt{q_{u,t}}%
+z^1_{t+1}+A_4\varphi_d\sqrt{q_{d,t}}z^d_{t+1}\big)\bigg]\Bigg]=$
+
+\item ~~~~~~~~~~ $\frac{1}{2}\theta^2\kappa_1^2\bigg[\big(%
+A_1^2+\varphi^2A^2_3\big)q_{u,t}+\big(A_2^2+\varphi^2A^2_4\big)q_{d,t}\bigg]$%
+,
+
+\item $\ln\mathbb{E}_t\Bigg[\exp\bigg[(1-\gamma)\left[\mu_1 V_{u,t}+\mu_2
+V_{d,t}\right]+\theta\Big[A_1(\kappa_1\beta_u-1)V_{u,t}+A_2(\kappa_1%
+\beta_d-1)V_{d,t}+A_3(\kappa_1\gamma_{u,1}-1)q_{u,d}+A_4(\kappa_1%
+\gamma_{d,1}-1)q_{d,t}\Big]\bigg]\Bigg]=$
+
+\item ~~~~~~~~~~$(1-\gamma)\left[\mu_1 V_{u,t}+\mu_2 V_{d,t}\right]+\theta%
+\Big[A_1(\kappa_1\beta_u-1)V_{u,t}+A_2(\kappa_1\beta_d-1)V_{d,t}+A_3(%
+\kappa_1\gamma_{u,1}-1)q_{u,d}+A_4(\kappa_1\gamma_{d,1}-1)q_{d,t}\Big]$,
+
+\item $\ln\mathbb{E}_t\Bigg[\exp\bigg[\theta\ln\delta+(1-\gamma)\mu_0+\theta[%
+\kappa_0+(\kappa_1-1)A_0]+\theta(\alpha_uA_1+\alpha_dA_2+\gamma_{u,0}A_3+%
+\gamma_{d,0}A_4)\bigg]\Bigg]=$
+
+\item ~~~~~~~~~~$\theta\Big[\ln\delta + \frac{1-\gamma}{\theta}%
+\mu_0+\kappa_0+(\kappa_1-1)A_0+\kappa_1\big(\alpha_uA_1+\alpha_d
+A_2+\gamma_{u,0}A_3+\gamma_{d,0}A_4\big)\Big]$.
+\end{enumerate}
+
+We gather the terms for $V_{u,t}, V_{d,t}, q_{u,t}$ and $q_{d,t}$, and solve
+for $A_0$ to $A_4$:
+
+\begin{eqnarray}
+A_{1} &=&-\frac{f\bigg[\sigma _{c}(1-\gamma )\bigg]+(1-\gamma )\mu _{1}}{%
+\theta (\kappa _{1}\beta _{u}-1)}, \\
+A_{2} &=&-\frac{f\bigg[-\sigma _{c}(1-\gamma )\bigg]+(1-\gamma )\mu _{2}}{%
+\theta (\kappa _{1}\beta _{d}-1)}, \\
+A_{3} &=&\frac{(1-\kappa _{1}\gamma _{u,1})-\sqrt{(1-\kappa _{1}\gamma
+_{u,1})^{2}-\theta ^{2}\varphi _{u}^{2}\kappa _{1}^{4}A_{1}^{2}}}{\theta
+\kappa _{1}^{2}\varphi _{u}^{2}}, \\
+A_{4} &=&\frac{(1-\kappa _{1}\gamma _{d,1})-\sqrt{(1-\kappa _{1}\gamma
+_{d,1})^{2}-\theta ^{2}\varphi _{d}^{2}\kappa _{1}^{4}A_{2}^{2}}}{\theta
+\kappa _{1}^{2}\varphi _{d}^{2}}, \\
+A_{0} &=&\frac{\ln \delta +\big(1-\frac{1}{\psi }\big)\mu _{0}+\kappa
+_{0}+\kappa _{1}\big(\alpha _{u}A_{1}+\alpha _{d}A_{2}+\gamma
+_{u,0}A_{3}+\gamma _{d,0}A_{4}\big)}{1-\kappa _{1}}.
+\end{eqnarray}
+
+\subsubsection*{Appendix A-2: Analytical derivations of equity premium and variance risk premium components}
+
+We begin by deriving the risk-neutral distribution of all the shocks, $\varepsilon
+_{u,t+1},\ \varepsilon _{d,t+1}$,\ $z_{t+1}^{u},\ z_{t+1}^{d},\ z_{t+1}^{1}$
+and $z_{t+1}^{2}.$ In this computation, we construct the characteristic
+function for each shock and exploit the properties of characteristic
+functions to derive the expectations under the risk-neutral measure. Thus,
+our derivations yield exact equity and risk premia measures, in contrast to
+approximate values reported, for example, in equation (15) of \cite%
+{BolTauchZhou09RFS} or in \cite{DrechslerYaron11RFS}.
+
+We start from $\varepsilon _{u,t+1}$. The SDF is the Radon-Nikodym change of
+measure and $\ln \mathbb{E}_{t}(M_{t+1})$ is the risk-neutral drift term. We
+have:
+\begin{eqnarray*}
+&&\mathbb{E}_{t}^{\mathbb{Q}}(\exp \left( \nu \varepsilon _{u,t+1}\right) )
+\\
+&=&\mathbb{E}_{t}\left[ \frac{M_{t+1}}{\mathbb{E}_{t}(M_{t+1})}\exp \left(
+\nu \varepsilon _{u,t+1}\right) \right] \\
+&=&\mathbb{E}_{t}\left[ \exp \left( \nu \varepsilon _{u,t+1}+m_{t+1}-\ln (%
+\mathbb{E}_{t}(M_{t+1}))\right) \right] \\
+&=&\mathbb{E}_{t}\left[ \exp \left( \nu \varepsilon _{u,t+1}+\theta \ln
+\delta -\frac{\theta }{\psi }\Delta c_{t+1}+(\theta -1)r_{c,t+1}-\ln (%
+\mathbb{E}_{t}(M_{t+1}))\right) \right] \\
+&=&\mathbb{E}_{t}\left[ \exp \left(
+\begin{array}{c}
+\nu \varepsilon _{u,t+1}+\theta \ln \delta -\frac{\theta }{\psi }\Delta
+c_{t+1} \\
++(\theta -1)\left( \kappa _{0}+\kappa _{1}w_{t+1}-w_{t}+\Delta
+c_{t+1}\right) -\ln (\mathbb{E}_{t}(M_{t+1}))%
+\end{array}%
+\right) \right] \\
+&\equiv &\mathbb{E}_{t}\left[ \exp \left( \left( \nu -\gamma \sigma
+_{c}\right) \varepsilon _{u,t+1}+\mathbb{B}_{t}^{\ast ,1}\right) \right]
+\end{eqnarray*}%
+where%
+\begin{equation*}
+\mathbb{B}_{t}^{\ast ,1}=\ln \left[ \mathbb{E}_{t}\left[ \exp \left(
+\begin{array}{c}
+\theta \ln \delta -\gamma \left( \mu _{0}+\mu_1V_{u,t}+\mu_2V_{d,t}-\sigma
+_{c}\varepsilon _{d,t+1}\right) \\
++(\theta -1)\left( \kappa _{0}+\kappa _{1}w_{t+1}-w_{t}\right) -\ln (\mathbb{%
+E}_{t}(M_{t+1}))%
+\end{array}%
+\right) \right] \right] .
+\end{equation*}%
+Hence, it follows that:%
+\begin{equation*}
+\mathbb{E}_{t}^{\mathbb{Q}}(\exp \left( \nu \varepsilon _{u,t+1}\right)
+)=\exp \left( \mathbb{B}_{t}^{\ast ,1}+f(\nu -\gamma \sigma
+_{c})V_{u,t}\right) .
+\end{equation*}%
+With $\nu =0$, we have%
+\begin{equation*}
+1=\exp \left( \mathbb{B}_{t}^{1}+f(-\gamma \sigma _{c})V_{u,t}\right) ,
+\end{equation*}%
+hence, we obtain:%
+\begin{equation*}
+\mathbb{B}_{t}^{1}=-f(-\gamma \sigma _{c})V_{u,t}.
+\end{equation*}%
+In conclusion%
+\begin{equation*}
+\mathbb{E}_{t}^{\mathbb{Q}}(\exp \left( \nu \varepsilon _{u,t+1}\right)
+)=\exp \left( \left( f(\nu -\gamma \sigma _{c})-f(-\gamma \sigma
+_{c})\right) V_{u,t}\right)
+\end{equation*}
+
+Similarly for $\varepsilon_{d,t+1}$, we deduce that:%
+\begin{equation*}
+\mathbb{E}_{t}^{\mathbb{Q}}(\exp \left( \nu\varepsilon _{d,t+1}\right)
+)=\exp \left( \left( f(\nu+\gamma \sigma _{c})-f(\gamma \sigma _{c})\right)
+V_{d,t}\right)
+\end{equation*}%
+It follows that:%
+\begin{eqnarray*}
+\mathbb{E}_{t}^{\mathbb{Q}}\left[ \varepsilon _{u,t+1}\right] &=&f^{\prime
+}(-\gamma \sigma _{c})V_{u,t}=-\frac{\gamma \sigma _{c}}{1+\gamma \sigma _{c}%
+}V_{u,t} \\
+\mathbb{E}_{t}^{\mathbb{Q}}\left[ \varepsilon _{d,t+1}\right] &=&f^{\prime
+}(\gamma \sigma _{c})V_{d,t}=\frac{\gamma \sigma _{c}}{1-\gamma \sigma _{c}}%
+V_{d,t}
+\end{eqnarray*}
+We now derive the expectation of Gaussian shocks, $z^u_{t+1}, z^d_{t+1},
+z^1_{t+1}$ and $z^2_{t+1}$, under the risk-neutral measure, $\mathbb{Q}$. We
+start by deriving the characteristic function for $z^u_{t+1}$:
+\begin{eqnarray*}
+&&\mathbb{E}_{t}^{\mathbb{Q}}(\exp \left( \nu z_{t+1}^{u}\right) ) \\
+&=&\mathbb{E}_{t}\left[ \frac{M_{t+1}}{\mathbb{E}_{t}(M_{t+1})}\exp \left(
+\nu z_{t+1}^{u}\right) \right] \\
+&=&\mathbb{E}_{t}\left[ \exp \left( \nu z_{t+1}^{u}+m_{t+1}-\ln (\mathbb{E}%
+_{t}(M_{t+1}))\right) \right] \\
+&=&\mathbb{E}_{t}\left[ \exp \left( \nu z_{t+1}^{u}+\theta \ln \delta -\frac{%
+\theta }{\psi }\Delta c_{t+1}+(\theta -1)r_{c,t+1}-\ln (\mathbb{E}%
+_{t}(M_{t+1}))\right) \right] \\
+&=&\mathbb{E}_{t}\left[ \exp \left(
+\begin{array}{c}
+\nu z_{t+1}^{u}+\theta \ln \delta -\frac{\theta }{\psi }\Delta c_{t+1} \\
++(\theta -1)\left( \kappa _{0}+\kappa _{1}w_{t+1}-w_{t}+\Delta
+c_{t+1}\right) -\ln (\mathbb{E}_{t}(M_{t+1}))%
+\end{array}%
+\right) \right] \\
+&\equiv&\mathbb{E}_{t}\left[ \exp \left( \left( \nu+(\theta -1)\kappa _{1}A_{1}%
+\sqrt{q_{u,t}}\right) z_{t+1}^{u}+\mathbb{B}^{*,g1}_{t}\right) \right]
+\end{eqnarray*}%
+where%
+\begin{equation*}
+\mathbb{B}^{*,g1}_{t}=\ln \left[ \mathbb{E}_{t}\left[ \exp \left(
+\begin{array}{c}
+(\theta -1)\kappa _{1}A_{1}\left( \alpha _{u}+\beta _{u}V_{u,t}\right)
++\theta \ln \delta -\gamma \Delta c_{t+1} \\
++(\theta -1)\left( \kappa _{0}+\kappa _{1}\left(
+w_{t+1}-A_{1}V_{u,t+1}\right) -w_{t}\right) -\ln (\mathbb{E}_{t}(M_{t+1}))%
+\end{array}%
+\right) \right] \right].
+\end{equation*}%
+It follows that:%
+\begin{equation*}
+\mathbb{E}_{t}^{\mathbb{Q}}(\exp \left(\nu z_{t+1}^{u}\right) )=\exp \left(
+\mathbb{B}^{*,g1}_{t}+\frac{\left( \nu+(\theta -1)\kappa _{1}A_{1}\sqrt{%
+q_{u,t}}\right) ^{2}}{2}\right).
+\end{equation*}%
+Setting $\nu=0$, we have%
+\begin{equation*}
+1=\exp \left( \mathbb{B}^{g1}_{t}+\frac{\left( (\theta -1)\kappa _{1}A_{1}%
+\sqrt{q_{u,t}}\right) ^{2}}{2}\right),
+\end{equation*}%
+and hence:%
+\begin{equation*}
+\mathbb{B}^{g1}_{t}=-\frac{(\theta -1)^{2}\kappa _{1}^{2}A_{1}^{2}q_{u,t}}{2}%
+.
+\end{equation*}%
+Thus:%
+\begin{eqnarray*}
+\mathbb{E}_{t}^{\mathbb{Q}}(\exp \left( \nu z_{t+1}^{u}\right) ) &=&\exp
+\left( \frac{\left( \nu+(\theta -1)\kappa _{1}A_{1}\sqrt{q_{u,t}}\right)
+^{2}-\left( (\theta -1)\kappa _{1}A_{1}\sqrt{q_{u,t}}\right) ^{2}}{2}\right)
+\\
+&=&\exp \left( \frac{\nu^{2}}{2}+\nu(\theta -1)\kappa _{1}A_{1}\sqrt{q_{u,t}}%
+\right).
+\end{eqnarray*}%
+Based on the last result, we characterize the distribution of $z_{t+1}^{u}$
+under the risk-neutral measure as:%
+\begin{equation*}
+z_{t+1}^{u}\sim ^{\mathbb{Q}}N\left( (\theta -1)\kappa _{1}A_{1}\sqrt{q_{u,t}%
+},1\right)
+\end{equation*}%
+Similarly, we characterize the distributions for the remaining shocks:%
+\begin{eqnarray*}
+z_{t+1}^{d} &\sim &^{\mathbb{Q}}N\left( (\theta -1)\kappa _{1}A_{2}\sqrt{%
+q_{d,t}},1\right) \\
+z_{t+1}^{1} &\sim &^{\mathbb{Q}}N\left( (\theta -1)\kappa _{1}A_{3}\varphi
+_{u}\sqrt{q_{u,t}},1\right) \\
+z_{t+1}^{2} &\sim &^{\mathbb{Q}}N\left( (\theta -1)\kappa _{1}A_{4}\varphi
+_{d}\sqrt{q_{d,t}},1\right)
+\end{eqnarray*}
+
+Thus far, we have derived the distribution of shock processes under the
+risk-neutral measure, $\mathbb{Q}$. Since any premium -- whether equity,
+variance risk, or skewness risk premia -- can be defined as the difference
+between the physical and risk-neutral expectations of processes, we are now
+ready to compute all the premia of interest. We start with the equity risk
+premium:%
+\begin{eqnarray*}
+ERP_{t} &\equiv &\mathbb{E}_{t}\left[ r_{c,t+1}\right] -\mathbb{E}_{t}^{%
+\mathbb{Q}}\left[ r_{c,t+1}\right] \\
+&=&\mathbb{E}_{t}\left[ \kappa _{0}+\kappa _{1}w_{t+1}-w_{t}+\Delta c_{t+1}%
+\right] -\mathbb{E}_{t}^{\mathbb{Q}}\left[ \kappa _{0}+\kappa
+_{1}w_{t+1}-w_{t}+\Delta c_{t+1}\right] \\
+&=&\kappa _{1}\left( \mathbb{E}_{t}\left[ w_{t+1}\right] -\mathbb{E}_{t}^{%
+\mathbb{Q}}\left[ w_{t+1}\right] \right) +\mathbb{E}_{t}\left[ \Delta c_{t+1}%
+\right] -\mathbb{E}_{t}^{\mathbb{Q}}\left[ \Delta c_{t+1}\right]
+\end{eqnarray*}%
+As it is clear from the expressions above, we need to compute both $\mathbb{E%
+}_{t}\left[ \Delta c_{t+1}\right] -\mathbb{E}_{t}^{\mathbb{Q}}\left[ \Delta
+c_{t+1}\right]$ and $\mathbb{E}_{t}\left[ w_{t+1}\right] -\mathbb{E}_{t}^{%
+\mathbb{Q}}\left[ w_{t+1}\right]$. Starting with $\mathbb{E}_{t}\left[
+\Delta c_{t+1}\right] -\mathbb{E}_{t}^{\mathbb{Q}}\left[ \Delta c_{t+1}%
+\right]$, we have:
+\begin{eqnarray*}
+\mathbb{E}_{t}\left[ \Delta c_{t+1}\right] -\mathbb{E}_{t}^{\mathbb{Q}}\left[
+\Delta c_{t+1}\right] &=&-\sigma _{c}\mathbb{E}_{t}^{\mathbb{Q}}\left[
+\varepsilon _{u,t+1}-\varepsilon _{d,t+1}\right] \\
+&=&\sigma _{c}\left( \frac{\gamma \sigma _{c}}{1+\gamma \sigma _{c}}V_{u,t}+%
+\frac{\gamma \sigma _{c}}{1-\gamma \sigma _{c}}V_{d,t}\right) \\
+&=&\gamma \sigma _{c}^{2}\left( \frac{1}{1+\gamma \sigma _{c}}V_{u,t}+\frac{1%
+}{1-\gamma \sigma _{c}}V_{d,t}\right)
+\end{eqnarray*}
+
+Similarly, for $\mathbb{E}_{t}\left[ w_{t+1}\right] -\mathbb{E}_{t}^{\mathbb{%
+Q}}\left[ w_{t+1}\right] $ we get:
+\begin{eqnarray*}
+\mathbb{E}_{t}\left[ w_{t+1}\right] -\mathbb{E}_{t}^{\mathbb{Q}}\left[
+w_{t+1}\right] &=&A_{1}\left( \mathbb{E}_{t}\left[ V_{u,t}\right] -\mathbb{E}%
+_{t}^{\mathbb{Q}}\left[ V_{u,t}\right] \right) +A_{2}\left( \mathbb{E}_{t}%
+\left[ V_{d,t}\right] -\mathbb{E}_{t}^{\mathbb{Q}}\left[ V_{d,t}\right]
+\right) \\
+&&+A_{3}\left( \mathbb{E}_{t}\left[ q_{u,t}\right] -\mathbb{E}_{t}^{\mathbb{Q%
+}}\left[ q_{u,t}\right] \right) +A_{4}\left( \mathbb{E}_{t}\left[ q_{d,t}%
+\right] -\mathbb{E}_{t}^{\mathbb{Q}}\left[ q_{d,t}\right] \right)
+\end{eqnarray*}%
+At this stage, we need the premia for each risk factor ($%
+V_{u,t},V_{d,t},q_{u,t}$ and $q_{d,t}$) to compute $\mathbb{E}_{t}\left[
+w_{t+1}\right] -\mathbb{E}_{t}^{\mathbb{Q}}\left[ w_{t+1}\right] $. We start
+with $V_{u,t}$:
+\begin{equation*}
+\mathbb{E}_{t}\left[ V_{u,t+1}\right] -\mathbb{E}_{t}^{\mathbb{Q}}\left[
+V_{u,t+1}\right] =-\sqrt{q_{u,t}}\mathbb{E}_{t}^{\mathbb{Q}}\left[
+z_{t+1}^{u}\right] =-\sqrt{q_{u,t}}(\theta -1)\kappa _{1}A_{1}\sqrt{q_{u,t}}%
+=-(\theta -1)\kappa _{1}A_{1}q_{u,t}.
+\end{equation*}%
+Thus, we derive the premia accrued to each risk factor as:
+\begin{eqnarray*}
+\mathbb{E}_{t}\left[ V_{u,t+1}\right] -\mathbb{E}_{t}^{\mathbb{Q}}\left[
+V_{u,t+1}\right] &=&(1-\theta )\kappa _{1}A_{1}q_{u,t}, \\
+\mathbb{E}_{t}\left[ V_{d,t+1}\right] -\mathbb{E}_{t}^{\mathbb{Q}}\left[
+V_{d,t+1}\right] &=&(1-\theta )\kappa _{1}A_{2}q_{d,t}, \\
+\mathbb{E}_{t}\left[ q_{u,t+1}\right] -\mathbb{E}_{t}^{\mathbb{Q}}\left[
+q_{u,t+1}\right] &=&(1-\theta )\kappa _{1}A_{3}\varphi _{u}^{2}q_{u,t}, \\
+\mathbb{E}_{t}\left[ q_{d,t+1}\right] -\mathbb{E}_{t}^{\mathbb{Q}}\left[
+q_{d,t+1}\right] &=&(1-\theta )\kappa _{1}A_{4}\varphi _{d}^{2}q_{d,t}.
+\end{eqnarray*}%
+Collecting these terms and substituting in the expression for $\mathbb{E}_{t}%
+\left[ w_{t+1}\right] -\mathbb{E}_{t}^{\mathbb{Q}}\left[ w_{t+1}\right] $,
+we get:%
+\begin{equation*}
+\mathbb{E}_{t}\left[ w_{t+1}\right] -\mathbb{E}_{t}^{\mathbb{Q}}\left[
+w_{t+1}\right] =(1-\theta )\kappa _{1}\left[ \left(
+A_{1}^{2}+A_{3}^{2}\varphi _{u}^{2}\right) q_{u,t}+\left(
+A_{2}^{2}+A_{4}^{2}\varphi _{d}^{2}\right) q_{d,t}\right] .
+\end{equation*}%
+It easily follows that the equity premium in our model is:
+\begin{equation}
+ERP_{t}\equiv \frac{\gamma \sigma _{c}^{2}}{1+\gamma \sigma _{c}}V_{u,t}+%
+\frac{\gamma \sigma _{c}^{2}}{1-\gamma \sigma _{c}}V_{d,t}+(1-\theta )\kappa
+_{1}\left( A_{1}^{2}+A_{3}^{2}\varphi _{u}^{2}\right) q_{u,t}+(1-\theta
+)\kappa _{1}\left( A_{2}^{2}+A_{4}^{2}\varphi _{d}^{2}\right) q_{d,t}.
+\label{EqEqPremFinal}
+\end{equation}%
+
+We now characterize variance of the consumption-generating
+asset
+\begin{eqnarray*}
+\sigma _{r,t}^{2} &\equiv &Var_{t}\left[ r_{c,t+1}\right] \\
+&=&Var_t\left[\sigma_c(\varepsilon_{u,t+1}-\varepsilon_{d,t+1})+\kappa_1%
+\left[(A_1z^u_{t+1}+\varphi_uA_3z^1_{t+1})\sqrt{q_{u,t}}+(A_2z^d_{t+1}+%
+\varphi_dA_4z^2_{t+1})\sqrt{q_{d,t}}\right]\right] \\
+&=&\sigma _{c,t}^{2}+\kappa _{1}^{2}\sigma _{w,t}^{2} \\
+&=&\sigma _{c}^{2}V_{u,t}+\sigma _{c}^{2}V_{d,t}+\kappa _{1}^{2}\left(
+A_{1}^{2}+A_{3}^{2}\varphi _{u}^{2}\right) q_{u,t}+\kappa _{1}^{2}\left(
+A_{2}^{2}+A_{4}^{2}\varphi _{d}^{2}\right) q_{d,t} \\
+&\equiv &\left( \sigma _{r,t}^{u}\right) ^{2}+\left( \sigma
+_{r,t}^{d}\right) ^{2},
+\end{eqnarray*}%
+where upside and downside variances are defined as:%
+\begin{eqnarray}
+\left( \sigma _{r,t}^{u}\right) ^{2} &=&\sigma _{c}^{2}V_{u,t}+\kappa
+_{1}^{2}\left( A_{1}^{2}+A_{3}^{2}\varphi _{u}^{2}\right) q_{u,t},
+\label{EqUpsideVariance} \\
+\left( \sigma _{r,t}^{d}\right) ^{2} &=&\sigma _{c}^{2}V_{d,t}+\kappa
+_{1}^{2}\left( A_{2}^{2}+A_{4}^{2}\varphi _{d}^{2}\right) q_{d,t}.
+\label{EqDownsideVariance}
+\end{eqnarray}%
+Using the definition of $VRP$, we define upside $VRP$ as:
+\begin{eqnarray}
+VRP_{t}^{u} &\equiv &\mathbb{E}_{t}^{\mathbb{Q}}\left[ \left( \sigma
+_{r,t+1}^{u}\right) ^{2}\right] -\mathbb{E}_{t}\left[ \left( \sigma
+_{r,t+1}^{u}\right) ^{2}\right] ,  \notag \\
+&=&\sigma _{c}^{2}(\theta -1)\kappa _{1}A_{1}q_{u,t}+\kappa _{1}^{2}\left(
+A_{1}^{2}+A_{3}^{2}\varphi _{u}^{2}\right) (\theta -1)\kappa
+_{1}A_{3}\varphi _{u}^{2}q_{u,t},  \notag \\
+&=&(\theta -1)\left( \sigma _{c}^{2}\kappa _{1}A_{1}+\kappa _{1}^{3}\left(
+A_{1}^{2}+A_{3}^{2}\varphi _{u}^{2}\right) A_{3}\varphi _{u}^{2}\right)
+q_{u,t}.  \label{EqUVRPFinal}
+\end{eqnarray}%
+Similarly, we define downside $VRP$ as:%
+\begin{eqnarray}
+VRP_{t}^{d} &\equiv &\mathbb{E}_{t}^{\mathbb{Q}}\left[ \left( \sigma
+_{r,t+1}^{d}\right) ^{2}\right] -\mathbb{E}_{t}\left[ \left( \sigma
+_{r,t+1}^{d}\right) ^{2}\right]  \notag \\
+&=&(\theta -1)\left( \sigma _{c}^{2}\kappa _{1}A_{2}+\kappa _{1}^{3}\left(
+A_{2}^{2}+A_{4}^{2}\varphi _{d}^{2}\right) A_{4}\varphi _{d}^{2}\right)
+q_{d,t}.  \label{EqDVRPFinal}
+\end{eqnarray}
+
+\subsubsection*{Appendix A-3: Restrictions on parameters}
+We expect $VRP_{t}^{U}<0$ and \ $VRP_{t}^{D}>0$. It
+follows that%
+\begin{eqnarray}
+\sigma _{c}^{2}\kappa _{1}A_{1}+\kappa _{1}^{3}\left(
+A_{1}^{2}+A_{3}^{2}\varphi _{u}^{2}\right) A_{3}\varphi _{u}^{2} &>&0,\label{AEqCond1} \\
+\sigma _{c}^{2}\kappa _{1}A_{2}+\kappa _{1}^{3}\left(
+A_{2}^{2}+A_{4}^{2}\varphi _{d}^{2}\right) A_{4}\varphi _{d}^{2} &<&0\label{AEqCond2}.
+\end{eqnarray}%
+In this appendix, we discuss the necessary and sufficient conditions ensuring that both inequalities (\ref{AEqCond1}) and (\ref{AEqCond2}) hold.
+
+Since
+\begin{eqnarray*}
+A_{3} &=&\frac{A_{3}^{\ast }}{\theta },\ A_{4}=\frac{A_{4}^{\ast }}{\theta }%
+,\ with \\
+A_{3}^{\ast } &=&\frac{(1-\kappa _{1}\gamma _{u,1})-\sqrt{(1-\kappa
+_{1}\gamma _{u,1})^{2}-\varphi _{u}^{2}\kappa _{1}^{4}\left( A_{1}^{\ast
+}\right) ^{2}}}{\kappa _{1}^{2}\varphi _{u}^{2}} \\
+A_{4}^{\ast } &=&\frac{(1-\kappa _{1}\gamma _{d,1})-\sqrt{(1-\kappa
+_{1}\gamma _{d,1})^{2}-\varphi _{d}^{2}\kappa _{1}^{4}\left( A_{2}^{\ast
+}\right) ^{2}}}{\kappa _{1}^{2}\varphi _{d}^{2}},
+\end{eqnarray*}
+
+it must be that%
+\begin{eqnarray*}
+0 &\leq &\varphi _{u}\leq \frac{1-\kappa _{1}\gamma _{u,1}}{-\kappa
+_{1}^{2}A_{1}^{\ast }}, \\
+0 &\leq &\varphi _{d}\leq \frac{1-\kappa _{1}\gamma _{d,1}}{\kappa
+_{1}^{2}A_{2}^{\ast }},
+\end{eqnarray*}%
+and%
+\begin{eqnarray}
+A_{1}^{\ast } &\equiv &\theta A_{1}=-\frac{f\left( \sigma _{c}(1-\gamma
+)\right) +(1-\gamma )\mu _{1}}{\kappa _{1}\beta _{u}-1}, \\
+A_{2}^{\ast } &\equiv &\theta A_{2}=-\frac{f\left( -\sigma _{c}(1-\gamma
+)\right) +(1-\gamma )\mu _{2}}{\kappa _{1}\beta _{d}-1}.
+\end{eqnarray}
+
+Since $A_{4}<0,\ A_{2}<0$ is a sufficient condition for $\sigma
+_{c}^{2}\kappa _{1}A_{2}+\kappa _{1}^{3}\left( A_{2}^{2}+A_{4}^{2}\varphi
+_{d}^{2}\right) A_{4}\varphi _{d}^{2}<0.$ Note that
+\begin{equation*}
+A_{2}<0\Leftrightarrow \mu _{2}<\frac{f\bigg[-\sigma _{c}(1-\gamma )\bigg]}{%
+\gamma -1}
+\end{equation*}%
+In particular, we have
+\begin{equation*}
+\mu _{2}\leq 0\Rightarrow A_{2}<0\Rightarrow VRP_{t}^{d}>0.
+\end{equation*}%
+Since $A_{3}<0$, $A_{1}>0$ is a necessary condition for $\sigma
+_{c}^{2}\kappa _{1}A_{1}+\kappa _{1}^{3}\left( A_{1}^{2}+A_{3}^{2}\varphi
+_{u}^{2}\right) A_{3}\varphi _{u}^{2}>0.$
+
+Because we want $A_{1}>0$, it must be the case that%
+\begin{equation*}
+\frac{f\left( \sigma _{c}(1-\gamma )\right) }{\gamma -1}\leq \mu _{1}.
+\end{equation*}%
+We can show that, the constraint $\sigma _{c}^{2}\kappa _{1}A_{1}+\kappa
+_{1}^{3}\left( A_{1}^{2}+A_{3}^{2}\varphi _{u}^{2}\right) A_{3}\varphi
+_{u}^{2}>0$ translates into%
+\begin{equation*}
+\theta <-\sqrt{\frac{2\left( \kappa _{1}\gamma _{u,1}-1\right) }{A_{1}^{\ast
+}}}\frac{\varphi _{u}A_{3}^{\ast }}{\sigma _{c}}.
+\end{equation*}
+
+
+\subsection*{Appendix B:Linking the asymmetry to the signed jump variation}
+
+Consider that $s_{t}=\ln S_{t}$, the stock log-price evolves according to a jump-diffusion process
+\begin{equation}
+    ds_{t}=\mu_{t}dt+\sigma_{t}dW_{t}+\Delta s_{t}, \label{EqJumpDiffusionProcess}
+\end{equation}
+where $dW_{t}$ is an increment of standard Brownian motion and $\Delta s_{t}\equiv s_{t}-s_{t-}$ is the jump component.
+From equation (\ref{EqJumpDiffusionProcess}), the return over a time interval $\left[ t,t+h \right]$ is
+\begin{equation}
+    r_{t,h} \equiv \int_{t}^{t+h} ds_{\upsilon} = \int_{t}^{t+h} \mu_{\upsilon} d\upsilon + \int_{t}^{t+h} \sigma_{\upsilon}dW_{\upsilon} + \sum_{t \leq \upsilon \leq t+h } \Delta s_{\upsilon} \label{EqJumpDiffusionProcessRet}
+\end{equation}
+
+The corresponding demeaned return is
+
+\begin{eqnarray}
+    \varepsilon_{t,h}^{r}&=& r_{t,h}- \left( \int_{t}^{t+h} \mu_{\upsilon} d\upsilon + \mathbb{E}_{t} \left[ \tilde{\varepsilon}_{t,h}^{J}  \right] \right),  \notag \\
+    &=& \varepsilon_{t,h}^{C}+\varepsilon_{t,h}^{J}, \label{EqJumpDiffusionProcessRetSchock}
+\end{eqnarray}
+where $ \tilde{\varepsilon}_{t,h}^{J} = \sum_{t \leq \upsilon \leq t+h } \Delta s_{\upsilon} $ denotes the jump component, $ \varepsilon_{t,h}^{J} = \tilde{\varepsilon}_{t,h}^{J} - \mathbb{E}_{t} \left[ \tilde{\varepsilon}_{t,h}^{J}  \right]$ is the centered conditional jump innovation, and $\varepsilon_{t,h}^{C}=\int_{t}^{t+h} \sigma_{\upsilon}dW_{\upsilon}$ stands for the diffusion part.
+
+Between time $t$ and $t+h$, let $N_{t,h}$ be the total number of jumps drawn from a counting process. Thus, the jump component in equation (\ref{EqJumpDiffusionProcessRetSchock}) can be rewritten as
+\begin{eqnarray}
+\tilde{\varepsilon}_{t,h}^{J} &=& \sum_{j=0}^{N_{t,h}} \Delta s_{j},  \notag \\
+&=& \sum_{j=0}^{N_{t,h}} | \Delta s_{j} | \mathbb{I}_{[\Delta s_{j} > 0]} - \sum_{j=0}^{N_{t,h}} | \Delta s_{j} | \mathbb{I}_{[\Delta s_{j} \leq 0]},  \notag \\
+&=& \sum_{j=0}^{N_{t,h}^{U}} | \Delta s_{j} | - \sum_{j=0}^{N_{t,h}^{D}} | \Delta s_{j} |,
+\end{eqnarray}
+where $N_{t,h}^{U}=\sum_{j=0}^{N_{t,h}} \mathbb{I}_{[\Delta s_{j} > 0]}$ and $N_{t,h}^{D}=\sum_{j=0}^{N_{t,h}} \mathbb{I}_{[\Delta s_{j} \leq 0]}$ denote the number of upside and downside jumps, respectively.
+It follows that
+\begin{equation}
+\varepsilon_{t,h}^{J} = \varepsilon_{t,h}^{U}-\varepsilon_{t,h}^{D},
+\end{equation}
+where $\varepsilon_{t,h}^{U} = \sum_{j=0}^{N_{t,h}^{U}} | \Delta s_{j} | - \mathbb{E}_{t} \left[ \sum_{j=0}^{N_{t,h}^{U}} | \Delta s_{j} | \right]$, and $\varepsilon_{t,h}^{U} = \sum_{j=0}^{N_{t,h}^{D}} | \Delta s_{j} | - \mathbb{E}_{t} \left[ \sum_{j=0}^{N_{t,h}^{D}} | \Delta s_{j} | \right]$.
+
+We further assume that absolute values of jump sizes ($| \Delta s_{j} |$) are independent and identically distributed according to a positive law, and that the number of upside ($N_{t,h}^{U} \sim \mathcal{P} (\lambda_{t,h}^{U}) $) and downside ($N_{t,h}^{D} \sim \mathcal{P} (\lambda_{t,h}^{D}) $) jumps are independent Poisson distributed random variables with distinct intensities.
+
+
+In the sequel, we drop time subscripts to ease notation. We now compute the first three cumulants of $\varepsilon^{J}$. The cumulant generating function is
+\begin{equation}
+\psi_{\varepsilon^{J}}(\nu) = \psi_{\varepsilon^{U}}(\nu) + \psi_{\varepsilon^{D}}(-\nu). \label{CGF}
+\end{equation}
+
+Thus, the $k^{th}$ derivative of $\psi_{\varepsilon^{J}}(\nu)$ evaluated at 0 yields the $k^{th}$ cumulant $\mu_{k}$. We get the following equalities
+
+\begin{equation}
+\mu_{1}(\varepsilon^{J}) = \mu_{1}(\varepsilon^{U}) - \mu_{1}(\varepsilon^{D}) =0, \label{CGFM}
+\end{equation}
+
+
+\begin{equation}
+\mu_{2}(\varepsilon^{J}) = \mu_{2}(\varepsilon^{U}) + \mu_{2}(\varepsilon^{D}), \label{CGFV}
+\end{equation}
+
+\begin{equation}
+\mu_{3}(\varepsilon^{J}) = \mu_{3}(\varepsilon^{U}) - \mu_{3}(\varepsilon^{D}). \label{CGFS}
+\end{equation}
+
+Moreover, the distributional assumptions imply
+
+\begin{equation}
+\mu_{2}(\varepsilon^{U/D})=\lambda^{U/D} \left( \overline {\sigma}^{2} + \overline {m}^{2} \right), \label{CGFVud}
+\end{equation}
+and
+\begin{equation}
+\mu_{3}(\varepsilon^{U/D})=\lambda^{U/D} \left( \overline{sk}^{3}+ 3\overline {\sigma}^{2}\overline {m} + \overline {m}^{3} \right), \label{CGFSud}
+\end{equation}
+
+where $\overline {m}=\mu_{1}(| \Delta s_{j} |)$, $\overline {\sigma}^{2}=\mu_{2}(| \Delta s_{j} |)$, and $\overline{sk}=\mu_{3}(| \Delta s_{j} |)$.
+
+Combining equations (\ref{CGFS}) and (\ref{CGFSud}), we obtain
+
+\begin{equation}
+\mu_{3}(\varepsilon^{J}) = \left( \lambda^{U}-\lambda^{D} \right) \left( \overline{sk}^{3}+ 3\overline {\sigma}^{2}\overline {m} + \overline {m}^{3} \right). \label{CGFSDiffud}
+\end{equation}
+
+Interestingly, we see from equation (\ref{CGFVud}) that the difference between variances of $\varepsilon^{U}$ and $\varepsilon^{D}$ is,
+
+\begin{equation}
+\mu_{2}(\varepsilon^{U})-\mu_{2}(\varepsilon^{D})=\left( \lambda^{U}-\lambda^{D} \right) \left( \overline {\sigma}^{2} + \overline {m}^{2} \right), \label{CGFDiffVud}
+\end{equation}
+which implies that
+\begin{equation}
+\left( \lambda^{U}-\lambda^{D} \right)= \left( \mu_{2}(\varepsilon^{U})-\mu_{2}(\varepsilon^{U}) \right)\left( \overline {\sigma}^{2} + \overline {m}^{2} \right)^{-1} . \label{CGFDiffLambdaud}
+\end{equation}
+
+Substituting equation (\ref{CGFDiffLambdaud}) into equation (\ref{CGFS}) gives
+
+\begin{equation}
+\mu_{3}(\varepsilon^{J}) = \left( \mu_{2}(\varepsilon^{U})-\mu_{2}(\varepsilon^{U}) \right)\left( \overline {\sigma}^{2} + \overline {m}^{2} \right)^{-1}\left( \overline{sk}^{3}+ 3\overline {\sigma}^{2}\overline {m} + \overline {m}^{3} \right), \label{CGFSasDiffVaud}
+\end{equation}
+
+which clearly shows that the difference between the variances of $\varepsilon^{U}$ and $\varepsilon^{D}$ drives the asymmetry.
+Finally, when diffusion and jump components are independent, the skewness of the return is
+\begin{equation}
+\mu_{3}(r) \equiv \mu_{3}(\varepsilon^{r}) =  \mu_{3}(\varepsilon^{C}) + \mu_{3}(\varepsilon^{J}), \label{CGFSretDecompose}
+\end{equation}
+which sums the skewness of diffusive ($\mu_{3}(\varepsilon^{C})$) and jump ($\mu_{3}(\varepsilon^{J})$) innovations. In the absence of leverage effect, $\mu_{3}(\varepsilon^{C})=0$ inducing that the total of returns boils down (up to a constant) to the difference of $\varepsilon^{U}$ and $\varepsilon^{D}$ variances.
+Obviously, the larger the leverage effect, the wider the wedge between the return skewness and the difference of $\varepsilon^{U}$ and $\varepsilon^{D}$ variances.
+
+\end{small}
+
+\clearpage
+\newpage
+
+\begin{table}
+  \begin{center}
+  \caption{Summary Statistics }\label{TabSummaryStats}
+\begin{footnotesize}\begin{tabular*}{0.95\textwidth}{@{\extracolsep{\fill}}lcccccc}
+\hline%\hline
+&\textbf{Mean $(\%)$}&\textbf{Median $(\%)$}&\textbf{Std. Dev. $(\%)$}&\textbf{Skewness}&\textbf{Kurtosis}&\textbf{AR(1)}\\\hline
+Panel A: Excess Returns \\\hline
+Equity  &   1.9771& 14.5157&20.9463 &   -0.1531&    10.5559&    -0.0819 \\
+Equity (1996-2007)&3.0724&12.5824&17.6474&-0.1379&5.9656&-0.0165\\
+\hline
+Panel B: Risk-Neutral   \\\hline
+Variance&19.3544&18.7174&6.6110&1.5650&7.6100&0.9466\\
+Downside Variance&16.9766&16.2104&5.8727&1.6746&8.0637&0.9548\\
+Upside Variance&9.2570&9.1825&3.1295&1.1479&6.0030&0.8991\\
+Skewness&-7.7196&-7.0090&3.0039&-2.0380&9.6242&0.7323\\\hline
+Panel C: Realized      \\\hline
+Variance&16.7137&15.3429&5.5216&3.6748&25.6985&0.9667\\
+Downside Variance&11.7677&10.8670&3.9857&3.9042&29.4323&0.9603\\
+Upside Variance&11.8550&10.8683&3.8639&3.6288&25.3706&0.9609\\
+Skewness &0.0872&0.1315&1.0911&-6.3619&170.4998&0.6319\\\hline
+Panel D: Risk Premium    \\\hline
+Variance&2.6407&2.3932&4.2538&-0.3083&6.8325&0.9265\\
+Downside Variance&5.2089&4.8693&3.8159&0.2019&4.6310&0.9444\\
+Upside Variance&-2.5979&-2.5730&2.5876&-2.2178&22.7198&0.8877\\
+Skewness &-7.8068&-6.9942&3.0606&-2.0696&10.6270&0.9345\\ \hline
+Panel E: Macroeconomic \\\hline
+Consumption Growth & 1.4733 & 1.4443 & 1.2808& 0.6384 & 5.1933 & -0.2915\\
+Real Interest Rate & 1.0707 & 0.9607 & 1.9070 & 0.7341 & 5.0354 & 0.9878\\ \hline
+\end{tabular*}
+\end{footnotesize}
+\end{center}
+
+\noindent \scriptsize This table reports the summary statistics for the quantities investigated in this study. Mean, median, and standard deviation values are annualized and in percentages. We report excess kurtosis values. $AR(1)$ represents the values for the first autocorrelation coefficient. The full sample is from September 1996 to March 2015. We also consider a sub-sample ending in December 2007. The data for seasonally adjusted, real per capita consumption growth (based on 2009 chained prices) starts in February 1999 and ends in March 2015. We report annualized mean, median, and standard deviation values for consumption growth and real interest rates.
+
+\end{table}
+
+%\clearpage
+%\newpage
+%
+%\begin{table}
+%  \begin{center}
+%  \caption{Summary Statistics }\label{TabSummaryStatsOLD}
+%\begin{footnotesize}\begin{tabular*}{0.95\textwidth}{@{\extracolsep{\fill}}lcccccc}
+%\hline\hline
+%&\textbf{Mean $(\%)$}&\textbf{Median $(\%)$}&\textbf{Std. Dev. $(\%)$}&\textbf{Skewness}&\textbf{Kurtosis}&\textbf{AR(1)}\\\hline
+%Panel A: Excess Returns \\\hline
+%Equity  &   1.9771& 14.5157&20.9463 &   -0.1531&    10.5559&    -0.0819 \\
+%Equity (1996-2007)&3.0724&12.5824&17.6474&-0.1379&5.9656&-0.0165\\
+%\hline
+%Panel B: Risk-Neutral   \\\hline
+%Variance&19.3544&18.7174&6.6110&1.5650&7.6100&0.9466\\
+%Downside Variance&16.9766&16.2104&5.8727&1.6746&8.0637&0.9548\\
+%Upside Variance&9.2570&9.1825&3.1295&1.1479&6.0030&0.8991\\
+%Skewness&-7.7196&-7.0090&3.0039&-2.0380&9.6242&0.7323\\\hline
+%Panel C: Realized      \\\hline
+%Variance&19.2776&18.1475&8.7583&2.0683&8.7517&0.9979\\
+%Downside Variance&13.5841&12.7362&6.2639&2.0297&8.6130&0.9972\\
+%Upside Variance&13.6748&12.9029&6.1295&2.1022&8.8680&0.9973\\
+%Skewness &0.0907&0.1186&0.4124&-0.3292&2.7632&0.9098\\\hline
+%Panel D: Risk Premium    \\\hline
+%Variance&0.0768&0.8349&4.7214&-1.3578&7.5797&0.8539\\
+%Downside Variance&3.3925&3.3805&3.5259&-0.0114&5.9518&0.8149\\
+%Upside Variance&-4.4178&-3.3486&3.7281&-2.4339&10.6756&0.8718\\
+%Skewness &-7.8103&-6.9824&2.9213&-2.1850&10.3067&0.7304\\\hline\hline
+%\end{tabular*}
+%\end{footnotesize}
+%\end{center}
+%
+%\noindent \scriptsize This table reports the summary statistics for the quantities investigated in this study. Mean, median, and standard deviation values are annualized and in percentages. We report excess kurtosis values. $AR(1)$ represents the values for the first autocorrelation coefficient. The full sample is September 1996 to December 2010. We also consider a sub-sample ending in December 2007.
+%
+%\end{table}
+
+%\clearpage
+%\newpage
+%
+%\begin{table}
+%\caption{S\&P 500 Index Options Data}\label{TabDesOptionContracts}
+%  \begin{center}
+%  \footnotesize \begin{tabular}{lcccccccccccccc}
+%& & \multicolumn{3}{c}{OTM Put} & & & \multicolumn{5}{c}{OTM Call} & & &\\ \cline{3-5} \cline{9-13}
+%&&&&&&&&&&&&&&\\
+%& & \begin{turn}{90} \underline{S}/S $<$ 0.97 \end{turn} & & \begin{turn}{90} 0.97 $<$ \underline{S}/S $<$ 0.99 \end{turn} & & \begin{turn}{90} 0.99 $<$ \underline{S}/S $<$ 1.01 \end{turn} & & \begin{turn}{90} 1.01 $<$ \underline{S}/S $<$ 1.03 \end{turn} & & \begin{turn}{90} 1.03 $<$ \underline{S}/S $<$ 1.05 \end{turn} & & \begin{turn}{90} \underline{S}/S $>$ 1.05 \end{turn} & & \begin{turn}{90} All \end{turn}\\ \cline{3-3} \cline{5-5} \cline{7-7} \cline{9-9} \cline{11-11} \cline{13-13} \cline{15-15}
+%\underline{Panel A: By Moneyness}&&&&&&&&&&&&&&\\
+%Number of contracts&&223,579&&57,188&&71,879&&57,522&&26,154&&100,121&&536,443\\
+%Average price&&15.08&&39.44&&39.67&&38.47&&21.97&&15.50&&23.90\\
+%Average implied volatility&&25.68&&17.05&&15.88&&15.58&&14.30&&16.31&&20.06\\
+%&&&&&&&&&&&&&&\\
+% & & \begin{turn}{90} DTM $<$ 30 \end{turn} & & \begin{turn}{90} 30 $<$ DTM $<$ 60 \end{turn} & & \begin{turn}{90} 60 $<$ DTM $<$ 90 \end{turn} & & \begin{turn}{90} 90 $<$ DTM $<$ 120 \end{turn} & & \begin{turn}{90} 120 $<$ DTM $<$ 150 \end{turn} & & \begin{turn}{90} DTM $>$ 150 \end{turn} & & \begin{turn}{90} All \end{turn}\\ \cline{3-3} \cline{5-5} \cline{7-7} \cline{9-9} \cline{11-11} \cline{13-13} \cline{15-15}
+%\underline{Panel B: By Maturity}&&&&&&&&&&&&&&\\
+%Number of contracts&&115,392&&140,080&&83,937&&36,163&&22,302&&138,569&&536,443\\
+%Average price&&10.45&&14.90&&20.17&&24.88&&26.20&&45.82&&23.90\\
+%Average implied volatility&&19.40&&20.20&&20.06&&21.11&&20.48&&20.13&&20.06\\
+%&&&&&&&&&&&&&&\\
+% & & \begin{turn}{90} VIX $<$ 15 \end{turn} & & \begin{turn}{90} 15 $<$ VIX $<$ 20 \end{turn} & & \begin{turn}{90} 20 $<$ VIX $<$ 25 \end{turn} & & \begin{turn}{90} 25 $<$ VIX $<$ 30 \end{turn} & & \begin{turn}{90} 30 $<$ VIX $<$ 35 \end{turn} & & \begin{turn}{90} VIX $>$ 35 \end{turn} & & \begin{turn}{90} All \end{turn} \\ \cline{3-3} \cline{5-5} \cline{7-7} \cline{9-9} \cline{11-11} \cline{13-13} \cline{15-15}
+%\underline{Panel C: By VIX Level}&&&&&&&&&&&&&&\\
+%Number of contracts&&74,048&&115,970&&164,832&&88,146&&37,008&&56,439&&536,443\\
+%Average price&&17.90&&20.70&&24.89&&26.84&&26.80&&28.93&&23.90\\
+%Average implied volatility&&11.63&&15.92&&19.42&&22.20&&25.31&&34.72&&20.06\\
+%\hline\end{tabular}
+%\end{center}
+%\noindent \scriptsize This table sorts S\&P 500 index options data by moneyness, maturity, and VIX level. Out-of-the-money (OTM) call and put options from OptionMetrics from September 3, 1996 to December 30, 2010 are used. The moneyness is measured by the ratio of the strike price ($\underline{S}$) to underlying asset price ($S$). DTM is the time to maturity in number of calendar days. The average price and the average implied volatility are expressed in dollars and percentages, respectively.
+%
+%\end{table}
+
+
+\clearpage
+\newpage
+
+\begin{table}
+  \caption{Predictive Content of Premium Measure}\label{TabReturnRegressionResults}
+  \begin{center}
+        \begin{tabular}{lllllllll}
+\hline
+$h$ & \multicolumn{2}{c}{1} & \multicolumn{2}{c}{3} & \multicolumn{2}{c}{6} & \multicolumn{2}{c}{12} \\
+\hline
+ & \multicolumn{8}{c}{} \\
+ & \multicolumn{1}{c}{$t$-Stat} & \multicolumn{1}{c}{$\bar{R}^2$} & \multicolumn{1}{c}{$t$-Stat} & \multicolumn{1}{c}{$\bar{R}^2$} & \multicolumn{1}{c}{$t$-Stat} & \multicolumn{1}{c}{$\bar{R}^2$} & \multicolumn{1}{c}{$t$-Stat} & \multicolumn{1}{c}{$\bar{R}^2$} \\
+\hline
+$k$ & \multicolumn{8}{c}{Panel A: Variance Risk Premium} \\
+\hline
+1 & \multicolumn{1}{c}{2.43} & \multicolumn{1}{c}{2.61} & \multicolumn{1}{c}{2.51} & \multicolumn{1}{c}{2.83} & \multicolumn{1}{c}{1.02} & \multicolumn{1}{c}{0.02} & \multicolumn{1}{c}{0.68} & \multicolumn{1}{c}{-0.30} \\
+2 & \multicolumn{1}{c}{2.84} & \multicolumn{1}{c}{3.76} & \multicolumn{1}{c}{3.42} & \multicolumn{1}{c}{5.58} & \multicolumn{1}{c}{1.50} & \multicolumn{1}{c}{0.68} & \multicolumn{1}{c}{1.04} & \multicolumn{1}{c}{0.05} \\
+3 & \multicolumn{1}{c}{4.11} & \multicolumn{1}{c}{8.13} & \multicolumn{1}{c}{3.58} & \multicolumn{1}{c}{6.18} & \multicolumn{1}{c}{1.78} & \multicolumn{1}{c}{1.19} & \multicolumn{1}{c}{1.56} & \multicolumn{1}{c}{0.78} \\
+6 & \multicolumn{1}{c}{2.78} & \multicolumn{1}{c}{3.65} & \multicolumn{1}{c}{2.24} & \multicolumn{1}{c}{2.22} & \multicolumn{1}{c}{1.57} & \multicolumn{1}{c}{0.82} & \multicolumn{1}{c}{2.09} & \multicolumn{1}{c}{1.87} \\
+9 & \multicolumn{1}{c}{1.98} & \multicolumn{1}{c}{1.65} & \multicolumn{1}{c}{1.94} & \multicolumn{1}{c}{1.57} & \multicolumn{1}{c}{1.47} & \multicolumn{1}{c}{0.66} & \multicolumn{1}{c}{1.98} & \multicolumn{1}{c}{1.64} \\
+12 & \multicolumn{1}{c}{1.96} & \multicolumn{1}{c}{1.64} & \multicolumn{1}{c}{1.43} & \multicolumn{1}{c}{0.61} & \multicolumn{1}{c}{1.53} & \multicolumn{1}{c}{0.77} & \multicolumn{1}{c}{1.73} & \multicolumn{1}{c}{1.14} \\
+\hline
+$k$ & \multicolumn{8}{c}{Panel B: Downside Variance Risk Premium} \\
+\hline
+1 & \multicolumn{1}{c}{2.57} & \multicolumn{1}{c}{2.99} & \multicolumn{1}{c}{2.68} & \multicolumn{1}{c}{3.30} & \multicolumn{1}{c}{1.27} & \multicolumn{1}{c}{0.34} & \multicolumn{1}{c}{0.95} & \multicolumn{1}{c}{-0.06} \\
+2 & \multicolumn{1}{c}{3.22} & \multicolumn{1}{c}{4.92} & \multicolumn{1}{c}{4.08} & \multicolumn{1}{c}{7.95} & \multicolumn{1}{c}{2.07} & \multicolumn{1}{c}{1.78} & \multicolumn{1}{c}{1.54} & \multicolumn{1}{c}{0.74} \\
+3 & \multicolumn{1}{c}{4.76} & \multicolumn{1}{c}{10.72} & \multicolumn{1}{c}{4.46} & \multicolumn{1}{c}{9.50} & \multicolumn{1}{c}{2.61} & \multicolumn{1}{c}{3.12} & \multicolumn{1}{c}{2.32} & \multicolumn{1}{c}{2.37} \\
+6 & \multicolumn{1}{c}{3.72} & \multicolumn{1}{c}{6.75} & \multicolumn{1}{c}{3.42} & \multicolumn{1}{c}{5.70} & \multicolumn{1}{c}{2.84} & \multicolumn{1}{c}{3.85} & \multicolumn{1}{c}{3.21} & \multicolumn{1}{c}{4.98} \\
+9 & \multicolumn{1}{c}{2.96} & \multicolumn{1}{c}{4.27} & \multicolumn{1}{c}{3.14} & \multicolumn{1}{c}{4.86} & \multicolumn{1}{c}{2.82} & \multicolumn{1}{c}{3.86} & \multicolumn{1}{c}{2.99} & \multicolumn{1}{c}{4.35} \\
+12 & \multicolumn{1}{c}{3.04} & \multicolumn{1}{c}{4.60} & \multicolumn{1}{c}{2.65} & \multicolumn{1}{c}{3.39} & \multicolumn{1}{c}{2.81} & \multicolumn{1}{c}{3.86} & \multicolumn{1}{c}{2.80} & \multicolumn{1}{c}{3.84} \\
+\hline
+$k$ & \multicolumn{8}{c}{Panel C: Upside Variance Risk Premium} \\
+\hline
+1 & \multicolumn{1}{c}{2.08} & \multicolumn{1}{c}{1.79} & \multicolumn{1}{c}{1.91} & \multicolumn{1}{c}{1.44} & \multicolumn{1}{c}{0.44} & \multicolumn{1}{c}{-0.44} & \multicolumn{1}{c}{-0.04} & \multicolumn{1}{c}{-0.55} \\
+2 & \multicolumn{1}{c}{2.15} & \multicolumn{1}{c}{1.96} & \multicolumn{1}{c}{2.15} & \multicolumn{1}{c}{1.96} & \multicolumn{1}{c}{0.39} & \multicolumn{1}{c}{-0.47} & \multicolumn{1}{c}{-0.18} & \multicolumn{1}{c}{-0.54} \\
+3 & \multicolumn{1}{c}{3.05} & \multicolumn{1}{c}{4.41} & \multicolumn{1}{c}{2.07} & \multicolumn{1}{c}{1.79} & \multicolumn{1}{c}{0.26} & \multicolumn{1}{c}{-0.52} & \multicolumn{1}{c}{-0.27} & \multicolumn{1}{c}{-0.52} \\
+6 & \multicolumn{1}{c}{1.57} & \multicolumn{1}{c}{0.82} & \multicolumn{1}{c}{0.61} & \multicolumn{1}{c}{-0.36} & \multicolumn{1}{c}{-0.40} & \multicolumn{1}{c}{-0.48} & \multicolumn{1}{c}{-0.27} & \multicolumn{1}{c}{-0.53} \\
+9 & \multicolumn{1}{c}{0.83} & \multicolumn{1}{c}{-0.18} & \multicolumn{1}{c}{0.36} & \multicolumn{1}{c}{-0.50} & \multicolumn{1}{c}{-0.52} & \multicolumn{1}{c}{-0.42} & \multicolumn{1}{c}{-0.14} & \multicolumn{1}{c}{-0.57} \\
+12 & \multicolumn{1}{c}{0.74} & \multicolumn{1}{c}{-0.27} & \multicolumn{1}{c}{-0.05} & \multicolumn{1}{c}{-0.59} & \multicolumn{1}{c}{-0.33} & \multicolumn{1}{c}{-0.52} & \multicolumn{1}{c}{-0.41} & \multicolumn{1}{c}{-0.49} \\
+\hline
+$k$ & \multicolumn{8}{c}{Panel D: Skewness Risk Premium} \\
+\hline
+1 & \multicolumn{1}{c}{-0.10} & \multicolumn{1}{c}{-0.55} & \multicolumn{1}{c}{0.41} & \multicolumn{1}{c}{-0.46} & \multicolumn{1}{c}{0.96} & \multicolumn{1}{c}{-0.04} & \multicolumn{1}{c}{1.25} & \multicolumn{1}{c}{0.30} \\
+2 & \multicolumn{1}{c}{0.61} & \multicolumn{1}{c}{-0.35} & \multicolumn{1}{c}{1.67} & \multicolumn{1}{c}{0.98} & \multicolumn{1}{c}{1.98} & \multicolumn{1}{c}{1.59} & \multicolumn{1}{c}{2.16} & \multicolumn{1}{c}{1.98} \\
+3 & \multicolumn{1}{c}{1.03} & \multicolumn{1}{c}{0.04} & \multicolumn{1}{c}{2.24} & \multicolumn{1}{c}{2.18} & \multicolumn{1}{c}{2.81} & \multicolumn{1}{c}{3.70} & \multicolumn{1}{c}{3.29} & \multicolumn{1}{c}{5.17} \\
+6 & \multicolumn{1}{c}{2.27} & \multicolumn{1}{c}{2.30} & \multicolumn{1}{c}{3.33} & \multicolumn{1}{c}{5.38} & \multicolumn{1}{c}{4.05} & \multicolumn{1}{c}{8.00} & \multicolumn{1}{c}{4.45} & \multicolumn{1}{c}{9.59} \\
+9 & \multicolumn{1}{c}{2.57} & \multicolumn{1}{c}{3.13} & \multicolumn{1}{c}{3.39} & \multicolumn{1}{c}{5.70} & \multicolumn{1}{c}{4.20} & \multicolumn{1}{c}{8.73} & \multicolumn{1}{c}{3.98} & \multicolumn{1}{c}{10.59} \\
+12 & \multicolumn{1}{c}{2.83} & \multicolumn{1}{c}{3.95} & \multicolumn{1}{c}{3.43} & \multicolumn{1}{c}{5.93} & \multicolumn{1}{c}{3.88} & \multicolumn{1}{c}{7.60} & \multicolumn{1}{c}{4.07} & \multicolumn{1}{c}{8.34} \\
+\hline
+\end{tabular}
+  \end{center}
+\noindent\scriptsize This table reports predictive regression results for prediction horizons ($k$) between 1 and 12 months ahead, and aggregation levels ($h$) between 1 and 12 months, based on a predictive regression model of the form $r_{t\rightarrow t+k} = \beta_0 + \beta_1 x_t(h) + \varepsilon_{t\rightarrow t+k}$. In this regression model, $r_{t\rightarrow t+k}$ is the cumulative excess returns between $t$ and $t+k$; $x_t(h)$ is the proposed variance or skewness risk premia component that takes the values from variance risk, upside variance risk, downside variance risk, or skewness risk premia measures; and $\varepsilon_{t\rightarrow t+k}$ is a zero-mean error term. The reported Student's t-statistics for slope parameters are constructed from heteroscedasticity and serial correlation consistent standard errors that explicitly take account of the overlap in the regressions, following \cite{Hodrick92RFS}. $\bar{R}^2$ represents adjusted $R^2$s.
+
+\end{table}
+
+
+
+
+\clearpage
+\newpage
+
+\begin{table}
+  \caption{Predictive Content of Risk-Neutral Measure}\label{TabRiskNeutralOverLappingRegressionResults}
+  \begin{center}
+    \begin{tabular}{lllllllll}
+\hline
+$h$ & \multicolumn{2}{c}{1} & \multicolumn{2}{c}{3} & \multicolumn{2}{c}{6} & \multicolumn{2}{c}{12} \\
+\hline
+ & \multicolumn{8}{c}{} \\
+ & \multicolumn{1}{c}{$t$-Stat} & \multicolumn{1}{c}{$\bar{R}^2$} & \multicolumn{1}{c}{$t$-Stat} & \multicolumn{1}{c}{$\bar{R}^2$} & \multicolumn{1}{c}{$t$-Stat} & \multicolumn{1}{c}{$\bar{R}^2$} & \multicolumn{1}{c}{$t$-Stat} & \multicolumn{1}{c}{$\bar{R}^2$} \\
+\hline
+$k$ & \multicolumn{8}{c}{Panel A: Risk-Neutral Variance } \\
+\hline
+1 & \multicolumn{1}{c}{0.28} & \multicolumn{1}{c}{-0.51} & \multicolumn{1}{c}{0.50} & \multicolumn{1}{c}{-0.41} & \multicolumn{1}{c}{0.69} & \multicolumn{1}{c}{-0.29} & \multicolumn{1}{c}{0.75} & \multicolumn{1}{c}{-0.24} \\
+2 & \multicolumn{1}{c}{1.14} & \multicolumn{1}{c}{0.17} & \multicolumn{1}{c}{1.24} & \multicolumn{1}{c}{0.30} & \multicolumn{1}{c}{1.35} & \multicolumn{1}{c}{0.44} & \multicolumn{1}{c}{1.39} & \multicolumn{1}{c}{0.51} \\
+3 & \multicolumn{1}{c}{1.30} & \multicolumn{1}{c}{0.38} & \multicolumn{1}{c}{1.52} & \multicolumn{1}{c}{0.72} & \multicolumn{1}{c}{1.83} & \multicolumn{1}{c}{1.28} & \multicolumn{1}{c}{2.13} & \multicolumn{1}{c}{1.92} \\
+6 & \multicolumn{1}{c}{2.10} & \multicolumn{1}{c}{1.88} & \multicolumn{1}{c}{2.33} & \multicolumn{1}{c}{2.43} & \multicolumn{1}{c}{2.76} & \multicolumn{1}{c}{3.57} & \multicolumn{1}{c}{3.21} & \multicolumn{1}{c}{4.95} \\
+9 & \multicolumn{1}{c}{2.32} & \multicolumn{1}{c}{2.44} & \multicolumn{1}{c}{2.55} & \multicolumn{1}{c}{3.05} & \multicolumn{1}{c}{2.95} & \multicolumn{1}{c}{4.22} & \multicolumn{1}{c}{3.15} & \multicolumn{1}{c}{4.85} \\
+12 & \multicolumn{1}{c}{2.21} & \multicolumn{1}{c}{2.20} & \multicolumn{1}{c}{2.45} & \multicolumn{1}{c}{2.82} & \multicolumn{1}{c}{2.89} & \multicolumn{1}{c}{4.11} & \multicolumn{1}{c}{3.30} & \multicolumn{1}{c}{5.45} \\
+\hline
+$k$ & \multicolumn{8}{c}{Panel B: Risk-Neutral Downside Variance} \\
+\hline
+1 & \multicolumn{1}{c}{0.27} & \multicolumn{1}{c}{-0.51} & \multicolumn{1}{c}{0.57} & \multicolumn{1}{c}{-0.37} & \multicolumn{1}{c}{0.77} & \multicolumn{1}{c}{-0.23} & \multicolumn{1}{c}{0.87} & \multicolumn{1}{c}{-0.14} \\
+2 & \multicolumn{1}{c}{1.22} & \multicolumn{1}{c}{0.27} & \multicolumn{1}{c}{1.39} & \multicolumn{1}{c}{0.51} & \multicolumn{1}{c}{1.49} & \multicolumn{1}{c}{0.66} & \multicolumn{1}{c}{1.54} & \multicolumn{1}{c}{0.74} \\
+3 & \multicolumn{1}{c}{1.42} & \multicolumn{1}{c}{0.56} & \multicolumn{1}{c}{1.70} & \multicolumn{1}{c}{1.04} & \multicolumn{1}{c}{2.03} & \multicolumn{1}{c}{1.70} & \multicolumn{1}{c}{2.35} & \multicolumn{1}{c}{2.44} \\
+6 & \multicolumn{1}{c}{2.23} & \multicolumn{1}{c}{2.17} & \multicolumn{1}{c}{2.52} & \multicolumn{1}{c}{2.91} & \multicolumn{1}{c}{2.97} & \multicolumn{1}{c}{4.21} & \multicolumn{1}{c}{3.42} & \multicolumn{1}{c}{5.67} \\
+9 & \multicolumn{1}{c}{2.43} & \multicolumn{1}{c}{2.71} & \multicolumn{1}{c}{2.68} & \multicolumn{1}{c}{3.42} & \multicolumn{1}{c}{3.10} & \multicolumn{1}{c}{4.70} & \multicolumn{1}{c}{3.26} & \multicolumn{1}{c}{5.22} \\
+12 & \multicolumn{1}{c}{2.32} & \multicolumn{1}{c}{2.48} & \multicolumn{1}{c}{2.55} & \multicolumn{1}{c}{3.09} & \multicolumn{1}{c}{2.99} & \multicolumn{1}{c}{4.42} & \multicolumn{1}{c}{3.42} & \multicolumn{1}{c}{5.84} \\
+\hline
+$k$ & \multicolumn{8}{c}{Panel C: Risk-Neutral Upside Variance} \\
+\hline
+1 & \multicolumn{1}{c}{0.29} & \multicolumn{1}{c}{-0.50} & \multicolumn{1}{c}{0.27} & \multicolumn{1}{c}{-0.51} & \multicolumn{1}{c}{0.36} & \multicolumn{1}{c}{-0.48} & \multicolumn{1}{c}{0.20} & \multicolumn{1}{c}{-0.53} \\
+2 & \multicolumn{1}{c}{0.93} & \multicolumn{1}{c}{-0.07} & \multicolumn{1}{c}{0.76} & \multicolumn{1}{c}{-0.23} & \multicolumn{1}{c}{0.78} & \multicolumn{1}{c}{-0.21} & \multicolumn{1}{c}{0.60} & \multicolumn{1}{c}{-0.35} \\
+3 & \multicolumn{1}{c}{0.99} & \multicolumn{1}{c}{-0.02} & \multicolumn{1}{c}{0.94} & \multicolumn{1}{c}{-0.06} & \multicolumn{1}{c}{1.04} & \multicolumn{1}{c}{0.05} & \multicolumn{1}{c}{1.00} & \multicolumn{1}{c}{0.00} \\
+6 & \multicolumn{1}{c}{1.74} & \multicolumn{1}{c}{1.12} & \multicolumn{1}{c}{1.72} & \multicolumn{1}{c}{1.09} & \multicolumn{1}{c}{1.92} & \multicolumn{1}{c}{1.48} & \multicolumn{1}{c}{2.05} & \multicolumn{1}{c}{1.77} \\
+9 & \multicolumn{1}{c}{2.01} & \multicolumn{1}{c}{1.71} & \multicolumn{1}{c}{2.09} & \multicolumn{1}{c}{1.89} & \multicolumn{1}{c}{2.31} & \multicolumn{1}{c}{2.42} & \multicolumn{1}{c}{2.38} & \multicolumn{1}{c}{2.59} \\
+12 & \multicolumn{1}{c}{1.90} & \multicolumn{1}{c}{1.49} & \multicolumn{1}{c}{2.09} & \multicolumn{1}{c}{1.92} & \multicolumn{1}{c}{2.45} & \multicolumn{1}{c}{2.83} & \multicolumn{1}{c}{2.57} & \multicolumn{1}{c}{3.17} \\
+\hline
+$k$ & \multicolumn{8}{c}{Panel D: Risk-Neutral Skewness} \\
+\hline
+1 & \multicolumn{1}{c}{0.22} & \multicolumn{1}{c}{-0.52} & \multicolumn{1}{c}{0.87} & \multicolumn{1}{c}{-0.14} & \multicolumn{1}{c}{1.10} & \multicolumn{1}{c}{0.11} & \multicolumn{1}{c}{1.27} & \multicolumn{1}{c}{0.34} \\
+2 & \multicolumn{1}{c}{1.51} & \multicolumn{1}{c}{0.70} & \multicolumn{1}{c}{2.02} & \multicolumn{1}{c}{1.67} & \multicolumn{1}{c}{2.06} & \multicolumn{1}{c}{1.76} & \multicolumn{1}{c}{2.08} & \multicolumn{1}{c}{1.79} \\
+3 & \multicolumn{1}{c}{1.93} & \multicolumn{1}{c}{1.48} & \multicolumn{1}{c}{2.47} & \multicolumn{1}{c}{2.74} & \multicolumn{1}{c}{2.85} & \multicolumn{1}{c}{3.80} & \multicolumn{1}{c}{3.13} & \multicolumn{1}{c}{4.65} \\
+6 & \multicolumn{1}{c}{2.70} & \multicolumn{1}{c}{3.42} & \multicolumn{1}{c}{3.28} & \multicolumn{1}{c}{5.21} & \multicolumn{1}{c}{3.80} & \multicolumn{1}{c}{7.02} & \multicolumn{1}{c}{4.11} & \multicolumn{1}{c}{8.18} \\
+9 & \multicolumn{1}{c}{2.76} & \multicolumn{1}{c}{3.64} & \multicolumn{1}{c}{3.17} & \multicolumn{1}{c}{4.92} & \multicolumn{1}{c}{3.64} & \multicolumn{1}{c}{6.54} & \multicolumn{1}{c}{3.56} & \multicolumn{1}{c}{6.26} \\
+12 & \multicolumn{1}{c}{2.67} & \multicolumn{1}{c}{3.44} & \multicolumn{1}{c}{2.88} & \multicolumn{1}{c}{4.07} & \multicolumn{1}{c}{3.27} & \multicolumn{1}{c}{5.35} & \multicolumn{1}{c}{3.66} & \multicolumn{1}{c}{6.73} \\
+\hline
+\end{tabular}
+  \end{center}
+  \noindent\scriptsize This table reports predictive regression results for risk-neutral variance and skewness measures. The predictive regression model, prediction horizons, aggregation levels, and notation are the same as in the results reported in Table \ref{TabReturnRegressionResults}. The difference is in the definition of $x_t(h)$: Instead of risk premia, we use risk-neutral measures for variance, upside variance, downside variance, and skewness. The reported Student's t-statistics for slope parameters are constructed from heteroscedasticity and serial correlation consistent standard errors that explicitly take account of the overlap in the regressions, following \cite{Hodrick92RFS}. $\bar{R}^2$ represents adjusted $R^2$s.
+
+\end{table}
+
+\clearpage
+\newpage
+
+\begin{table}
+  \caption{Predictive Content of Realized (Physical) Measure}\label{TabRealizedVolRegressionResults}
+  \begin{center}
+  \begin{tabular}{lllllllll}
+\hline
+$h$ & \multicolumn{2}{c}{1} & \multicolumn{2}{c}{3} & \multicolumn{2}{c}{6} & \multicolumn{2}{c}{12} \\
+\hline
+ & \multicolumn{8}{c}{} \\
+ & \multicolumn{1}{c}{$t$-Stat} & \multicolumn{1}{c}{$\bar{R}^2$} & \multicolumn{1}{c}{$t$-Stat} & \multicolumn{1}{c}{$\bar{R}^2$} & \multicolumn{1}{c}{$t$-Stat} & \multicolumn{1}{c}{$\bar{R}^2$} & \multicolumn{1}{c}{$t$-Stat} & \multicolumn{1}{c}{$\bar{R}^2$} \\
+\hline
+$k$ & \multicolumn{8}{c}{Panel A: Realized Variance} \\
+\hline
+1 & \multicolumn{1}{c}{-1.10} & \multicolumn{1}{c}{0.12} & \multicolumn{1}{c}{-0.99} & \multicolumn{1}{c}{-0.01} & \multicolumn{1}{c}{-0.10} & \multicolumn{1}{c}{-0.55} & \multicolumn{1}{c}{0.09} & \multicolumn{1}{c}{-0.55} \\
+2 & \multicolumn{1}{c}{-0.67} & \multicolumn{1}{c}{-0.30} & \multicolumn{1}{c}{-0.86} & \multicolumn{1}{c}{-0.15} & \multicolumn{1}{c}{0.18} & \multicolumn{1}{c}{-0.54} & \multicolumn{1}{c}{0.40} & \multicolumn{1}{c}{-0.47} \\
+3 & \multicolumn{1}{c}{-1.18} & \multicolumn{1}{c}{0.22} & \multicolumn{1}{c}{-0.75} & \multicolumn{1}{c}{-0.25} & \multicolumn{1}{c}{0.36} & \multicolumn{1}{c}{-0.48} & \multicolumn{1}{c}{0.62} & \multicolumn{1}{c}{-0.34} \\
+6 & \multicolumn{1}{c}{0.01} & \multicolumn{1}{c}{-0.57} & \multicolumn{1}{c}{0.48} & \multicolumn{1}{c}{-0.44} & \multicolumn{1}{c}{1.13} & \multicolumn{1}{c}{0.15} & \multicolumn{1}{c}{1.07} & \multicolumn{1}{c}{0.09} \\
+9 & \multicolumn{1}{c}{0.55} & \multicolumn{1}{c}{-0.40} & \multicolumn{1}{c}{0.78} & \multicolumn{1}{c}{-0.22} & \multicolumn{1}{c}{1.33} & \multicolumn{1}{c}{0.44} & \multicolumn{1}{c}{1.12} & \multicolumn{1}{c}{0.15} \\
+12 & \multicolumn{1}{c}{0.49} & \multicolumn{1}{c}{-0.45} & \multicolumn{1}{c}{0.98} & \multicolumn{1}{c}{-0.02} & \multicolumn{1}{c}{1.27} & \multicolumn{1}{c}{0.35} & \multicolumn{1}{c}{1.40} & \multicolumn{1}{c}{0.56} \\
+\hline
+$k$ & \multicolumn{8}{c}{Panel B: Realized Downside Variance} \\
+\hline
+1 & \multicolumn{1}{c}{-1.05} & \multicolumn{1}{c}{0.06} & \multicolumn{1}{c}{-0.90} & \multicolumn{1}{c}{-0.10} & \multicolumn{1}{c}{-0.08} & \multicolumn{1}{c}{-0.55} & \multicolumn{1}{c}{0.09} & \multicolumn{1}{c}{-0.55} \\
+2 & \multicolumn{1}{c}{-0.53} & \multicolumn{1}{c}{-0.40} & \multicolumn{1}{c}{-0.76} & \multicolumn{1}{c}{-0.23} & \multicolumn{1}{c}{0.21} & \multicolumn{1}{c}{-0.53} & \multicolumn{1}{c}{0.39} & \multicolumn{1}{c}{-0.47} \\
+3 & \multicolumn{1}{c}{-1.04} & \multicolumn{1}{c}{0.05} & \multicolumn{1}{c}{-0.68} & \multicolumn{1}{c}{-0.30} & \multicolumn{1}{c}{0.39} & \multicolumn{1}{c}{-0.48} & \multicolumn{1}{c}{0.59} & \multicolumn{1}{c}{-0.36} \\
+6 & \multicolumn{1}{c}{0.05} & \multicolumn{1}{c}{-0.57} & \multicolumn{1}{c}{0.48} & \multicolumn{1}{c}{-0.44} & \multicolumn{1}{c}{1.08} & \multicolumn{1}{c}{0.10} & \multicolumn{1}{c}{0.99} & \multicolumn{1}{c}{-0.01} \\
+9 & \multicolumn{1}{c}{0.54} & \multicolumn{1}{c}{-0.41} & \multicolumn{1}{c}{0.75} & \multicolumn{1}{c}{-0.25} & \multicolumn{1}{c}{1.21} & \multicolumn{1}{c}{0.27} & \multicolumn{1}{c}{1.01} & \multicolumn{1}{c}{0.01} \\
+12 & \multicolumn{1}{c}{0.44} & \multicolumn{1}{c}{-0.48} & \multicolumn{1}{c}{0.89} & \multicolumn{1}{c}{-0.12} & \multicolumn{1}{c}{1.14} & \multicolumn{1}{c}{0.18} & \multicolumn{1}{c}{1.30} & \multicolumn{1}{c}{0.40} \\
+\hline
+$k$ & \multicolumn{8}{c}{Panel C: Realized Upside Variance} \\
+\hline
+1 & \multicolumn{1}{c}{-1.15} & \multicolumn{1}{c}{0.18} & \multicolumn{1}{c}{-1.09} & \multicolumn{1}{c}{0.10} & \multicolumn{1}{c}{-0.13} & \multicolumn{1}{c}{-0.54} & \multicolumn{1}{c}{0.10} & \multicolumn{1}{c}{-0.55} \\
+2 & \multicolumn{1}{c}{-0.82} & \multicolumn{1}{c}{-0.18} & \multicolumn{1}{c}{-0.95} & \multicolumn{1}{c}{-0.05} & \multicolumn{1}{c}{0.14} & \multicolumn{1}{c}{-0.54} & \multicolumn{1}{c}{0.41} & \multicolumn{1}{c}{-0.46} \\
+3 & \multicolumn{1}{c}{-1.33} & \multicolumn{1}{c}{0.43} & \multicolumn{1}{c}{-0.82} & \multicolumn{1}{c}{-0.18} & \multicolumn{1}{c}{0.34} & \multicolumn{1}{c}{-0.49} & \multicolumn{1}{c}{0.66} & \multicolumn{1}{c}{-0.32} \\
+6 & \multicolumn{1}{c}{-0.05} & \multicolumn{1}{c}{-0.57} & \multicolumn{1}{c}{0.48} & \multicolumn{1}{c}{-0.44} & \multicolumn{1}{c}{1.17} & \multicolumn{1}{c}{0.21} & \multicolumn{1}{c}{1.16} & \multicolumn{1}{c}{0.19} \\
+9 & \multicolumn{1}{c}{0.39} & \multicolumn{1}{c}{-0.41} & \multicolumn{1}{c}{0.81} & \multicolumn{1}{c}{-0.19} & \multicolumn{1}{c}{1.44} & \multicolumn{1}{c}{0.61} & \multicolumn{1}{c}{1.23} & \multicolumn{1}{c}{0.29} \\
+12 & \multicolumn{1}{c}{0.54} & \multicolumn{1}{c}{-0.42} & \multicolumn{1}{c}{1.08} & \multicolumn{1}{c}{0.09} & \multicolumn{1}{c}{1.39} & \multicolumn{1}{c}{0.54} & \multicolumn{1}{c}{1.51} & \multicolumn{1}{c}{0.74} \\
+\hline
+$k$ & \multicolumn{8}{c}{Panel D: Realized Skewness} \\
+\hline
+1 & \multicolumn{1}{c}{0.44} & \multicolumn{1}{c}{-0.45} & \multicolumn{1}{c}{1.58} & \multicolumn{1}{c}{0.81} & \multicolumn{1}{c}{0.63} & \multicolumn{1}{c}{-0.33} & \multicolumn{1}{c}{-0.06} & \multicolumn{1}{c}{-0.55} \\
+2 & \multicolumn{1}{c}{1.51} & \multicolumn{1}{c}{0.70} & \multicolumn{1}{c}{1.67} & \multicolumn{1}{c}{0.99} & \multicolumn{1}{c}{0.96} & \multicolumn{1}{c}{-0.05} & \multicolumn{1}{c}{-0.26} & \multicolumn{1}{c}{-0.52} \\
+3 & \multicolumn{1}{c}{1.45} & \multicolumn{1}{c}{0.61} & \multicolumn{1}{c}{1.19} & \multicolumn{1}{c}{0.23} & \multicolumn{1}{c}{0.71} & \multicolumn{1}{c}{-0.28} & \multicolumn{1}{c}{-0.89} & \multicolumn{1}{c}{-0.12} \\
+6 & \multicolumn{1}{c}{0.54} & \multicolumn{1}{c}{-0.40} & \multicolumn{1}{c}{0.11} & \multicolumn{1}{c}{-0.56} & \multicolumn{1}{c}{-1.01} & \multicolumn{1}{c}{0.01} & \multicolumn{1}{c}{-2.64} & \multicolumn{1}{c}{3.25} \\
+9 & \multicolumn{1}{c}{0.07} & \multicolumn{1}{c}{-0.58} & \multicolumn{1}{c}{-0.54} & \multicolumn{1}{c}{-0.41} & \multicolumn{1}{c}{-3.01} & \multicolumn{1}{c}{4.41} & \multicolumn{1}{c}{-3.67} & \multicolumn{1}{c}{6.67} \\
+12 & \multicolumn{1}{c}{-0.55} & \multicolumn{1}{c}{-0.41} & \multicolumn{1}{c}{-1.82} & \multicolumn{1}{c}{1.33} & \multicolumn{1}{c}{-3.37} & \multicolumn{1}{c}{5.70} & \multicolumn{1}{c}{-3.36} & \multicolumn{1}{c}{5.67} \\
+\hline
+\end{tabular}
+  \end{center}
+  \noindent\scriptsize This table reports predictive regression results for realized variance and skewness measures. The predictive regression model, prediction horizons, aggregation levels, and notation are the same as in the results reported in Table \ref{TabReturnRegressionResults}. The difference is in the definition of $x_t(h)$: Instead of risk premia, we use realized (historical) measures for variance, upside variance, downside variance, and skewness. The reported Student's t-statistics for slope parameters are constructed from heteroscedasticity and serial correlation consistent standard errors that explicitly take account of the overlap in the regressions, following \cite{Hodrick92RFS}. $\bar{R}^2$ represents adjusted $R^2$s.
+\end{table}
+
+
+\clearpage
+\newpage
+
+
+\begin{table}
+  \caption{Joint Regression Results}\label{TabOverLappingJointRegressionResults}
+  \begin{center}\footnotesize
+  \begin{tabular}{lllllllllllll}
+\hline
+$h$ & \multicolumn{3}{c}{1} & \multicolumn{3}{c}{3} & \multicolumn{3}{c}{6} & \multicolumn{3}{c}{12} \\
+\hline
+& \multicolumn{8}{c}{} \\
+ & \multicolumn{2}{c}{$t$-Stat} & $\bar{R}^2$ & \multicolumn{2}{c}{$t$-Stat} & $\bar{R}^2$ & \multicolumn{2}{c}{$t$-Stat} & $\bar{R}^2$ & \multicolumn{2}{c}{$t$-Stat} & $\bar{R}^2$ \\
+\hline
+$k$ & \multicolumn{1}{c}{Up} & Down &  & \multicolumn{1}{c}{Up} & Down &  & \multicolumn{1}{c}{Up} & Down &  & \multicolumn{1}{c}{Up} & Down &  \\
+\hline
+\multicolumn{13}{c}{Panel A: Risk Premium} \\
+\hline
+1 & \multicolumn{1}{c}{-0.01} & \multicolumn{1}{c}{1.49} & \multicolumn{1}{c}{2.45} & \multicolumn{1}{c}{-0.12} & \multicolumn{1}{c}{1.86} & \multicolumn{1}{c}{2.77} & \multicolumn{1}{c}{-0.58} & \multicolumn{1}{c}{1.32} & \multicolumn{1}{c}{-0.03} & \multicolumn{1}{c}{-0.85} & \multicolumn{1}{c}{1.27} & \multicolumn{1}{c}{-0.21} \\
+2 & \multicolumn{1}{c}{-0.78} & \multicolumn{1}{c}{2.49} & \multicolumn{1}{c}{4.72} & \multicolumn{1}{c}{-1.28} & \multicolumn{1}{c}{3.66} & \multicolumn{1}{c}{8.28} & \multicolumn{1}{c}{-1.38} & \multicolumn{1}{c}{2.46} & \multicolumn{1}{c}{2.26} & \multicolumn{1}{c}{-1.54} & \multicolumn{1}{c}{2.17} & \multicolumn{1}{c}{1.49} \\
+3 & \multicolumn{1}{c}{-1.28} & \multicolumn{1}{c}{3.79} & \multicolumn{1}{c}{11.04} & \multicolumn{1}{c}{-1.81} & \multicolumn{1}{c}{4.32} & \multicolumn{1}{c}{10.63} & \multicolumn{1}{c}{-2.06} & \multicolumn{1}{c}{3.33} & \multicolumn{1}{c}{4.84} & \multicolumn{1}{c}{-2.34} & \multicolumn{1}{c}{3.31} & \multicolumn{1}{c}{4.77} \\
+6 & \multicolumn{1}{c}{-2.46} & \multicolumn{1}{c}{4.19} & \multicolumn{1}{c}{9.36} & \multicolumn{1}{c}{-3.00} & \multicolumn{1}{c}{4.56} & \multicolumn{1}{c}{9.80} & \multicolumn{1}{c}{-3.31} & \multicolumn{1}{c}{4.39} & \multicolumn{1}{c}{8.98} & \multicolumn{1}{c}{-3.14} & \multicolumn{1}{c}{4.54} & \multicolumn{1}{c}{9.54} \\
+9 & \multicolumn{1}{c}{-2.75} & \multicolumn{1}{c}{3.99} & \multicolumn{1}{c}{7.76} & \multicolumn{1}{c}{-3.10} & \multicolumn{1}{c}{4.45} & \multicolumn{1}{c}{9.36} & \multicolumn{1}{c}{-3.46} & \multicolumn{1}{c}{4.49} & \multicolumn{1}{c}{9.50} & \multicolumn{1}{c}{-2.74} & \multicolumn{1}{c}{4.09} & \multicolumn{1}{c}{7.83} \\
+12 & \multicolumn{1}{c}{-3.06} & \multicolumn{1}{c}{4.29} & \multicolumn{1}{c}{9.06} & \multicolumn{1}{c}{-3.18} & \multicolumn{1}{c}{4.18} & \multicolumn{1}{c}{8.30} & \multicolumn{1}{c}{-3.13} & \multicolumn{1}{c}{4.24} & \multicolumn{1}{c}{8.61} & \multicolumn{1}{c}{-2.97} & \multicolumn{1}{c}{4.10} & \multicolumn{1}{c}{8.06} \\
+\hline
+\multicolumn{13}{c}{Panel B: Risk-Neutral Measures} \\
+\hline
+1 & \multicolumn{1}{c}{0.08} & \multicolumn{1}{c}{-0.01} & \multicolumn{1}{c}{-1.06} & \multicolumn{1}{c}{-1.13} & \multicolumn{1}{c}{1.24} & \multicolumn{1}{c}{-0.22} & \multicolumn{1}{c}{-1.30} & \multicolumn{1}{c}{1.46} & \multicolumn{1}{c}{0.15} & \multicolumn{1}{c}{-1.48} & \multicolumn{1}{c}{1.70} & \multicolumn{1}{c}{0.51} \\
+2 & \multicolumn{1}{c}{-1.00} & \multicolumn{1}{c}{1.27} & \multicolumn{1}{c}{0.27} & \multicolumn{1}{c}{-2.42} & \multicolumn{1}{c}{2.69} & \multicolumn{1}{c}{3.10} & \multicolumn{1}{c}{-2.27} & \multicolumn{1}{c}{2.61} & \multicolumn{1}{c}{2.90} & \multicolumn{1}{c}{-2.00} & \multicolumn{1}{c}{2.45} & \multicolumn{1}{c}{2.35} \\
+3 & \multicolumn{1}{c}{-1.59} & \multicolumn{1}{c}{1.89} & \multicolumn{1}{c}{1.39} & \multicolumn{1}{c}{-2.92} & \multicolumn{1}{c}{3.26} & \multicolumn{1}{c}{5.01} & \multicolumn{1}{c}{-3.22} & \multicolumn{1}{c}{3.68} & \multicolumn{1}{c}{6.55} & \multicolumn{1}{c}{-2.87} & \multicolumn{1}{c}{3.59} & \multicolumn{1}{c}{6.21} \\
+6 & \multicolumn{1}{c}{-1.64} & \multicolumn{1}{c}{2.14} & \multicolumn{1}{c}{3.09} & \multicolumn{1}{c}{-2.93} & \multicolumn{1}{c}{3.47} & \multicolumn{1}{c}{6.89} & \multicolumn{1}{c}{-3.25} & \multicolumn{1}{c}{3.99} & \multicolumn{1}{c}{9.12} & \multicolumn{1}{c}{-2.61} & \multicolumn{1}{c}{3.79} & \multicolumn{1}{c}{8.66} \\
+9 & \multicolumn{1}{c}{-1.32} & \multicolumn{1}{c}{1.88} & \multicolumn{1}{c}{3.12} & \multicolumn{1}{c}{-2.02} & \multicolumn{1}{c}{2.62} & \multicolumn{1}{c}{5.09} & \multicolumn{1}{c}{-2.25} & \multicolumn{1}{c}{3.05} & \multicolumn{1}{c}{6.88} & \multicolumn{1}{c}{-1.42} & \multicolumn{1}{c}{2.62} & \multicolumn{1}{c}{5.78} \\
+12 & \multicolumn{1}{c}{-1.35} & \multicolumn{1}{c}{1.89} & \multicolumn{1}{c}{2.94} & \multicolumn{1}{c}{-1.49} & \multicolumn{1}{c}{2.07} & \multicolumn{1}{c}{3.77} & \multicolumn{1}{c}{-1.39} & \multicolumn{1}{c}{2.18} & \multicolumn{1}{c}{4.93} & \multicolumn{1}{c}{-1.28} & \multicolumn{1}{c}{2.55} & \multicolumn{1}{c}{6.20} \\
+\hline
+\multicolumn{13}{c}{Panel C: Realized (Physical) Measures} \\
+\hline
+1 & \multicolumn{1}{c}{-0.63} & \multicolumn{1}{c}{0.42} & \multicolumn{1}{c}{-0.28} & \multicolumn{1}{c}{-1.82} & \multicolumn{1}{c}{1.72} & \multicolumn{1}{c}{1.17} & \multicolumn{1}{c}{-0.69} & \multicolumn{1}{c}{0.68} & \multicolumn{1}{c}{-0.84} & \multicolumn{1}{c}{0.11} & \multicolumn{1}{c}{-0.10} & \multicolumn{1}{c}{-1.10} \\
+2 & \multicolumn{1}{c}{-1.62} & \multicolumn{1}{c}{1.50} & \multicolumn{1}{c}{0.51} & \multicolumn{1}{c}{-1.92} & \multicolumn{1}{c}{1.83} & \multicolumn{1}{c}{1.24} & \multicolumn{1}{c}{-0.93} & \multicolumn{1}{c}{0.95} & \multicolumn{1}{c}{-0.60} & \multicolumn{1}{c}{0.48} & \multicolumn{1}{c}{-0.46} & \multicolumn{1}{c}{-0.90} \\
+3 & \multicolumn{1}{c}{-1.68} & \multicolumn{1}{c}{1.46} & \multicolumn{1}{c}{1.05} & \multicolumn{1}{c}{-1.41} & \multicolumn{1}{c}{1.34} & \multicolumn{1}{c}{0.25} & \multicolumn{1}{c}{-0.62} & \multicolumn{1}{c}{0.64} & \multicolumn{1}{c}{-0.82} & \multicolumn{1}{c}{1.27} & \multicolumn{1}{c}{-1.24} & \multicolumn{1}{c}{-0.02} \\
+6 & \multicolumn{1}{c}{-0.54} & \multicolumn{1}{c}{0.54} & \multicolumn{1}{c}{-0.97} & \multicolumn{1}{c}{-0.01} & \multicolumn{1}{c}{0.06} & \multicolumn{1}{c}{-1.01} & \multicolumn{1}{c}{1.39} & \multicolumn{1}{c}{-1.31} & \multicolumn{1}{c}{0.61} & \multicolumn{1}{c}{3.54} & \multicolumn{1}{c}{-3.49} & \multicolumn{1}{c}{6.14} \\
+9 & \multicolumn{1}{c}{0.01} & \multicolumn{1}{c}{0.08} & \multicolumn{1}{c}{-0.99} & \multicolumn{1}{c}{0.72} & \multicolumn{1}{c}{-0.64} & \multicolumn{1}{c}{-0.54} & \multicolumn{1}{c}{3.61} & \multicolumn{1}{c}{-3.52} & \multicolumn{1}{c}{6.77} & \multicolumn{1}{c}{4.82} & \multicolumn{1}{c}{-4.76} & \multicolumn{1}{c}{11.39} \\
+12 & \multicolumn{1}{c}{0.63} & \multicolumn{1}{c}{-0.55} & \multicolumn{1}{c}{-0.83} & \multicolumn{1}{c}{2.07} & \multicolumn{1}{c}{-1.98} & \multicolumn{1}{c}{1.77} & \multicolumn{1}{c}{3.99} & \multicolumn{1}{c}{-3.91} & \multicolumn{1}{c}{8.24} & \multicolumn{1}{c}{4.66} & \multicolumn{1}{c}{-4.59} & \multicolumn{1}{c}{11.22} \\
+\hline
+\end{tabular}
+  \end{center}
+  \noindent\scriptsize This table reports predictive regression results when multiple variance components (risk premia, risk-neutral, and realized measures) are included in the regression model. The prediction horizons, aggregation levels, and notation are the same as in the results reported in Table \ref{TabReturnRegressionResults}. The difference is in the regression model. Both upside and downside variance components are in the model: $r_{t\rightarrow t+k} = \beta_0 + \beta_1 x_{1,t}(h) + \beta_2 x_{2,t}(h) + \varepsilon_{t\rightarrow t+k}$. $x_{1,t}(h)$ pertains to upside measures and $x_{2,t}(h)$ represents the downside measures used in the analysis. The reported Student's t-statistics for slope parameters are constructed from heteroscedasticity and serial correlation consistent standard errors that explicitly take account of the overlap in the regressions, following \cite{Hodrick92RFS}. $\bar{R}^2$ represents adjusted $R^2$s.
+\end{table}
+
+
+
+
+\clearpage
+\newpage
+
+{\normalsize
+\begin{sidewaystable}
+\caption{\small Semi-Annual Simple Predictive Regressions, September 1996 to March 2015}
+\label{TabRobustnessIndividualSemiAnnual}
+%\vspace{-0.35in}
+\footnotesize
+\begin{center}
+\resizebox{\textwidth}{!}{\begin{tabular}{lcccccccccccc}
+  \hline
+$Intercept$&0.0005&-0.0026&-0.0132&0.0012&0.0756&0.0861&0.0514&0.0004&-0.0000&0.0210&-0.0105&-0.0093\\
+&(0.1995)&(-1.1632)&(-3.0304)&(0.7230)&(2.9076)&(3.1978)&(2.0974)&(0.1293)&(-0.0067)&(6.3627)&(-3.1169)&(-2.0903)\\
+$uvrp_t$&-0.0179&&&&&&&&&&&\\
+&(-0.3917)&&&&&&&&&&&\\
+$dvrp_t$&&0.1135&&&&&&&&&&\\
+&&(2.5900)&&&&&&&&&&\\
+$srp_t$&&&-0.1838&&&&&&&&&\\
+&&&(-3.6007)&&&&&&&&&\\
+$vrp_t$&&&&0.0516&&&&&&&&\\
+&&&&(1.4937)&&&&&&&&\\
+$log(p_t/d_t)$&&&&&-0.0419&&&&&&&\\
+&&&&&(-2.8630)&&&&&&&\\
+$log(p_{t-1}/d_t)$&&&&&&-0.0478&&&&&&\\
+&&&&&&(-3.1550)&&&&&\\
+$log(p_t/e_t)$&&&&&&&-0.0384&&&&&\\
+&&&&&&&(-2.0487)&&&&&\\
+$tms_t$&&&&&&&&0.7181&&&&\\
+&&&&&&&&(0.4233)&&&&\\
+$dfs_t$&&&&&&&&&1.6755&&&\\
+&&&&&&&&&(0.3885)&&&\\
+$infl_t$&&&&&&&&&&-0.8052&&\\
+&&&&&&&&&&(-6.7137)&&\\
+$kpis_t$&&&&&&&&&&&0.1472&\\
+&&&&&&&&&&&(4.0170)&\\
+$kpos_t$&&&&&&&&&&&&0.1203\\
+&&&&&&&&&&&&(2.5798)\\
+$Adj.\ R^2 (\%)$&-0.5157&3.3439&6.7611&0.7406&4.1793&5.1472&1.9009&-0.5000&-0.5172&21.0807&8.4028&3.3140\\ \hline
+
+\end{tabular}
+}
+\end{center}
+\noindent \tiny This table presents predictive regressions of the semi-annually (scaled) cumulative excess return $r_{t\rightarrow t+6}^e/6=\sum^6_{j=1}r_{t+j}^e/6$ on each one-period (1-month) lagged predictor from September 1996 to March 2015. The Student's t-statistics presented in parentheses below the estimated coefficients are constructed from heteroscedasticity and serial correlation consistent standard errors that explicitly take account of the overlap in the regressions, following \cite{Hodrick92RFS}.
+\end{sidewaystable}
+}
+
+
+
+\newpage
+
+{\normalsize
+\begin{sidewaystable}
+\caption{\small Semi-Annual Multiple Predictive Regressions, September 1996 to March 2015}
+\label{TabRobustnessFullSemiAnnual}
+%\vspace{-0.35in}
+\footnotesize
+\begin{center}
+\resizebox{\textwidth}{!}{\begin{tabular}{lcccccccccccc}
+  \hline
+$Intercept$&-0.0128&-0.0128&-0.0133&0.0787&0.0951&0.0582&-0.0045&-0.0084&0.0171&-0.0137&-0.0131\\
+&(-2.9375)&(-2.9375)&(-2.9489)&(3.0953)&(3.6144)&(2.4206)&(-1.3553)&(-1.7752)&(4.9989)&(-3.8625)&(-2.8590)\\
+$uvrp_t$&-0.1545&&&&&&&&&&\\
+&(-2.7123)&&&&&&&&&&\\
+$dvrp_t$&0.2100&0.0555&0.4321&0.1272&0.1392&0.1309&0.1178&0.1359&0.1289&0.1048&0.1129\\
+&(3.7629)&(1.1549)&(3.4605)&(2.9688)&(3.2550)&(2.9980)&(2.6638)&(2.9172)&(3.3499)&(2.4918)&(2.6228)\\
+$srp_t$&&-0.1545&&&&&&&&&\\
+&&(-2.7123)&&&&&&&&&\\
+$vrp_t$&&&-0.2640&&&&&&&&\\
+&&&(-2.7177)&&&&&&&&\\
+$log(p_t/d_t)$&&&&-0.0462&&&&&&&\\
+&&&&(-3.2112)&&&&&&&\\
+$log(p_{t-1}/d_t)$&&&&&-0.0557&&&&&&\\
+&&&&&(-3.7277)&&&&&&\\
+$log(p_t/e_t)$&&&&&&-0.0471&&&&&\\
+&&&&&&(-2.5413)&&&&&\\
+$tms_t$&&&&&&&1.2900&&&&\\
+&&&&&&&(0.7681)&&&&\\
+$dfs_t$&&&&&&&&6.2346&&&\\
+&&&&&&&&(1.3864)&&&\\
+$infl_t$&&&&&&&&&-0.8272&&\\
+&&&&&&&&&(-7.0977)&&\\
+$kpis_t$&&&&&&&&&&0.1425&\\
+&&&&&&&&&&(3.9439)&\\
+$kpos_t$&&&&&&&&&&&0.1197\\
+&&&&&&&&&&&(2.6128)\\
+$Adj.\ R^2 (\%)$&6.9505&6.9505&6.9664&8.5372&10.3900&6.4572&3.1016&3.8843&25.7111&11.2225&6.6602\\ \hline
+
+\end{tabular}
+}
+\end{center}
+\noindent \tiny This table presents predictive regressions of the semi-annually (scaled) cumulative excess return $r^e_{t\rightarrow t+6}/6=\sum^6_{j=1}r^e_{t+j}/6$ on one-period (1-month) lagged downside $VRP$ $dvrp$ and one alternative predictor in turn from September 1996 to March 2015. The Student's t-statistics presented in parentheses below the estimated coefficients are constructed from heteroscedasticity and serial correlation consistent standard errors that explicitly take account of the overlap in the regressions, following \cite{Hodrick92RFS}.
+\end{sidewaystable}
+}
+
+
+
+\newpage
+
+{\normalsize
+\begin{sidewaystable}
+\caption{\small Semi-Annual Simple Predictive Regressions, September 1996 to December 2007}
+\label{TabRobustnessReducedSemiAnnual2007}
+%\vspace{-0.35in}
+\footnotesize
+\begin{center}
+\resizebox{\textwidth}{!}{\begin{tabular}{lcccccccccccc}
+  \hline
+$Intercept$&0.0129&-0.0070&-0.0124&0.0014&0.2016&0.2164&0.0913&0.0035&0.0206&0.0052&-0.0059&-0.0047\\
+&(5.1388)&(-3.5015)&(-2.6470)&(1.0794)&(6.6115)&(7.0123)&(3.9851)&(1.5568)&(3.4844)&(1.0608)&(-2.2330)&(-1.3202)\\
+$uvrp_t$&0.2679&&&&&&&&&&&\\
+&(4.5558)&&&&&&&&&&&\\
+$dvrp_t$&&0.2784&&&&&&&&&&\\
+&&(6.6863)&&&&&&&&&&\\
+$srp_t$&&&-0.2156&&&&&&&&&\\
+&&&(-3.5176)&&&&&&&&&\\
+$vrp_t$&&&&0.2300&&&&&&&&\\
+&&&&(6.5106)&&&&&&&&\\
+$log(p_t/d_t)$&&&&&-0.1092&&&&&&&\\
+&&&&&(-6.5085)&&&&&&&\\
+$log(p_{t-1}/d_t)$&&&&&&-0.1176&&&&&&\\
+&&&&&&(-6.9106)&&&&&&\\
+$log(p_t/e_t)$&&&&&&&-0.0662&&&&&\\
+&&&&&&&(-3.8474)&&&&&\\
+$tms_t$&&&&&&&&-0.1990&&&&\\
+&&&&&&&&(-0.1295)&&&&\\
+$dfs_t$&&&&&&&&&-25.6836&&&\\
+&&&&&&&&&(-3.0118)&&&\\
+$infl_t$&&&&&&&&&&-0.0735&&\\
+&&&&&&&&&&(-0.4029)&&\\
+$kpis_t$&&&&&&&&&&&0.1217&\\
+&&&&&&&&&&&(4.0782)&\\
+$kpos_t$&&&&&&&&&&&&0.0940\\
+&&&&&&&&&&&&(2.4679)\\
+$Adj.\ R^2 (\%)$&13.2802&25.3069&8.1025&24.2902&24.2781&26.6030&9.6656&-0.7680&5.8882&-0.6536&10.8080&3.7964\\ \hline
+
+\end{tabular}
+}
+\end{center}
+\noindent \tiny This table presents predictive regressions of the semi-annually (scaled) cumulative excess return $r_{t\rightarrow t+6}^e/6=\sum^6_{j=1}r_{t+j}^e/6$ on each one-period (1-month) lagged predictor from September 1996 to December 2007. The Student's t-statistics presented in parentheses below the estimated coefficients are constructed from heteroscedasticity and serial correlation consistent standard errors that explicitly take account of the overlap in the regressions, following \cite{Hodrick92RFS}.
+\end{sidewaystable}
+}
+
+
+
+\newpage
+
+{\normalsize
+\begin{sidewaystable}
+\caption{\small Semi-Annual Multiple Predictive Regressions, September 1996 to December 2007}
+\label{TabRobustnessFullSemiAnnual2007}
+\vspace{-0.35in}
+\footnotesize
+\begin{center}
+\resizebox{\textwidth}{!}{\begin{tabular}{lcccccccccccc}
+  \hline
+$Intercept$&-0.0045&-0.0045&-0.0049&0.1736&0.1954&0.1053&-0.0087&-0.0033&-0.0142&-0.0155&-0.0162\\
+&(-1.0099)&(-1.0099)&(-1.0492)&(6.6158)&(7.5813)&(5.7055)&(-3.2688)&(-0.4896)&(-2.8139)&(-5.8453)&(-4.7195)\\
+$uvrp_t$&0.0454&&&&&&&&&&\\
+&(0.6200)&&&&&&&&&&\\
+$dvrp_t$&0.2554&0.3008&0.2065&0.2534&0.2629&0.3156&0.2853&0.2669&0.2980&0.2716&0.2847\\
+&(4.5711)&(5.4521)&(1.4127)&(7.0696)&(7.6580)&(8.4728)&(6.7545)&(5.7833)&(6.8848)&(6.9931)&(7.0767)\\
+$srp_t$&&0.0454&&&&&&&&&\\
+&&(0.6200)&&&&&&&&&\\
+$vrp_t$&&&0.0632&&&&&&&&\\
+&&&(0.5133)&&&&&&&&\\
+$log(p_t/d_t)$&&&&-0.0990&&&&&&&\\
+&&&&(-6.8974)&&&&&&&\\
+$log(p_{t-1}/d_t)$&&&&&-0.1113&&&&&&\\
+&&&&&(-7.8692)&&&&&&\\
+$log(p_t/e_t)$&&&&&&-0.0855&&&&&\\
+&&&&&&(-6.1130)&&&&&\\
+$tms_t$&&&&&&&1.3106&&&&\\
+&&&&&&&(0.9772)&&&&\\
+$dfs_t$&&&&&&&&-4.9164&&&\\
+&&&&&&&&(-0.5838)&&&\\
+$infl_t$&&&&&&&&&0.2541&&\\
+&&&&&&&&&(1.5553)&&\\
+$kpis_t$&&&&&&&&&&0.1148&\\
+&&&&&&&&&&(4.5066)&\\
+$kpos_t$&&&&&&&&&&&0.1050\\
+&&&&&&&&&&&(3.2382)\\
+$Adj.\ R^2 (\%)$&24.9460&24.9460&24.8746&45.2343&49.3937&41.8336&25.2805&24.9203&26.1258&35.0975&30.4605\\ \hline
+
+\end{tabular}
+}
+\end{center}
+\noindent \tiny This table presents predictive regressions of the semi-annually (scaled) cumulative excess return $r^e_{t\rightarrow t+6}/6=\sum^6_{j=1}r^e_{t+j}/6$ on one-period (1-month) lagged downside $VRP$ $dvrp$ and one alternative predictor in turn from September 1996 to December 2007. The Student's t-statistics presented in parentheses below the estimated coefficients are constructed from heteroscedasticity and serial correlation consistent standard errors that explicitly take account of the overlap in the regressions, following \cite{Hodrick92RFS}.
+\end{sidewaystable}
+}
+
+
+
+%\newpage
+%\clearpage
+%
+%
+%{\normalsize
+%%\begin{sidewaystable}
+%\begin{table}
+%\caption{Out-of-Sample Analysis}
+%\label{TabOutOfSampleRobustnessAnaBTZMonthlyQuarterlySemiAnnual}
+%%\vspace{-0.35in}
+%\footnotesize
+%\begin{center}
+%\resizebox{\textwidth}{!}{\begin{tabular}{lcccccccc}
+%&&&&\multicolumn{2}{c}{$dvrp\ vs.\ x_t$}&&\multicolumn{2}{c}{$srp\ vs.\ x_t$} \\ \cline{5-6}\cline{8-9}
+%&$Adj.\ R^2 (\%)\ for\ IS$&$Adj.\ R^2 (\%)\ for\ OOS$&&$DM$&$p-value$&&$DM$&$p-value$\\\hline
+%\multicolumn{9}{c}{Panel A: One Month}\\\hline
+%$dvrp_t$&4.6723&0.6347&&&&&-0.0426&0.5170\\
+%$srp_t$&3.4862&-0.6055&&0.0426&0.4830&&&\\
+%$vrp_t$&3.7175&-0.1087&&-0.0271&0.5108&&-0.0374&0.5149\\
+%$log(p_t/d_t)$&6.3871&-1.1465&&-0.3716&0.6449&&-0.4769&0.6833\\
+%$log(p_{t-1}/d_t)$&6.7059&-1.1123&&-0.2414&0.5954&&-0.3453&0.6351\\
+%$log(p_t/e_t)$&4.2430&-0.9384&&0.2572&0.3985&&0.2930&0.3848\\
+%$kpos_t$&-1.0697&2.0261&&1.3282&0.0921&&1.7998&0.0359\\
+%\multicolumn{9}{c}{Panel B: Three Months}\\\hline
+%$dvrp_t$&24.6956&5.5674&&&&&0.0895&0.4644\\
+%$srp_t$&21.3847&-0.8775&&-0.0895&0.5356&&&\\
+%$vrp_t$&19.8333&4.6494&&0.3654&0.3574&&0.2742&0.3919\\
+%$log(p_t/d_t)$&16.8502&-1.0456&&0.5398&0.2947&&0.6162&0.2689\\
+%$log(p_{t-1}/d_t)$&18.4235&-0.5345&&0.5425&0.2937&&0.6304&0.2642\\
+%$log(p_t/e_t)$&11.2493&0.2510&&0.9778&0.1641&&1.0725&0.1417\\
+%$kpos_t$&-0.6580&0.6473&&1.7537&0.0397&&1.8782&0.0302\\
+%\multicolumn{9}{c}{Panel C: Six Months}\\\hline
+%$dvrp_t$&35.4498&0.1580&&&&&-1.2144&0.8877\\
+%$srp_t$&20.0010&2.3028&&1.2144&0.1123&&&\\
+%$vrp_t$&31.7578&2.7778&&-0.4553&0.6756&&-1.0558&0.8545\\
+%$log(p_t/d_t)$&28.2580&0.4752&&0.3393&0.3672&&-1.2086&0.8866\\
+%$log(p_{t-1}/d_t)$&32.1452&1.2361&&0.2877&0.3868&&-1.2333&0.8913\\
+%$log(p_t/e_t)$&17.2860&1.0359&&0.8114&0.2086&&-0.6382&0.7383\\
+%$kpos_t$&2.9373&12.1162&&1.7801&0.0375&&1.2382&0.1078\\ \hline
+%
+%\end{tabular}
+%}
+%\end{center}
+%\noindent \scriptsize This table presents the out-of-sample performance of predictors to forecast monthly ($r^e_{t\rightarrow t+1}$ in the top panel), quarterly ($r^e_{t\rightarrow t+3}/3$ in the middle panel) and semi-annually ($r^e_{t\rightarrow t+6}/6$ in the bottom panel) scaled cumulative excess returns, with observations spanning September 1996 to December 2010. The first two columns present the adjusted $R^2$ (\%) for the in-sample (IS) and out-of-sample (OOS) observations -- that is, the first and last half fractions of the data. The columns headed ``$dvrp\ vs.\ x_t$'' test the null hypothesis that ``an alternative predictor ($x_t$) does not yield a better forecast than the downside $VRP$ ($dvrp$).'' The columns headed ``$srp\ vs.\ x_t$'' test the null hypothesis that ``an alternative predictor ($x_t$) does not yield a better forecast than the skewness risk premium ($srp$).'' The reported test statistics and $p$-values are computed from the \cite{DieboldMariano95JBES} model comparison procedure. Note that the Bonferroni adjustment is required when multiple p-values are produced, to avoid overstating the evidence against the null. Thus, to maintain an overall significance level of $5\%$ (resp. $10\%$), one should adjust each individual test size to $0.0083=5\%/6$ (resp. $0.0167=10\%/6$) since 6 tests are performed for a given horizon.
+%\end{table}
+%%\end{sidewaystable}
+%}
+
+
+
+
+
+%\newpage
+%\clearpage
+%
+%\begin{sidewaystable}
+%\caption{Relationship between $VRP$ Components and Financial and Macroeconomic Variables}\label{TabHighestRsquares}
+%\begin{center}\scriptsize
+%\begin{tabular}{lll|lll}
+%\hline
+%\multicolumn{3}{c}{$VRP$} & \multicolumn{3}{c}{Downside Variance Risk Premium} \\
+%\hline
+%Variable & \multicolumn{1}{c}{$t$-Stat} & \multicolumn{1}{c|}{$R^2$} & Variable & \multicolumn{1}{c}{$t$-Stat} & \multicolumn{1}{c}{$R^2$} \\
+%\hline
+%Nonfarm Payrolls, Total Private & \multicolumn{1}{c}{11.44} & \multicolumn{1}{c|}{41.94} & Nonfarm Payrolls, Total Private & \multicolumn{1}{c}{7.67} & \multicolumn{1}{c}{24.52} \\
+%Nonfarm Payrolls, Wholesale Trade & \multicolumn{1}{c}{10.55} & \multicolumn{1}{c|}{38.06} & IPI, Durable Goods Materials & \multicolumn{1}{c}{7.08} & \multicolumn{1}{c}{21.70} \\
+%IPI, Durable Goods Materials & \multicolumn{1}{c}{9.61} & \multicolumn{1}{c|}{33.79} & Nonfarm Payrolls, Wholesale Trade & \multicolumn{1}{c}{6.99} & \multicolumn{1}{c}{21.26} \\
+%Nonfarm Payrolls, Transportation, Trade \& Utilities & \multicolumn{1}{c}{9.16} & \multicolumn{1}{c|}{31.69} & Industrial Production Index, Total Index & \multicolumn{1}{c}{6.81} & \multicolumn{1}{c}{20.40} \\
+%Nonfarm Payrolls, Services & \multicolumn{1}{c}{8.90} & \multicolumn{1}{c|}{30.46} & IPI, Final Products and Nonindustrial Supplies & \multicolumn{1}{c}{6.62} & \multicolumn{1}{c}{19.47} \\
+%IPI, Manufacturing (SIC) & \multicolumn{1}{c}{8.27} & \multicolumn{1}{c|}{27.45} & IPI, Manufacturing (SIC) & \multicolumn{1}{c}{6.57} & \multicolumn{1}{c}{19.25} \\
+%IPI, Final Products and Nonindustrial Supplies & \multicolumn{1}{c}{8.20} & \multicolumn{1}{c|}{27.08} & Nonfarm Payrolls, Transportation, Trade \& Utilities & \multicolumn{1}{c}{6.39} & \multicolumn{1}{c}{18.41} \\
+%Nonfarm Payrolls, Retail Trade & \multicolumn{1}{c}{8.16} & \multicolumn{1}{c|}{26.89} & Nonfarm Payrolls, Services & \multicolumn{1}{c}{6.25} & \multicolumn{1}{c}{17.77} \\
+%Industrial Production Index, Total Index & \multicolumn{1}{c}{7.96} & \multicolumn{1}{c|}{25.92} & Nonfarm Payrolls, Retail Trade & \multicolumn{1}{c}{5.84} & \multicolumn{1}{c}{15.84} \\
+%Nonfarm Payrolls, Construction & \multicolumn{1}{c}{7.80} & \multicolumn{1}{c|}{25.15} & IPI, Final Products & \multicolumn{1}{c}{5.73} & \multicolumn{1}{c}{15.37} \\
+%\hline
+%\multicolumn{3}{c}{Upside Variance Risk Premium} & \multicolumn{3}{c}{Skewness Risk Premium} \\
+%\hline
+%Variable & \multicolumn{1}{c}{$t$-Stat} & \multicolumn{1}{c|}{$R^2$} & Variable & \multicolumn{1}{c}{$t$-Stat} & \multicolumn{1}{c}{$R^2$} \\
+%\hline
+%Nonfarm Payrolls, Total Private & \multicolumn{1}{c}{14.24} & \multicolumn{1}{c|}{52.82} & PPI, Intermediate Materials, Supplies \& Components & \multicolumn{1}{c}{-5.92} & \multicolumn{1}{c}{16.23} \\
+%Nonfarm Payrolls, Wholesale Trade & \multicolumn{1}{c}{13.41} & \multicolumn{1}{c|}{49.85} & Nonfarm Payrolls, Mining and Logging & \multicolumn{1}{c}{-5.67} & \multicolumn{1}{c}{15.09} \\
+%Nonfarm Payrolls, Transportation, Trade \& Utilities & \multicolumn{1}{c}{10.94} & \multicolumn{1}{c|}{39.82} & Nonfarm Payrolls, Construction & \multicolumn{1}{c}{-5.26} & \multicolumn{1}{c}{13.24} \\
+%IPI, Durable Goods Materials & \multicolumn{1}{c}{10.67} & \multicolumn{1}{c|}{38.61} & Nonfarm Payrolls, Wholesale Trade & \multicolumn{1}{c}{-5.11} & \multicolumn{1}{c}{12.61} \\
+%Nonfarm Payrolls, Services & \multicolumn{1}{c}{10.66} & \multicolumn{1}{c|}{38.56} & 1-Year Treasury & \multicolumn{1}{c}{-5.06} & \multicolumn{1}{c}{12.39} \\
+%Nonfarm Payrolls, Construction & \multicolumn{1}{c}{10.38} & \multicolumn{1}{c|}{37.31} & CPI, All Items & \multicolumn{1}{c}{-4.98} & \multicolumn{1}{c}{12.03} \\
+%Nonfarm Payrolls, Retail Trade & \multicolumn{1}{c}{9.51} & \multicolumn{1}{c|}{33.33} & CPI, All Items Less Medical Care & \multicolumn{1}{c}{-4.95} & \multicolumn{1}{c}{11.94} \\
+%IPI, Manufacturing (SIC) & \multicolumn{1}{c}{8.49} & \multicolumn{1}{c|}{28.50} & 6-Month Treasury Bill & \multicolumn{1}{c}{-4.92} & \multicolumn{1}{c}{11.80} \\
+%IPI, Final Products and Nonindustrial Supplies & \multicolumn{1}{c}{8.31} & \multicolumn{1}{c|}{27.63} & Nonfarm Payrolls, Total Private & \multicolumn{1}{c}{-4.88} & \multicolumn{1}{c}{11.63} \\
+%Nonfarm Payrolls, Financial Sector & \multicolumn{1}{c}{8.01} & \multicolumn{1}{c|}{26.18} & CPI, All Items Less Food & \multicolumn{1}{c}{-4.82} & \multicolumn{1}{c}{11.36} \\
+%\hline
+%\end{tabular}
+%\end{center}
+%\noindent \scriptsize This table reports the 10 macroeconomic variables that demonstrate high contemporaneous correlation and explanatory power for variance and skewness risk premia. The results are sorted based on the size of adjusted $R^2$s from performing a univariate, linear regression analysis where the dependent variable is either the $VRP$, upside $VRP$, downside $VRP$, or skewness risk premium, and the independent variable is one of the 124 macroeconomic and financial variable series studied by \cite{FFTT14RoF}. Both adjusted $R^2$s and Student's $t$-statistics for the slope parameters are reported.
+%\end{sidewaystable}
+
+\newpage
+\clearpage
+
+\begin{table}
+\caption{Structural Estimation of the Theoretical Model}\label{TabGEEstimation}
+\begin{center}\scriptsize
+\begin{tabular*}{0.95\textwidth}{@{\extracolsep{\fill}}lcc}
+\hline%\hline
+{Parameters}&{Estimates}&{Std. Err.}\\\hline
+$\gamma$&1.01&0.00\\
+$\theta$&-0.04&0.02\\
+$\delta$&1.00&0.00\\
+$\mu_0$&0.32&0.10\\
+$\mu_1$&0.05&0.01\\
+$\mu_2$&-0.10&0.01\\
+$\sigma_c$&0.87&0.04\\
+$\alpha_u$&0.30&0.03\\
+$\beta_u$&0.99&0.00\\
+$\alpha_d$&0.16&0.01\\
+$\beta_d$&0.99&0.00\\
+$\gamma_{u,0}$&8.22E+03&3.07E+03\\
+$\gamma_{u,1}$&0.53&0.00\\
+$\varphi_{u}$&1.14E+05&4.72E+04\\
+$\gamma_{d,0}$&1.27E+03&2.01E+02\\
+$\gamma_{d,1}$&0.55&0.00\\
+$\varphi_{d}$&4.76E+04&1.75E+04\\
+$\kappa_0$&0.00&0.00\\
+$\kappa_1$&0.13&0.04\\
+\hline%\hline
+\end{tabular*}
+\end{center}
+\noindent \scriptsize This table reports the structural parameter estimates of the general equilibrium model along with their standard errors (Std. Err.). These estimates are obtained by maximizing the joint likelihood of consumption growth, stock return and risk-free rate.
+\end{table}
+
+
+\clearpage
+\newpage
+
+%\begin{figure}
+%\begin{center}
+%    \caption{The Term Structure of Risk-Neutral Variance}\label{FigRiskNeutralVol}
+%  % Requires \usepackage{graphicx}
+%  \includegraphics[width=18cm]{SubplotMedTS_RNmoments}
+%\end{center}
+%\noindent\scriptsize These figures present the median term structures of the risk-neutral volatility, upside risk-neutral volatility, downside risk-neutral volatility, and relative downside risk-neutral volatility for maturities ranging from 1 to 24 months.
+%\end{figure}
+
+
+\begin{figure}
+\begin{center}
+    \caption{Time Series for Variance and Skewness Risk Premia}\label{FigDSVRP-SkewnessPremTS}
+%  % Requires \usepackage{graphicx}
+ \includegraphics[width=16cm]{FigPremia}
+  \end{center}
+
+\noindent\scriptsize These figures plot the paths of annualized monthly values ($\times 10^3$) for the $VRP$, upside $VRP$, downside $VRP$, and skewness risk premium, extracted from U.S. financial markets data for September 1996 to March 2015. Solid lines represent premia constructed from random walk forecasts of the realized volatility and components. The dotted lines represent the same for M-HAR forecasts of the realized volatility and components. The shaded areas represent NBER recessions.
+
+
+\end{figure}
+
+
+\clearpage
+\newpage
+
+
+\begin{figure}
+\begin{center}
+    \caption{Confronting the General Equilibrium Model with Data}\label{FigGEResult}
+  % Requires \usepackage{graphicx}
+  \includegraphics[width=18cm,trim={1.5cm 6cm 1.5cm 6cm},clip=true]{StructuralEstimationOutputCharts}
+\end{center}
+\noindent\scriptsize The top plots show the slopes of the regressions (as per equation (\ref{EqForecastRegreession})) of excess return on upside (resp. downside) $VRP$ implied by the general equilibrium model at different maturities (expressed in months), along with the observed 95\% confidence intervals. The middle (resp. bottom) plots present monthly model-implied equity return and consumption growth (resp. volatility) paths against the observed corresponding series.
+\end{figure}
+
+%\begin{sidewaystable}
+%\caption{\small Policy News Potentially Associated with Volatility Changes--Both Dates}
+%\label{table:PolicyNews}
+%%\vspace{-0.35in}
+%\footnotesize
+%\begin{center}
+%\resizebox{\textwidth}{!}{\begin{tabular}{lccl}
+% Date & $\Delta$Variance & $\Delta$Return & News \\ \hline
+% 08/18/98 & -0.373 (-0.365) & 0.013 & President Clinton admits to ``wrong'' relationship with Ms. Lewinsky and FOMC's decision to leave interest rates unchanged \\
+% 09/01/98 & -0.722 (-0.664) & 0.035 & Fed adds money to the banking system with Repo \\
+% 09/08/98 & -0.526 (-0.455) & 0.021 & Fed Chairman Greenspan's statement that a rate cut might be forthcoming \\
+% 09/14/98 & -0.185 &  & President Clinton advocated a coordinated global policy for economic growth in NYC\\
+% 09/23/98 & -0.344 (-0.280) & 0.027 & Fed Chairman Greenspan testimony before the Committee on the Budget, U.S. Senate\\
+% 10/20/98 & -0.253 & -0.007 & 3 big US banks delivered better-than-expected earnings and bullish mood after Fed rate cut previous week\\
+% 08/11/99 & -0.266 (-0.276) & 0.008 & Fed Beige Book release shows that US economic growth remains strong\\
+% 01/07/00 & -0.500 & 0.031 & Unemployment report shows the lowest unemployment rate in the past 30 years\\
+% 03/16/00 & -0.266 & 0.037 & Release of Inflation Remains Tame Enough to Keep the Federal Reserve from tightening credit \\
+% 04/17/00 & -0.373 (-0.296) & 0.032 & Treasury Secretary Lawrence H. Summers Statement that fundamentals of the economy are in place \\
+% 10/19/00 & -0.241 & 0.018 & Fed’s Greenspan Gives Keynote Speech at Cato Institute and jobless claims drop by 7,000 in the latest week \\
+% 01/03/01 & -0.282 (-0.179) & 0.052 & Fed's Announcement of a Surprise, Inter-Meeting Rate Cut \\
+% 05/17/05 & -0.275 (-0.303) & 0.01 & John Snow calls on China to take an intermediate step in revaluing its currency \\
+% 05/19/05 & -0.297 &  & Fed Chairman A. Greenspan Steps up Criticism of Fannie Mae and Freddie Mac \\
+% 06/15/06 & -0.549 (-0.625) & 0.017 & Fed Chairman B. Bernanke's speech on inflation expectations within historical ranges \\
+% 06/29/06 & -0.295 (-0.325) & 0.016 & FOMC Statement to raise its target for the Federal Funds Rate by 25 bps \\
+% 07/19/06 & -0.272 &  & Fed Chairman B. Bernanke warned that the Fed must guard against rising prices taking hold \\
+% 02/28/07 & -0.396 &  & Fed Chairman B. Bernanke told a house panel that markets seem to be working well \\
+% 03/06/07 & -0.217 &  & Henry Paulson in Tokyo said the global economy was as strong as he has ever seen \\
+% 06/27/07 & -0.271 &  & FOMC announcement generated market rebound the previous date \\
+% 08/21/07 & -0.188 &  & Senator Dodd said the Fed to deal with the turmoil after meeting with Paulson and Bernanke \\
+% 09/18/07 & -0.415 (-0.353) & 0.024 & FOMC decided to lower its target for the Federal Funds Rate by 50 bps \\
+% 03/18/08 & -0.216 &  & Fed cuts the Federal Funds Rate by three-quarters of a percentage point \\
+% 10/14/08 & -0.489 (-0.304) & -0.048 & FOMC decided to lower its target for the Federal Funds Rate by 50 bps \\
+% 10/20/08 & -0.426 (-0.413) & 0.033 & Fed Chairman B. Bernanke Testimony on the Budget, U.S. House of Representatives \\
+% 10/28/08 & -0.313 (-0.230) & 0.075 & Fed to Cut the Rate Following the Two-Day FOMC Meeting is Expected by the Market \\
+% 11/13/08 & -0.328 (-0.240) & 0.062 & President Bush's Speech on Financial Crisis \\
+% 12/19/08 & -0.244 &  & President Bush Declared that TARP Funds to be Spent on Programs Paulson Deemed Necessary \\
+% 02/24/09 & -0.261 &  & President Obama's First Speech as the President to Joint Session of U.S. Congress \\
+% 05/10/10 & -0.647 (-0.601) & 0.003 & European Policy-Makers Unveiled an Unprecedented Emergency Loan Plan \\
+% 03/21/11 & -0.277 &  & Japanese nuclear reactors cooled down and situations in Libya tamed by unilateral forces \\
+% 08/09/11 & -0.433 (-0.370) & 0.046 & FOMC Statement Explicitly Stating a Duration for an Exceptionally Low Target Rate \\
+% 10/27/11 & -0.245 (-0.205) & 0.034 & European Union leaders made a bond deal to fix the Greek debt crisis \\
+% 01/02/13 & -0.432 (-0.427) & 0.025 & President Obama and Senator McConnell's encouraging comments on the ``Fiscal Cliff'' issue \\ \hline
+%
+%\end{tabular}}
+%\end{center}
+%\noindent \tiny This table from \cite{AmengualXiu14} presents in the last column the events that may lead to the largest volatility drops in the sample. The first column is the date of the event. The second shows changes in estimated spot variance, whereas the third column is the returns of the index on the corresponding days.
+%\end{sidewaystable}
+%
+%
+%\clearpage
+%\newpage
+%
+%
+%\begin{sidewaystable}
+%\caption{Reaction of Variance and Skewness Risk Premia to Financial and Macroeconomic Announcements}
+%\label{TabMatched2BoothDates}
+%%\vspace{-0.35in}
+%\footnotesize
+%\begin{center}
+%\begin{tabular}{lllll|ll|ll|ll}
+%\hline
+% &  &  & \multicolumn{2}{c}{VRP} & \multicolumn{2}{c}{$VRP^U$} & \multicolumn{2}{c}{$VRP^D$} & \multicolumn{2}{c}{SRP} \\
+%\hline
+%Booth Date & $\Delta Var$ & $\Delta r$ & \multicolumn{1}{c}{Change} & \multicolumn{1}{c|}{Level} & \multicolumn{1}{c}{Change} & \multicolumn{1}{c|}{Level} & \multicolumn{1}{c}{Change} & \multicolumn{1}{c|}{Level} & \multicolumn{1}{c}{Change} & \multicolumn{1}{c}{Level} \\
+%\hline
+%08/18/1998 & \multicolumn{1}{c}{-0.373} & \multicolumn{1}{c}{0.013} & \multicolumn{1}{c}{-0.0146} & \multicolumn{1}{c|}{0.0964} & \multicolumn{1}{c}{-0.0059} & \multicolumn{1}{c|}{-0.0045} & \multicolumn{1}{c}{-0.0132} & \multicolumn{1}{c|}{0.1188} & \multicolumn{1}{c}{-0.0073} & \multicolumn{1}{c}{0.1234} \\
+%09/01/1998 & \multicolumn{1}{c}{-0.722} & \multicolumn{1}{c}{0.035} & \multicolumn{1}{c}{-0.0292} & \multicolumn{1}{c|}{0.1432} & \multicolumn{1}{c}{-0.0206} & \multicolumn{1}{c|}{0.0066} & \multicolumn{1}{c}{-0.0210} & \multicolumn{1}{c|}{0.1666} & \multicolumn{1}{c}{-0.0004} & \multicolumn{1}{c}{0.1600} \\
+%09/08/1998 & \multicolumn{1}{c}{-0.526} & \multicolumn{1}{c}{0.021} & \multicolumn{1}{c}{-0.0404} & \multicolumn{1}{c|}{0.1190} & \multicolumn{1}{c}{-0.0189} & \multicolumn{1}{c|}{-0.0123} & \multicolumn{1}{c}{-0.0348} & \multicolumn{1}{c|}{0.1498} & \multicolumn{1}{c}{-0.0159} & \multicolumn{1}{c}{0.1621} \\
+%09/23/1998 & \multicolumn{1}{c}{-0.344} & \multicolumn{1}{c}{0.027} & \multicolumn{1}{c}{-0.0131} & \multicolumn{1}{c|}{0.0980} & \multicolumn{1}{c}{-0.0105} & \multicolumn{1}{c|}{-0.0241} & \multicolumn{1}{c}{-0.0088} & \multicolumn{1}{c|}{0.1337} & \multicolumn{1}{c}{0.0017} & \multicolumn{1}{c}{0.1578} \\
+%10/20/1998 & \multicolumn{1}{c}{-0.253} & \multicolumn{1}{c}{-0.007} & \multicolumn{1}{c}{-0.0160} & \multicolumn{1}{c|}{0.0444} & \multicolumn{1}{c}{-0.0143} & \multicolumn{1}{c|}{-0.0453} & \multicolumn{1}{c}{-0.0100} & \multicolumn{1}{c|}{0.0875} & \multicolumn{1}{c}{0.0043} & \multicolumn{1}{c}{0.1328} \\
+%08/11/1999 & \multicolumn{1}{c}{-0.266} & \multicolumn{1}{c}{0.008} & \multicolumn{1}{c}{-0.0169} & \multicolumn{1}{c|}{0.0540} & \multicolumn{1}{c}{-0.0123} & \multicolumn{1}{c|}{-0.0223} & \multicolumn{1}{c}{-0.0124} & \multicolumn{1}{c|}{0.0815} & \multicolumn{1}{c}{-0.0001} & \multicolumn{1}{c}{0.1038} \\
+%01/07/2000 & \multicolumn{1}{c}{-0.5} & \multicolumn{1}{c}{0.031} & \multicolumn{1}{c}{-0.0305} & \multicolumn{1}{c|}{0.0137} & \multicolumn{1}{c}{-0.0028} & \multicolumn{1}{c|}{-0.0341} & \multicolumn{1}{c}{-0.0328} & \multicolumn{1}{c|}{0.0429} & \multicolumn{1}{c}{-0.0300} & \multicolumn{1}{c}{0.0770} \\
+%03/16/2000 & \multicolumn{1}{c}{-0.266} & \multicolumn{1}{c}{0.037} & \multicolumn{1}{c}{-0.0174} & \multicolumn{1}{c|}{-0.0209} & \multicolumn{1}{c}{-0.0118} & \multicolumn{1}{c|}{-0.0553} & \multicolumn{1}{c}{-0.0130} & \multicolumn{1}{c|}{0.0164} & \multicolumn{1}{c}{-0.0012} & \multicolumn{1}{c}{0.0717} \\
+%04/17/2000 & \multicolumn{1}{c}{-0.373} & \multicolumn{1}{c}{0.032} & \multicolumn{1}{c}{-0.0183} & \multicolumn{1}{c|}{0.0023} & \multicolumn{1}{c}{-0.0134} & \multicolumn{1}{c|}{-0.0527} & \multicolumn{1}{c}{-0.0132} & \multicolumn{1}{c|}{0.0426} & \multicolumn{1}{c}{0.0003} & \multicolumn{1}{c}{0.0953} \\
+%10/19/2000 & \multicolumn{1}{c}{-0.241} & \multicolumn{1}{c}{0.018} & \multicolumn{1}{c}{-0.0190} & \multicolumn{1}{c|}{0.0027} & \multicolumn{1}{c}{-0.0088} & \multicolumn{1}{c|}{-0.0412} & \multicolumn{1}{c}{-0.0164} & \multicolumn{1}{c|}{0.0340} & \multicolumn{1}{c}{-0.0076} & \multicolumn{1}{c}{0.0752} \\
+%01/03/2001 & \multicolumn{1}{c}{-0.282} & \multicolumn{1}{c}{0.052} & \multicolumn{1}{c}{-0.0229} & \multicolumn{1}{c|}{-0.0137} & \multicolumn{1}{c}{-0.0242} & \multicolumn{1}{c|}{-0.0616} & \multicolumn{1}{c}{-0.0110} & \multicolumn{1}{c|}{0.0285} & \multicolumn{1}{c}{0.0131} & \multicolumn{1}{c}{0.0900} \\
+%05/17/2005 & \multicolumn{1}{c}{-0.275} & \multicolumn{1}{c}{0.01} & \multicolumn{1}{c}{-0.0063} & \multicolumn{1}{c|}{0.0178} & \multicolumn{1}{c}{-0.0023} & \multicolumn{1}{c|}{-0.0202} & \multicolumn{1}{c}{-0.0059} & \multicolumn{1}{c|}{0.0372} & \multicolumn{1}{c}{-0.0036} & \multicolumn{1}{c}{0.0575} \\
+%06/15/2006 & \multicolumn{1}{c}{-0.549} & \multicolumn{1}{c}{0.017} & \multicolumn{1}{c}{-0.0251} & \multicolumn{1}{c|}{0.0201} & \multicolumn{1}{c}{-0.0141} & \multicolumn{1}{c|}{-0.0260} & \multicolumn{1}{c}{-0.0209} & \multicolumn{1}{c|}{0.0423} & \multicolumn{1}{c}{-0.0068} & \multicolumn{1}{c}{0.0683} \\
+%06/29/2006 & \multicolumn{1}{c}{-0.295} & \multicolumn{1}{c}{0.016} & \multicolumn{1}{c}{-0.0154} & \multicolumn{1}{c|}{0.0035} & \multicolumn{1}{c}{-0.0100} & \multicolumn{1}{c|}{-0.0332} & \multicolumn{1}{c}{-0.0121} & \multicolumn{1}{c|}{0.0275} & \multicolumn{1}{c}{-0.0021} & \multicolumn{1}{c}{0.0607} \\
+%09/18/2007 & \multicolumn{1}{c}{-0.415} & \multicolumn{1}{c}{0.024} & \multicolumn{1}{c}{-0.0272} & \multicolumn{1}{c|}{0.0059} & \multicolumn{1}{c}{-0.0100} & \multicolumn{1}{c|}{-0.0357} & \multicolumn{1}{c}{-0.0252} & \multicolumn{1}{c|}{0.0344} & \multicolumn{1}{c}{-0.0152} & \multicolumn{1}{c}{0.0701} \\
+%10/14/2008 & \multicolumn{1}{c}{-0.489} & \multicolumn{1}{c}{-0.048} & \multicolumn{1}{c}{-0.0040} & \multicolumn{1}{c|}{0.0054} & \multicolumn{1}{c}{-0.0106} & \multicolumn{1}{c|}{-0.0730} & \multicolumn{1}{c}{0.0032} & \multicolumn{1}{c|}{0.0641} & \multicolumn{1}{c}{0.0138} & \multicolumn{1}{c}{0.1371} \\
+%10/20/2008 & \multicolumn{1}{c}{-0.426} & \multicolumn{1}{c}{0.033} & \multicolumn{1}{c}{-0.0628} & \multicolumn{1}{c|}{-0.0012} & \multicolumn{1}{c}{-0.0280} & \multicolumn{1}{c|}{-0.0943} & \multicolumn{1}{c}{-0.0558} & \multicolumn{1}{c|}{0.0688} & \multicolumn{1}{c}{-0.0278} & \multicolumn{1}{c}{0.1631} \\
+%10/28/2008 & \multicolumn{1}{c}{-0.313} & \multicolumn{1}{c}{0.075} & \multicolumn{1}{c}{-0.0518} & \multicolumn{1}{c|}{0.0380} & \multicolumn{1}{c}{-0.0311} & \multicolumn{1}{c|}{-0.1027} & \multicolumn{1}{c}{-0.0402} & \multicolumn{1}{c|}{0.1187} & \multicolumn{1}{c}{-0.0091} & \multicolumn{1}{c}{0.2214} \\
+%11/13/2008 & \multicolumn{1}{c}{-0.328} & \multicolumn{1}{c}{0.062} & \multicolumn{1}{c}{-0.0412} & \multicolumn{1}{c|}{0.0071} & \multicolumn{1}{c}{-0.0253} & \multicolumn{1}{c|}{-0.1270} & \multicolumn{1}{c}{-0.0322} & \multicolumn{1}{c|}{0.0986} & \multicolumn{1}{c}{-0.0069} & \multicolumn{1}{c}{0.2256} \\
+%05/10/2010 & \multicolumn{1}{c}{-0.647} & \multicolumn{1}{c}{0.003} & \multicolumn{1}{c}{-0.0631} & \multicolumn{1}{c|}{0.0764} & \multicolumn{1}{c}{-0.0386} & \multicolumn{1}{c|}{-0.0215} & \multicolumn{1}{c}{-0.0488} & \multicolumn{1}{c|}{0.1058} & \multicolumn{1}{c}{-0.0102} & \multicolumn{1}{c}{0.1273} \\
+%08/09/2011 & \multicolumn{1}{c}{-0.433} & \multicolumn{1}{c}{0.046} & \multicolumn{1}{c}{-0.0628} & \multicolumn{1}{c|}{0.0754} & \multicolumn{1}{c}{-0.0365} & \multicolumn{1}{c|}{-0.0143} & \multicolumn{1}{c}{-0.0504} & \multicolumn{1}{c|}{0.0997} & \multicolumn{1}{c}{-0.0139} & \multicolumn{1}{c}{0.1140} \\
+%10/27/2011 & \multicolumn{1}{c}{-0.245} & \multicolumn{1}{c}{0.034} & \multicolumn{1}{c}{-0.0240} & \multicolumn{1}{c|}{-0.0447} & \multicolumn{1}{c}{-0.0184} & \multicolumn{1}{c|}{-0.0953} & \multicolumn{1}{c}{-0.0165} & \multicolumn{1}{c|}{0.0115} & \multicolumn{1}{c}{0.0019} & \multicolumn{1}{c}{0.1068} \\
+%\hline
+%\end{tabular}
+%\end{center}
+%\noindent\scriptsize This table reports the reaction of the $VRP$ ($VRP$), upside variance risk premium ($VRP^U$), downside variance risk premium ($VRP^D$), and skewness risk premium ($SRP$) to the macroeconomic and financial news documented in Table \ref{table:PolicyNews}. The table reports changes in conditional volatility ($\Delta Var$) and S\&P 500 returns ($\Delta r$) on the event day, as well as changes and levels of $VRP$, $VRP^U$, $VRP^D$, and $SRP$ on the event date. A negative sign in the change of a risk premium signifies a decline on the arrival of a particular macroeconomic or financial announcement. A positive sign implies the opposite.
+%
+%\end{sidewaystable}
+%
+%
+%
+
+
+
+
+
+\end{document}
+
+
+
+
+
+
+
+
