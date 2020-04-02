@@ -75,20 +75,19 @@ C_{t}(K) = E_{t}^{Q}[(F_{T} - K)^{+}] = \int_{0}^{\infty} (F_{T} - K)^{+} h_{t}(
 
 RND is as in Breeden-Litzenberger (1978)
 \begin{align*}
-    h_{t}(F_{T} = \frac{\partial^{2} P_{t}(K)}{\partial K^{2}} \big\rvert_{K = F_{T}} = \frac{\partial^{2} C_{t}(K)}{\partial K^{2}} \big\rvert_{K = F_{T}} 
+    h_{t}(F_{T}) = \frac{\partial^{2} P_{t}(K)}{\partial K^{2}} \big\rvert_{K = F_{T}} = \frac{\partial^{2} C_{t}(K)}{\partial K^{2}} \big\rvert_{K = F_{T}} 
 \end{align*}
 
 According to Carr-Madan (1998) we can write the paypoff $g(F_{T})$ (assuming finite second derivatives a.e.) as
 \begin{align*}
-g(F_{T}) = g(x) + g'(x)(F_{T} - x) + \int_{0}^{F_{0}} g''(K)P_{0}(K) \diff K + \int_{F_{0}}^{\infty} g''(K)C_{0}(K) \diff K
+g(F_{T}) = g(x) + g'(x)(F_{T} - x) + \int_{0}^{x} g''(K)(K - F_{T})^{+} \diff K + \int_{x}^{\infty} g''(K)(F_{T} - K)^{+} \diff K
 \end{align*}
 
-\textit{Note: Probably split at $F_{0}$ because for strikes below a put is OTM, and above a call is OTM. Still overall this relationship is not very intuitive to me.}\\
-
-set $x = F_{0}$ and take the expectation
-
+set $x = F_{0}$ and take the expectation and setting $x = F_{0}$
 \begin{align}\label{eq:po1}
-    E_{0}^{Q}[d(F_{T})] = g(F_{0}) + \int_{0}^{\infty} g''(K)M_{0}(K) \diff K
+	E_{0}^{Q}[g(F_{T})] = g(F_{0}) + \int_{0}^{F_{0}} g''(K)P_{0}(K) \diff K + \int_{F_{0}}^{\infty} C_{0}(K)  \diff K\\
+	\Leftrightarrow
+    E_{0}^{Q}[g(F_{T})] = g(F_{0}) + \int_{0}^{\infty} g''(K)M_{0}(K) \diff K
 \end{align}
 with $M_{0}(K) = min(P_{t}(K), C_{t}(K))$ (hence the OTM option).\\
 
@@ -96,7 +95,7 @@ with $M_{0}(K) = min(P_{t}(K), C_{t}(K))$ (hence the OTM option).\\
 
 In the current setting, $F_{t}$ is a martingale under $Q$. Assume the diffusion
 \begin{align}
-    \frac{\diff F_ {t}}{F_{t}} = \sigma \diff W_{t}
+    \frac{\diff F_ {t}}{F_{t}} = \sigma_{t} \diff W_{t}
 \end{align}
 
 By Itos Lemma we get for the payoff
@@ -107,6 +106,8 @@ Hence taking expectations
 \begin{align}\label{eq:po2}
     E_{0}^{Q}[g(F_{T})] = g(F_{0}) + \frac{1}{2} E_{0}^{Q} \left[ \int_{0}^{T} g''(F_{t}) F_{t}^{2} \sigma_{t}^{2} \diff t \right]
 \end{align}
+
+\textit{Note: In the paper the second expectation is $E_{t}^{Q}$ is that a typo?}\\
 
 setting \ref{eq:po1} and \ref{eq:po2} equal we obtain
 \begin{align}\label{eq:narela}
@@ -133,7 +134,7 @@ IV AR(0,T) = \int_{0}^{T} \sigma_{t}^{2} \diff t
 
 Suppose that the function $g(F_{T})$ is choosen as
 \begin{align*}
-g(F_{T}) = g(F_{T};B) = \left (1 - ln\frac{F_{T}}{B} + \frac{F_{T}}{B} - 1 \right) I_{T}
+g(F_{T}) = g(F_{T};B) = \left (- ln\frac{F_{T}}{B} + \frac{F_{T}}{B} - 1 \right) I_{T}
 \end{align*}
 The NoA value of the contract can be derived from equation \ref{eq:narela} as
 \begin{align*}
@@ -154,9 +155,8 @@ In the limiting case of $B = \infty$ the barrier implied volatiltiy coincides wi
 \textit{$\rightarrow$ show how we can derive the CV from a corridor volatility contract}\\
 
 The contract which pays corridor variance can be constructed from two barrier variance contracts with different barriers, here $B_{1}$ and $B_{2}$ lower and upper barrier
-
 \begin{align*}
-CIV AR_{B_{1}, B_{2}}(0,T) = \int_{0}^{T} \sigma_{t}^{1}I_{t}(B_{1}, B_{2}) \diff t
+CIV AR_{B_{1}, B_{2}}(0,T) = \int_{0}^{T} \sigma_{t}^{2}I_{t}(B_{1}, B_{2}) \diff t
 \end{align*}
 with 
 \begin{align*}
@@ -164,13 +164,11 @@ I_{t}(B_{1}, B_{2}) = I_{t} = 1[B_{1} \leq F_{t} \leq B_{2}]
 \end{align*}
 
 Hence the ocntracts pays the \textit{corridor variance} when the futures price lies between the barriers. The value of the contract is
-
 \begin{align*}
 CV AR_{0}(B_{1}, B_{2}) = E_{0}^{Q} \left[ \int_{0}^{\infty} \sigma_{t}^{2} I_{t} \diff t \right] = 2 \int_{B_{1}}^{B_{2}} \frac{M_{0}(K)}{K^{2}} \diff K
 \end{align*}
 
 In the limiting case where $\Delta (B_{1}, B_{2}) \rightarrow 0$ the value of the contract approches the value of a contract that pays the future variance only \textit{along} a strike. 
-
 \begin{align*}
 SV AR_{0}(B) = \lim_{\Delta B \rightarrow 0} \frac{B}{\Delta B} CV AR_{0}(B, B + \Delta B) = 2 \frac{M_{0}(B)}{B}
 \end{align*}
