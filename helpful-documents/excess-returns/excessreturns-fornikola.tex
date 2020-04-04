@@ -1,0 +1,21 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+\title{Excess returns}
+\author{3S team}
+%\date{gyjugyu}
+
+\begin{document}
+\maketitle
+
+
+Path for the equity return: CRSP$\rightarrow$Index / S\&P 500 Indexes$\rightarrow$Index File on the S\&P 500  $\rightarrow$ Return on S\&P Composite Index.\\
+Path for the risk-free rate: CRSP $\rightarrow$ Treasuries $\rightarrow$ Riskfree Series (1-month and 3-month). Then we chose 3-months.\\
+For both of them we selected monthly returns and we observed that the risk-free is already annualized. For the excess return, we computed:
+$$
+    \sum_t(12\times\ln(1+R_t)) - \sum_t \ln(1+R_t^f),
+$$
+where $t$ are the months in the dataset, 12 is the annualization factor for log returns for the equity returns, $R_t:=\frac{S_t}{S_{t-1}}$ is the equity return and $R_t^f$ is the risk-free rate.\\
+The reason why we decided to compute returns in this way it's simply because, as far as we know, to aggregate log excess return we have to aggregate the 'total-log-return' and then to subtract the 'total-risk-free-log-return'
+
+\end{document}
