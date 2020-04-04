@@ -10,6 +10,7 @@ Created on Sat Apr  4 11:32:13 2020
 import os
 import numpy as np
 import pandas as pd
+import datetime as dt
 
 
 #%% lopp over all files in directory to import the data
@@ -31,6 +32,15 @@ for file in os.listdir(data_directory):
 
 spx = pd.concat(list_dataframes)
 spx.columns = ['symbol', 'date', 'time', 'bid']
-spx['date'] = pd.to_datetime(spx['date'], format='%Y%m%d')
-spx = spx.sort_values(by = "date")
+spx['datetime'] = spx['date'].astype(str) + ":" + spx['time']
+spx['datetime'] = pd.to_datetime(spx['datetime'], format = '%Y%m%d:%H:%M:%S')
+spx['date'] = pd.to_datetime(spx['date'], format='%Y%m%d').dt.date
+spx['time'] = pd.to_datetime(spx['time'], format='%H:%M:%S').dt.time
 
+spx = spx.sort_values(by = 'datetime')
+
+#%% average bid ask quotes
+
+#spx['level'] = np.mean(spx['bid'], spx['offer'])
+
+#%% 
