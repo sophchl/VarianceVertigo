@@ -9,12 +9,120 @@
     }
 \setlength\parindent{0pt}
 \usepackage{amsmath}
-\newcommand*\diff{\mathop{}\!\mathrm{d}}
+\usepackage{bbm}
 
-\title{Realized Volatility}
+%\newcommand*\diff{\mathop{}\!\mathrm{d}}
+
+\title{Realized variance}
 %\author{}
 %\date{April 2020}
 
 \begin{document}
+
+\maketitle
+
+A short document for the RV computation. Please let me know if you have any comments :)\\
+
+\textbf{0. create one dataset out of all .csv files}\\
+
+\textit{note 0: they don't say anything about averaging bid-ask quotes, but I assume they do? Also they say they got it from the Institute of Financial Markets but we can't find this institution. Use TAQ instead.}
+
+\textbf{1. create 5-min prices}\\
+
+Start with first return and keep only those that at 5-min distance.\\
+
+\textit{Note 1: Is that also how you would do it? Problem here is also that we have rather not equispaced times in the raw data.}\\
+
+\textbf{2. calculate realized variance}\\
+
+2.a. split in daily price and overnight\\
+
+overnight: 4:00 PM to 9:30 AM\\ 
+
+so here: don't use 5-min values but return between close and open the next day only.\\
+
+2.b. calculate the total, upside and downside realized variance\\
+
+total realized variance (during trading day)
+\begin{align*}
+RV_{t} = \sum_{j = 1}^{n_{t}} r_{j,t}^{2}
+\end{align*}
+with $r_{j,t}^{2}$ the $j^{th}$ intraday log return and $n_{t}$ the number of intraday returns observed that day. \\
+
+However at one point they say they obtain the realized variance by just adding upside and downside realized variance (p.13). I'll try both and see if they are the same (should be if we didn't misunderstand the rescaling). \\
+
+decomposition (during trading day)
+\begin{align*}
+RV_{t}^{U}(\kappa) = \sum_{j=1}^{n_{t}} r_{j,t}^{2} \mathbbm{1}_{[r_{j,t} > \kappa]}\\
+RV_{t}^{D}(\kappa) = \sum_{j=1}^{n_{t}} r_{j,t}^{2} \mathbbm{1}_{[r_{j,t} \leq \kappa]}
+\end{align*}
+with $\kappa$ a threshold, in the paper $\kappa = 1$\\
+
+overnight returns
+\begin{align*}
+r_{overnight} = log(p_{open,t}) - log(p_{close, t-1})
+\end{align*}
+Add $r_{overnight}^{2}$ to total RV, \\
+if $r_{overnight} > \kappa$: add squared return to $RV_{t}^{U}(\kappa)$, \\
+if $r_{overnight} \leq \kappa$: add squared return to $RV_{t}^{D}(\kappa)$. \\
+
+\textbf{3. apply scaling}\\
+
+$\sigma_{r}$ .. sample variance of daily log returns\\
+$\mu_{RV}$  .. sample average of the (pre-scaled) realized variance\\
+$\tilde{RV}_{t}^{U/D}$ .. unscaled realized variance, sum of squared log returns\\
+$RV_{t}^{U/D}$  .. scaled realized variance, the one we work with\\
+$U/D$ .. U or D
+
+\begin{align*}
+RV_{t} = \tilde{RV}_{t} \frac{1}{\sigma_{r}}\\
+RV_{t}^{U/D} = \tilde{RV}_{t}^{U/D}  \frac{\sigma_{r}}{\mu_{RV}}
+\end{align*}
+
+textsource: 
+``we scale the $RV_{t}$ series to ensure that the sample average realized variance euqlas the sample variance of daily log- returns. [...] we apply the same scale to the two components of the realized variance. Specifically, we multiply both components by the ratio of the sample variance of daily log-returns over the sample average of the (pre-scaled) realized variance.''\\ (we dropped the argument $\kappa$ for ease of notation)\\
+
+why?\\
+total realized variance: makes sense that realized variance should have the same variance as daily log returns
+upside and downside variance: ??\\
+
+other references: they refer on p.14 to Hansen and Lunde (2006) wo discuss various approaches to adjusting open-to-close RVs but I would try not too go too deep here, could be floorless.\\
+
+\textit{Note 2: Is that also how you would read it? But anyway the reasoning why they do it is still an open question..}\\
+
+\textbf{4. accumulating}\\
+
+$h$ .. periods
+\begin{align*}
+RV_{t,h}(\kappa) = \sum_{j=1}^{h} RV_{t+j}(\kappa)\\
+RV_{t,h}^{U}(\kappa) = \sum_{j=1}^{h} RV_{t+j}^{U}(\kappa)\\
+RV_{t,h}^{D}(\kappa) = \sum_{j=1}^{h} RV_{t+j}^{D}(\kappa)
+\end{align*}
+Interpretation: I.e. if h = 1 month, we take all daily $RV$ of one month and sum them up. The periods should be \textit{nonoverlapping} (hence we sum up january, february etc)\\
+
+\textit{Note 3: Is that also how you would read it?}\\
+
+They use for h: 1,2,3,6,9,12,18,24 month.\\
+
+\textbf{5. construction of p-expectation}\\
+
+In the paper, they use 3 specifications: random walk, u/d-har, m-har, but only report the random walk, so I will focus for this atm.\\
+
+random walk
+\begin{align*}
+\mathbbm{E}_{t}^{\mathbbm{P}}[RV_{t,h}^{U/D}(\kappa)] = RV_{t-h,h}^{U/D}(\kappa)
+\end{align*}
+
+\textbf{x. calculate variance risk premium}\\
+\begin{align*}
+VRP_{t,h} = \mathbbm{E}_{t}^{\mathbbm{Q}}[RV_{t,h}] - \mathbbm{E}_{t}^{\mathbbm{P}}[RV_{t,h}]
+\end{align*}
+hence assume the p-expectation for a period $h$ (e.g. one month, say february) is just the realized variance from the past period (e.g. january same year)\\
+
+\textit{Note 4: We don't have the Q expectation yet so I didn't deal with this so far.}\\
+
+
+
+
 
 \end{document}
