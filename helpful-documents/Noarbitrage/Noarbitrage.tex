@@ -1,0 +1,54 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+\title{Non No-Arbitrage Constraints}
+\author{Stefano Nicoli}
+%\date{}
+
+\begin{document}
+
+\maketitle
+\begin{quote}
+    
+
+Sorry it's the shittiest latex I have ever made, I hope that it's at least understandable.
+
+\end{quote}
+"We use the average of the bid and ask quotes for each option contract and filter out options with zeros bids as well as those whose average quotes are less than \$3/8."
+\begin{enumerate}
+    \item Download 'Highest Closing Bid';
+    \item download 'Lowest Closing Ask';
+    \item it's not clear how we can filter the zero bids, it might be possible that we can discard the ones with 'Last Traded Date' equal to 'yesterday' or 'the day before yesterday' (sorry for the terrible notation);
+    \item set mean('Highest Closing Bid','Lowest Closing Ask')$<$\$3/8 $\Rightarrow$ discard option (I am afraid we can do this only after the download).
+\end{enumerate}
+"We also filter out quotes that do not satisfy standard no-arbitrage conditions."
+\begin{enumerate}
+\item Ok, we have another pdf for this (Sophia remember the mistaken condition on put prices). By the way, we need for sure:
+    \begin{itemize}
+        \item 'Strike Price Times 1000';
+        \item 'Delta';
+        \item 'Gamma';
+        \item futures prices for S\&P 500.
+    \end{itemize}
+\end{enumerate}
+"Finally, we eliminate in-the-money options because they are less liquid than out-of-the-money and at-the-money options. We eliminate put options with strike prices of more than 103\% of the underlying asset price ($K/S>1.03$) and call options with strike prices of less than 97\% of the underlying asset price ($K/S<0.97$)."
+\begin{enumerate}
+    \item Download 'Call/Put Flag' so we can differentiate the inequalities (unfortunately we don't have moneyness directly, so we have to set it after the download).
+\end{enumerate}
+"delete days when less than 2 OTM calls and 2 OTM puts"
+\begin{enumerate}
+    \item after the download.
+\end{enumerate}
+
+"discard options with zero open interest"
+\begin{enumerate}
+    \item it's from FE, feel free to decide about. Probably you can decide something also about the volume (both of them are donwloadable and you can check them before the download).
+
+\end{enumerate}
+"exclude options with very long ($>$1 year) and very short maturity"
+\begin{enumerate}
+    \item in 'Choose Days to Expiration (EXDATE - DATE): (Optional)' you can set it lower than one year (in trading days);
+    \item feel free to decide about 'very short maturity'.
+\end{enumerate}
+Moreover, I would download 'Implied Volatility' (we'll need it later for sure).
+\end{document}
