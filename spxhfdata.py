@@ -44,19 +44,37 @@ spx = spx.sort_index()
 
 #%% take only 5-min returns
 
-# average per minute
+# A: selecting values 
 
-spx5 = spx.resample('5T').mean()
+spx1 = spx.resample('1T').mean()
+fivemin = np.arange(dt.datetime(1996,9,30), dt.datetime(1999,12,2), dt.timedelta(minutes = 5)).astype(dt.datetime)
+fivemin = pd.DataFrame(fivemin)
+fivemin.index = fivemin.iloc[:,0]
+
+spx5a = pd.merge(spx1, fivemin, how = 'right', right_index = True, left_index = True)
+spx5a = spx5a.drop([0], axis = 1)
+
+# B: 5 min resample
+
+spx5b = spx.resample('5T').mean()
 
 # see if it does what we want (because many Nan)
 spx.iloc[1:20,]
-spx5.iloc[1:10,]
+spx5b.iloc[1:10,]
 spx.iloc[2:12,].mean()
 # looks as average of e.g. 8:30 are all values from 8:25 to 8:30 etc.
 
 #%% split in daily and overnight
 
 # what is the latest and earliest time we have per day?
+
+# definitely not the fastest and most precise way but 
+# for the first 1,000 obverstavion we always have times between 08:59:51 and 18:30:04
+for day in spx.iloc[1:10000,].groupby("date"):
+    print(min(spx['time']), max(spx['time']))
+
+
+
 
 #%% average bid ask quotes
 
