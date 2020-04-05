@@ -12,6 +12,15 @@ import numpy as np
 import pandas as pd
 import datetime as dt
 
+#%% functions needed
+
+def separate_tradingday_overnight(data):
+    day = data[(data.index.time > dt.time(9,30,0)) & 
+               (data.index.time < dt.time(16,0,0))]
+    nightindex = data.index.difference(day.index)
+    night = data.loc[nightindex,]
+    return(day, night)
+
 
 #%% lopp over all files in directory to import the data
 
@@ -28,7 +37,7 @@ for file in os.listdir(data_directory):
     else:
         continue
     
-#%% create one big dataframe, sort by date and time
+#%% create one big dataframe, sort by date and time, separate day and night
 
 spx = pd.concat(list_dataframes)
 spx.columns = ['symbol', 'date', 'time', 'bid']
@@ -42,48 +51,59 @@ spx = spx.sort_index()
 
 # check for doublicates and missings: not done yet
 
-#%% take only 5-min returns
+day, night = separate_tradingday_overnight(spx)
+
+#%% take only 5-min prices
 
 # A: selecting values 
 
-spx1 = spx.resample('1T').mean()
-fivemin = np.arange(dt.datetime(1996,9,30), dt.datetime(1999,12,2), dt.timedelta(minutes = 5)).astype(dt.datetime)
-fivemin = pd.DataFrame(fivemin)
-fivemin.index = fivemin.iloc[:,0]
+spx1 = day.resample('1T').mean()
+fivemin = np.arange(dt.datetime(1996,9,30), dt.datetime(1999,12,2),
+                          dt.timedelta(minutes = 5)).astype(dt.datetime)
+fivemin = pd.DataFrame(index = fivemin)
 
-spx5a = pd.merge(spx1, fivemin, how = 'right', right_index = True, left_index = True)
-spx5a = spx5a.drop([0], axis = 1)
+fivemin_day = separate_tradingday_overnight(fivemin)[0]
+
+spx5a = pd.merge(spx1, fivemin_day, right_index = True, left_index = True)
+spx1, fivemin, fivemin_day = None
 
 # B: 5 min resample
+# looks like average of e.g. 8:30 are all values from 8:25 to 8:30 etc.
 
-spx5b = spx.resample('5T').mean()
+spx5b = day.resample('5T').mean()
+spx5b =  spx5b[1:]
 
-# see if it does what we want (because many Nan)
-spx.iloc[1:20,]
-spx5b.iloc[1:10,]
-spx.iloc[2:12,].mean()
-# looks as average of e.g. 8:30 are all values from 8:25 to 8:30 etc.
+# continue with one of them
 
-#%% split in daily and overnight
-
-# what is the latest and earliest time we have per day?
-
-# definitely not the fastest and most precise way but 
-# for the first 1,000 obverstavion we always have times between 08:59:51 and 18:30:04
-for day in spx.iloc[1:10000,].groupby("date"):
-    print(min(spx['time']), max(spx['time']))
-
-
-
+mydata = spx5a[:]
 
 #%% average bid ask quotes
 
 #spx['level'] = np.mean(spx['bid'], spx['offer'])
 
+#%% calculate return and realized variances
+
+mydata['return'] = (mydata.bid - mydata.bid.shift(1))/(mydata.bid)
+
+mydata2 = (mydata[['return']].groupby(mydata.index.date).sum())**2
+mydata2.columns = ['rv']
+
+
 #%% calculate upside and downside realized variance
 
-#%% calculate total realized variance: 2 ways
+
 
 #%% apply scaling
 
 #%% accumulating
+
+#%% dropped
+
+# what is the latest and earliest time we have per day? 08:59:51 - 18:30:04 (first 1,0000)
+# not very neat though
+
+def get_fl_time(data, length):
+    for day in data.iloc[1:length,].groupby(data.iloc[1:length,].index.date):
+        print(min(data.index.time), max(data.index.time))
+        
+get_fl_time(day, 500)
