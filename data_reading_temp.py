@@ -28,26 +28,11 @@ def my_time_filter(df, start_date, end_date):
     filtered_df = df[between_dates]
     return(filtered_df)
 
-#%% read tbill
-
-tbill_raw1 = pd.read_csv('data/raw/3mtbill1.csv')
-tb1 = tbill_raw1[:]
-
-tbill_raw2 = pd.read_csv('data/raw/3mtbill2.csv')
-tb2 = tbill_raw2[:]
-
-tbill_raw3 = pd.read_csv('data/raw/3mtbill3.csv')
-tb3 = tbill_raw3[:]
-
-#%% process/add tbill (tb1)
-
-print(tb1.columns)
-tb1['KYCRSPID']
-tb1['TDATDT']
-tb1['TMATDT']
-tb1['TBANKDT']
 
 #%% process/add tbill (tb2)
+
+tbill_raw2 = pd.read_csv('data/raw/tbill/rf3m.csv')
+tb2 = tbill_raw2[:]
 
 print(tb2.columns)
 tb2.columns  = ['ident', 'date', 'bidytm', 'askytm', 'nomytm']
@@ -56,76 +41,60 @@ tb2['date'] = pd.to_datetime(tb2['date'])
 tb2['rfm'] = ((1+(tb2.nomytm)/100)**(1/12))-1
 tb2['rfy'] = tb2.nomytm/100
 
-#data_all = pd.merge(tb2[['date', 'rfm', 'rfy']], data_all, on = 'date')
+data_all = pd.merge(tb2[['date', 'rfm', 'rfy']], data_all, on = 'date')
 
 #%% process/add tbill (tb3)
 
-tb3.columns = ['date', 'rfm', 'level']
-tb3['date']= pd.to_datetime(tb3['date'], format='%Y%m%d')
+#tbill_raw3 = pd.read_csv('data/raw/3mtbill3.csv')
+#tb3 = tbill_raw3[:]
 
-tb3['rfy'] = (1+tb3.rfm)**(12)-1
+#tb3.columns = ['date', 'rfm', 'level']
+#tb3['date']= pd.to_datetime(tb3['date'], format='%Y%m%d')
 
-data_all = pd.merge(tb3[['date', 'rfm', 'rfy']], data_all, on = 'date')
+#tb3['rfy'] = (1+tb3.rfm)**(12)-1
 
-#%% read spx
-
-spx_raw = pd.read_csv('data/raw/spx.csv')
-spx = spx_raw[:]
+#data_all = pd.merge(tb3[['date', 'rfm', 'rfy']], data_all, on = 'date')
 
 #%% process/add spx 
 
-spx.columns = ['date', 'value', 'count', 'level', 'rtrnm']
+spx_raw = pd.read_csv('data/raw/spx/spx_monthly.csv')
+spx = spx_raw[:]
+
+spx.columns = ['date', 'vwred', 'vwrid', 'ewred', 'edrid', 'value', 'rtrnm']
 spx['date'] = pd.to_datetime(spx['date'], format='%Y%m%d')
 
-spx['logrtnm'] = np.log(spx.level) - np.log(spx.level.shift(1))
-spx['logrtny'] = spx.logrtnm*12
 spx['rtrny'] = (1 + spx.rtrnm)**(12) - 1
 
-data_all = pd.merge(spx[['date', 'rtrnm', 'rtrny', 'logrtnm', 'logrtny']], data_all, on = 'date')
+for i in range(1,5):
+    spx[('rtrnm_' + str(i))] = (spx.iloc[:,i] - spx.iloc[:,i].shift(1))/spx.iloc[:,i].shift(1)
 
-#%% read options
 
-#spxoptions = pd.read_csv('data/raw/optionspx.csv')
-#optionwork = spxoptions
-
-#%% process/add options
+data_all = pd.merge(spx[['date', 'rtrnm', 'rtrny', 'rtrnm_1', 'rtrnm_2', 'rtrnm_3', 'rtrnm_4']], data_all, on = 'date')
 
 #%% work on whole dataset
 
-# some desparate attempts to get their numbers
+# some attempts to get their numbers
 
-# difference of absolute return and rf and log afterwards
-data_all['excessm1'] = data_all.rtrnm - data_all.rfm
-data_all['excessy1'] = (1 + data_all.excessm1)**(12) - 1
-data_all['logexcessy1'] = np.log(1 + data_all.excessy1)
+# take difference of log return
+data_all['excessya'] = 12*np.log(1 + data_all.rtrnm) - np.log(1 + data_all.rfy)
 
-data_all['logexcessm2'] = np.log(1 + data_all.excessm1)
-data_all['logexcessy2'] = data_all.logexcessm2*12
+# difference of absolute return  log afterwards
+data_all['excessyb'] = 12* np.log(1 + (data_all.rtrnm - data_all.rfm))
 
-data_all['excessy3'] = data_all.rtrny - data_all.rfy
-data_all['logexcessy3'] = np.log(1 + data_all.excessy3)
+# same with annualized returns
+data_all['excessyc'] = np.log(1 + data_all.rtrny) - np.log(1 + data_all.rfy)
+data_all['excessyd'] = np.log(1 + (data_all.rtrny - data_all.rfy))
 
-# differnce of log return and log rf
-data_all['logexcessm4'] = data_all.logrtnm - np.log(1 + data_all.rfm)
-data_all['logexcessy4'] = data_all.logexcessm4*12
+excess = data_all[['date', 'excessya', 'excessyb', 'excessyc', 'excessyd']]
 
-data_all['logexcessy5'] = data_all.logrtny - np.log(1 + data_all.rfy)
+# with the equiy/value weighted returns
+#for i in range(1,5):
+#    data_all[('excessya_' + str(i))] = 12*np.log(1 + data_all[('rtrnm_' + str(i))]) - np.log(1 + data_all.rfm)
 
-# or they calculated some kind of relative excess return
-data_all['excessm3'] = (data_all.rtrnm - data_all.rfm)/data_all.rfm
-
-# maybe they did a mistake?
-#data_all['mistake1'] = data_all.logrtnm - data_all.rfm
-#data_all['mistake2'] = data_all.logrtny - data_all.rfy
-#data_all['mistake3'] = data_all.rtrnm - data_all.rfy
-#data_all['mistake4'] = data_all.logrtnm - data_all.rfy
-
-
-data_rep = my_time_filter(data_all, start_date, end_date)
+data_rep = my_time_filter(excess, start_date, end_date)
 print(data_rep.mean(axis = 0)*100)
-print(data_rep)
 
-data_precrisis = my_time_filter(data_all, start_date, '2007-12-31')
+data_precrisis = my_time_filter(excess, start_date, '2007-12-31')
 print(data_precrisis.mean(axis = 0)*100)
 
 #%% some plots
