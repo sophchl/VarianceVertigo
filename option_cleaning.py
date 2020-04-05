@@ -91,7 +91,7 @@ for day in options['date']:
         trading_days.append(day)
         
 
-#IT'S TERRIBLE THAT 10 REFERS TO MONEYNESS AND 4 TO CP_FLAG. I WANT TO FIND AN EASIER WAY TO EXPRESS THAT
+
    
 #I need this indeces to make the code as much understandable as possible    
     
