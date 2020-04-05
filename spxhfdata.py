@@ -24,7 +24,7 @@ def separate_tradingday_overnight(data):
 
 #%% lopp over all files in directory to import the data
 
-data_directory = "data/raw/spxhf"
+data_directory = "variance-python/data/raw/spxhf"
 
 list_dataframes = []
 
@@ -57,15 +57,16 @@ day, night = separate_tradingday_overnight(spx)
 
 # A: selecting values 
 
-spx1 = day.resample('1T').mean()
+day1 = day.resample('1T').mean()
+
 fivemin = np.arange(dt.datetime(1996,9,30), dt.datetime(1999,12,2),
                           dt.timedelta(minutes = 5)).astype(dt.datetime)
 fivemin = pd.DataFrame(index = fivemin)
 
 fivemin_day = separate_tradingday_overnight(fivemin)[0]
 
-spx5a = pd.merge(spx1, fivemin_day, right_index = True, left_index = True)
-spx1, fivemin, fivemin_day = None
+spx5a = pd.merge(day1, fivemin_day, right_index = True, left_index = True)
+day1, fivemin, fivemin_day = None
 
 # B: 5 min resample
 # looks like average of e.g. 8:30 are all values from 8:25 to 8:30 etc.
@@ -88,6 +89,10 @@ mydata['return'] = (mydata.bid - mydata.bid.shift(1))/(mydata.bid)
 mydata2 = (mydata[['return']].groupby(mydata.index.date).sum())**2
 mydata2.columns = ['rv']
 
+# add squared overnight return
+
+# what return do we take?
+
 
 #%% calculate upside and downside realized variance
 
@@ -107,3 +112,4 @@ def get_fl_time(data, length):
         print(min(data.index.time), max(data.index.time))
         
 get_fl_time(day, 500)
+
