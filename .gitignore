@@ -1,4 +1,5 @@
 
+# the raw data as it is too big
 VariancePython/data/raw/
 
 .Rproj.user
@@ -308,3 +309,7 @@ TSWLatexianTemp*
 rsconnect/
 .Rproj.user
 
+
+*.gz
+
+*.xml
