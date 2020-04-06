@@ -14,11 +14,13 @@ import pandas as pd
 
 #%% example on how this works (source: https://docs.python.org/3/tutorial/modules.html)
 
-import fibo 
+import example_fibo as fibo
 # show what functions are in a module
+print("this is the content of the example fibo module and an example output:")
 print(dir(fibo))
 # execute the function fib2, assign to fibonacci
 fibonacci = fibo.fib2(10)
+print(fibonacci)
 
 # more ressources on modules: https://docs.python.org/3/tutorial/modules.html
     
