@@ -7,23 +7,26 @@ This is a temporary script file.
 
 # this is our main python file, all functions we created come together
 
-#%% load dependencies
+#%% load our modules via import
 
-import numpy as np
-import pandas as pd
+#%% examples
 
-#%% example on how this works (source: https://docs.python.org/3/tutorial/modules.html)
+# example on working with modules (main source: https://docs.python.org/3/tutorial/modules.html)
 
-import example_fibo as fibo
+import example 
+
 # show what functions are in a module
-print("this is the content of the example fibo module and an example output:")
-print(dir(fibo))
+print(dir(example))
+
 # execute the function fib2, assign to fibonacci
-fibonacci = fibo.fib2(10)
+fibonacci = example.fib2(10)
 print(fibonacci)
 
-# more ressources on modules: https://docs.python.org/3/tutorial/modules.html
-    
+# example latex table and graphic outputs: save them to results!
+example.my_latex_table(fibonacci, 'example_table')
+example.my_graphic_saver(fibonacci, 'example_graphic')
+
+
 #%% import the data 
 
 #%% run the models

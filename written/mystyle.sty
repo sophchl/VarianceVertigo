@@ -7,30 +7,32 @@ top=3cm, bottom=2.5cm, footskip = 1.5cm]{geometry}
 
 
 % Design Input
-\usepackage[utf8]{inputenc} % Inputencoding und Sonderzeichen
+\usepackage[utf8]{inputenc} 	% Inputencoding und Sonderzeichen
 \usepackage[T1]{fontenc} 
-\usepackage{lmodern} %lädt eine bestimmte Art von Fonts
-\usepackage{microtype} %mehr Einstellungen zur Darstellung von Schriften
-\usepackage{textcomp} %European Computer Modern oder Extended Computer Modern, lädt bestimmte grafische Symbole im Text
-\usepackage{amsmath} % for beautiful math symbols 
+\usepackage{lmodern} 		% certain kind of font
+\usepackage{microtype} 		% mehr Einstellungen zur Darstellung von Schriften
+\usepackage{textcomp} 		% European Computer Modern oder Extended Computer Modern, lädt bestimmte grafische Symbole im Text
+\usepackage{amsmath} 		% for beautiful math symbols 
 \usepackage{amsthm}
 \usepackage{amsbsy}
 \usepackage{amssymb} 
-\usepackage{changepage} % for adjusting width of page without page break (newgeometry causes page break)
+\usepackage{changepage} 		% for adjusting width of page without page break (newgeometry causes page break)
 \usepackage{etoolbox}
 \AtBeginEnvironment{quote}{\singlespacing\small}
 \setlength\parindent{0pt}
 
 % Design Tables and Figures (Floats)
-\usepackage{tabulary} % bessere Tabellen (insb. hinsichtlich der Spaltenbreite)
-\usepackage{multirow} % erlaubt Verschmelzung von Zellen in Tabellen
-\usepackage{booktabs} % erlaubt professionellere Tabellen
-\usepackage{rotating} % erlaubt die Rotation von Tabellen innerhalb einer Seite
+\usepackage{tabulary} % nicer tables (particularly to set column width)
+\usepackage{booktabs} % nicer tables and needed for pandas.to_latex() tables
+\usepackage{multirow} % allows multiple rows within a column in table
+\usepackage{rotating} % rotation of tables within a page
 \usepackage[flushleft]{threeparttable}
 \usepackage[labelfont=bf, skip = 8pt]{caption}
 \usepackage{subcaption}
 %\newcommand\fnote[1]{\captionsetup{font=small}\caption*{#1}} % um caption* für figure notes benutzen zu können
-\usepackage{graphicx} %Um Grafiken einzufügen mit Befehl \includegraphics{Dateiname} Datei muss im selben Ordner abgespeichert sein und Dateiname ohne Endung (.jpg oder .pdf) angeben
+\usepackage{graphicx} 
+\graphicspath{{../variance-python/results/graphics/}}
+% set graphic path to our python project
 %\usepackage{footmisc}
 
 % should be included last
@@ -58,7 +60,7 @@ top=3cm, bottom=2.5cm, footskip = 1.5cm]{geometry}
 }
 
 % Sprachen
-\usepackage[ngerman, british]{babel} % Spracheinstellung, für deutsch: ngerman, für englisch: british
+\usepackage[british]{babel} % language setting, german: ngerman, english: british
 \usepackage[autostyle=true, % verwende Spracheinstellungen von babel
 ]{csquotes} % komplementäres Paket zu babel; regelt Anführungszeichen.
 		% öffnen mit "` oder \glqq schließen mit "' oder \grqq (einfache Anführungszeichen: \glq und \grq)

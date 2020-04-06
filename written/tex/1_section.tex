@@ -1,0 +1,19 @@
+%!TEX root = ../Main.tex
+
+\section{Chapter 1}\label{sec:chapter1}
+
+\subsubsection{citations}
+
+run: latex, bibtex, latex to get citations.\\
+
+test citation: \cite{andersen2001}.\\
+
+Example on how to include graphics and tables, located in the python project.
+
+For the graphics I created a link to the variance-python/results/graphics file in ``mystyle.tex'' hence only the name of the graphic without .png ending has to be specified.
+
+\includegraphics{example_graphic}
+
+For tables the whole path has to be specified
+
+\input{../variance-python/results/tables/example_table.tex}
