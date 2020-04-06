@@ -1,0 +1,17 @@
+[0] Config.pm:302> INFO - This is Biber 2.10
+[0] Config.pm:305> INFO - Logfile is 'Main.blg'
+[54] biber-MSWIN64:313> INFO - === 
+[106] Biber.pm:371> INFO - Reading 'Main.bcf'
+[360] Biber.pm:857> INFO - Found 1 citekeys in bib section 0
+[435] Biber.pm:3976> INFO - Processing section 0
+[469] Biber.pm:4136> INFO - Looking for bibtex format file './bib/bib_file.bib' for section 0
+[489] bibtex.pm:1490> INFO - LaTeX decoding ...
+[513] bibtex.pm:1306> INFO - Found BibTeX data source './bib/bib_file.bib'
+[539] Utils.pm:193> WARN - month field 'August' in entry 'andersen2001' is not an integer - this will probably not sort properly.
+[582] UCollate.pm:68> INFO - Overriding locale 'de_DE' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[583] UCollate.pm:68> INFO - Overriding locale 'de_DE' defaults 'variable = shifted' with 'variable = non-ignorable'
+[583] Biber.pm:3804> INFO - Sorting list 'nyt/global//global/global' of type 'entry' with template 'nyt' and locale 'de_DE'
+[584] Biber.pm:3810> INFO - No sort tailoring available for locale 'de_DE'
+[589] bbl.pm:617> INFO - Writing 'Main.bbl' with encoding 'UTF-8'
+[591] bbl.pm:720> INFO - Output to Main.bbl
+[599] Biber.pm:110> INFO - WARNINGS: 1
