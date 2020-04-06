@@ -1,0 +1,107 @@
+\ProvidesPackage{mystyle}
+
+% Design Page
+\usepackage[left=4cm, right=2cm,
+top=3cm, bottom=2.5cm, footskip = 1.5cm]{geometry} 
+\usepackage[doublespacing]{setspace} % Zeilenabstände regeln
+
+
+% Design Input
+\usepackage[utf8]{inputenc} 	% Inputencoding und Sonderzeichen
+\usepackage[T1]{fontenc} 
+\usepackage{lmodern} 		% certain kind of font
+\usepackage{microtype} 		% mehr Einstellungen zur Darstellung von Schriften
+\usepackage{textcomp} 		% European Computer Modern oder Extended Computer Modern, lädt bestimmte grafische Symbole im Text
+\usepackage{amsmath} 		% for beautiful math symbols 
+\usepackage{amsthm}
+\usepackage{amsbsy}
+\usepackage{amssymb} 
+\usepackage{changepage} 		% for adjusting width of page without page break (newgeometry causes page break)
+\usepackage{etoolbox}
+\AtBeginEnvironment{quote}{\singlespacing\small}
+\setlength\parindent{0pt}
+
+% Design Tables and Figures (Floats)
+\usepackage{tabulary} % nicer tables (particularly to set column width)
+\usepackage{booktabs} % nicer tables and needed for pandas.to_latex() tables
+\usepackage{multirow} % allows multiple rows within a column in table
+\usepackage{rotating} % rotation of tables within a page
+\usepackage[flushleft]{threeparttable}
+\usepackage[labelfont=bf, skip = 8pt]{caption}
+\usepackage{subcaption}
+%\newcommand\fnote[1]{\captionsetup{font=small}\caption*{#1}} % um caption* für figure notes benutzen zu können
+\usepackage{graphicx} 
+\graphicspath{{../variance-python/results/graphics/}}
+% set graphic path to our python project
+%\usepackage{footmisc}
+
+% should be included last
+\usepackage{hyperref} 
+\renewcommand*{\sectionautorefname}{Section}
+\renewcommand*{\subsectionautorefname}{Section}
+\renewcommand*{\subsubsectionautorefname}{Section}
+
+% Varia 
+\usepackage[all]{nowidow} % to avoid widows and clubs, see also: http://www.tex.ac.uk/FAQ-widows.html
+\usepackage{tikz}
+\interfootnotelinepenalty=10000 % prevent footnote from floating to next page
+
+% Formatting
+\setlength{\footnotesep}{10pt}
+\setlength{\skip\footins}{1cm}
+
+% Table of contents: be able to hide sections/subsections (used for appendix subsection
+\newcommand{\nocontentsline}[3]{}
+\newcommand{\tocless}[2]{\bgroup\let\addcontentsline=\nocontentsline#1{#2}\egroup}
+\newcommand{\toclesslab}[3]{\bgroup\let\addcontentsline=\nocontentsline#1{#2\label{#3}}\egroup}
+\newcommand{\hiddensubsection}[1]{
+    \stepcounter{subsection}
+    \subsection*{\arabic{chapter}.\arabic{section}.\arabic{subsection}\hspace{1em}{#1}}
+}
+
+% Sprachen
+\usepackage[british]{babel} % language setting, german: ngerman, english: british
+\usepackage[autostyle=true, % verwende Spracheinstellungen von babel
+]{csquotes} % komplementäres Paket zu babel; regelt Anführungszeichen.
+		% öffnen mit "` oder \glqq schließen mit "' oder \grqq (einfache Anführungszeichen: \glq und \grq)
+
+
+% die folgenden Zeilen definieren den Stil von Titelelementen neu, so dass der Titel den Anforderungen des Lehrstuhls PuMa entspricht
+% \addtokomafont{author}{\flushleft}
+% \addtokomafont{date}{\flushleft}
+% \addtokomafont{publishers}{\flushleft}
+
+
+% Bibliography
+\usepackage[
+style=authoryear,
+backend=biber,
+citestyle=authoryear-ibid,
+style=authoryear-icomp,
+sortlocale=de_DE,
+url=false, 
+doi=false,
+isbn=false,
+eprint=false
+]{biblatex}
+% examples can be found here:
+% https://www.sharelatex.com/learn/Biblatex_citation_styles
+% and
+% https://www.sharelatex.com/learn/Biblatex_bibliography_styles
+\DefineBibliographyStrings{ngerman}{andothers = {{et\,al\adddot}},}
+\DeclareNameAlias{sortname}{family-given}
+\defbibfilter{academics}{
+  type=article or
+  type=techreport or
+  type=inproceedings or
+  type=conference or
+  type=book or
+  type=incollection or
+  type=report
+}
+
+\defbibfilter{onlines}{
+  type=misc or
+  type=online
+}
+
