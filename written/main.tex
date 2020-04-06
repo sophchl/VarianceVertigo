@@ -1,0 +1,67 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage{mystyle} % read all packages and specifications from mystyle.tex
+
+\newcommand{\Title}{FILL TITLE HERE}
+
+% fill in all the details about the paper here - will complete when calling tex/front
+\newcommand{\Project}{Seminar Paper}
+\newcommand{\Programme}{MSc Quantitative Finance}
+\newcommand{\Name}{fill our names here}
+\newcommand{\MatrikelNummer}{fill our matriculation number here}
+\newcommand{\Date}{fill deadline here}
+\newcommand{\Semester}{Spring Term 2020}
+\newcommand{\Examinor}{fill examinor here}
+\newcommand{\Supervisor}{fill supervisor here}
+\newcommand{\Chair}{Department of Banking and Finance}
+
+	
+\addbibresource{./bib/bib_file.bib} 
+
+\usepackage{acro}
+\DeclareAcronym{SVI}{short = SVI, long = Google Search Volume Index}
+
+
+\begin{document}
+	\selectlanguage{british}
+
+	% input front page here
+	\newgeometry{top=3cm,bottom=3cm,right=3cm,left=4cm}
+	\input{tex/front}
+	\thispagestyle{empty}
+	\restoregeometry
+	
+	% set style, input lists (content, table, figures, acronyms)
+	\newpage
+	\pagenumbering{Roman}
+	\tableofcontents
+	\listoftables
+	\listoffigures
+	\newpage
+	\printacronyms[exclude-classes=no]
+
+	% input abstract here
+	\newpage	
+	\begin{abstract}
+	\input{tex/abstract}
+	\end{abstract}
+	
+	% input all sections here
+	\newpage
+	\pagenumbering{arabic}
+	\setcounter{page}{1}
+	\input{./tex/1_section.tex}
+	\newpage
+	\input{./tex/2_section.tex} 
+	\newpage
+	
+	% input bibliography, appendix and declaration of independence here
+	\newpage
+	\printbibliography
+	\newpage
+	%\input{./tex/6_appendix.tex}
+	\clearpage
+	\thispagestyle{empty}
+	%\input{./tex/declaration.tex}
+
+\end{document}
