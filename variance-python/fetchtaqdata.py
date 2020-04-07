@@ -5,16 +5,21 @@ Created on Mon Apr  6 13:19:10 2020
 @author: Sophia
 """
 
+#%% initial setup 
+
+# windows: in annaconda prompt: pip install wrds
+# mac: same command in terminal (couldn't try this because I don't have mac)
+
+#%% code
 # dont't run yet, confirm with Nikola beforehand
 
 # setup
 import wrds
 db = wrds.Connection(wrds_username='afqfs20')
+
+# in case you want to save the password
 db.create_pgpass_file()
 
-# test if pw is safeed, disconnect and reconnect
-db.close()
-db = wrds.Connection(wrds_username='afqfs20')
 
 # start to look into the structure
 db.list_libraries()
@@ -34,3 +39,6 @@ print(db.get_row_count('taq', table_name))
 data = db.get_table(library = "taq", table = table_name, columns = "", obs = 10)
 
 # probably we will have to download the data in a loop
+
+# disconnect
+db.close()
