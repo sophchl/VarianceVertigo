@@ -44,12 +44,13 @@ Also the authors briefly mention, that this formula converges to the instantaneo
 This is the expectation calculated using option data. The authors use so called model-free/corrior implied volatility, hence they do not make assumptions regarding the dynamics of the underlying.
 
 \begin{align}\label{eq:Ex_q}
-IV_{t,h}^{U} = \mathbb{E}_{t}^{\mathbb{Q}} \left[ RV_{t,h}^{U} (\kappa) \right] \approx 2 \int_{F_{t}epx(\kappa_{F}}^{\infty} \frac{M_{0}(S)}{S^{2}} \diff S,\\
-IV_{t,h}^{D} = \mathbb{E}_{t}^{\mathbb{Q}} \left[ RV_{t,h}^{D} (\kappa) \right] \approx 2 \int_{0}^{F_{t}epx(\kappa_{F}} \frac{M_{0}(S)}{S^{2}} \diff S
+IV_{t,h}^{U} = \mathbb{E}_{t}^{\mathbb{Q}} \left[ RV_{t,h}^{U} (\kappa) \right] \approx 2 \int_{F_{t}epx(\kappa_{F}}^{\infty} \frac{M_{0}(K)}{K^{2}} \diff K,\\
+
+IV_{t,h}^{D} = \mathbb{E}_{t}^{\mathbb{Q}} \left[ RV_{t,h}^{D} (\kappa) \right] \approx 2 \int_{0}^{F_{t}epx(\kappa_{F}} \frac{M_{0}(K)}{K^{2}} \diff K
 \end{align}
 with
 \begin{align*}
-M_{0}(S) = min(P_{t}(S), C_{t}(S))
+M_{0}(K) = min(P_{t}(K), C_{t}(K))
 \end{align*}
 and with $\kappa_{F} = (\kappa - r_{t}^{f})$ to get consistent thresholds when computing realized and option-implied volatility .\\
 
@@ -98,13 +99,13 @@ How to construct IV?
 
 \textbf{P-Expectation}\\
 
-$\mathbb{E}_{t}^{\mathbb{P}} \left[ RV_{t,h}^{U/D} (\kappa) \right] $: compute the sum as in \ref{eq:RV_p}.\\
+$\mathbb{E}_{t}^{\mathbb{P}} \left[ RV_{t,h}^{U/D} (\kappa) \right] $: compute the sum as in equation \ref{eq:RV_p}.\\
 
 see document: Realized Variance for cleaning and other steps.\\
 
 \textbf{Q-Expectation}\\
 
-$\mathbb{E}_{t}^{\mathbb{Q}} \left[ RV_{t,h}^{U/D} (\kappa) \right]$. try to find a way to compute the integral from \ref{eq:Ex_q}.\\
+$\mathbb{E}_{t}^{\mathbb{Q}} \left[ RV_{t,h}^{U/D} (\kappa) \right]$. try to find a way to compute the integral from equation \ref{eq:Ex_q}.\\
 
 \begin{enumerate}
 \item preprocess the data (step 1 above/Stefanos document)
