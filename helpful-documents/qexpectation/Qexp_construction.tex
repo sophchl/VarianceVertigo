@@ -1,0 +1,124 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+    \geometry{
+    a4paper,
+    total={170mm,257mm},
+    left=20mm,
+    top=20mm,
+    }
+\setlength\parindent{0pt}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\newcommand*\diff{\mathop{}\!\mathrm{d}}
+
+\title{How to compute the option implied volatility}
+%\author{}
+%\date{April 2020}
+
+\begin{document}
+
+\maketitle
+
+\section{Context}\label{sec:1}
+
+There are 2 volatilities to be computed: the expectation under P and the expectation under Q.\\
+
+\textbf{Expectation under P}\\
+This is the expectation calculated using historic return data.\\
+
+The authors use a random walk model 
+\begin{align}\label{eq:Ex_p}
+\mathbb{E}_{t}^{\mathbb{P}} \left[ RV_{t,h}^{U/D} (\kappa) \right] = RV_{t-h,h}^{U/D}(\kappa)
+\end{align}
+
+where the realized variance is calculated per day, and summed up over a time horizon h
+\begin{align}\label{eq:RV_p}
+RV_{t}^{U/D}(\kappa) = \sum_{j=1}^{n_{t}} r_{j,t}^{2} [\text{indicator above/below $\kappa$}]\\
+RV_{t,h}^{U/D} = \sum_{j=1}^{h} RV_{t+j}^{U/D}(\kappa)
+\end{align}
+
+Also the authors briefly mention, that this formula converges to the instantaneous variance, assuming that the stock price follows a jump process. However, we only have to compute the sums above. So I don't think we have to deal much with jumps.\\
+
+\textbf{Expectation under Q}\\
+This is the expectation calculated using option data. The authors use so called model-free/corrior implied volatility, hence they do not make assumptions regarding the dynamics of the underlying.
+
+\begin{align}\label{eq:Ex_q}
+IV_{t,h}^{U} = \mathbb{E}_{t}^{\mathbb{Q}} \left[ RV_{t,h}^{U} (\kappa) \right] \approx 2 \int_{F_{t}epx(\kappa_{F}}^{\infty} \frac{M_{0}(S)}{S^{2}} \diff S,\\
+IV_{t,h}^{D} = \mathbb{E}_{t}^{\mathbb{Q}} \left[ RV_{t,h}^{D} (\kappa) \right] \approx 2 \int_{0}^{F_{t}epx(\kappa_{F}} \frac{M_{0}(S)}{S^{2}} \diff S
+\end{align}
+with
+\begin{align*}
+M_{0}(S) = min(P_{t}(S), C_{t}(S))
+\end{align*}
+and with $\kappa_{F} = (\kappa - r_{t}^{f})$ to get consistent thresholds when computing realized and option-implied volatility .\\
+
+For the intuition and derivation of this formula: see other QExp document.
+
+
+\section{Information from online appendix}\label{sec:2}
+
+Description of procedure
+\begin{enumerate}
+\item preprocessing
+\begin{enumerate}
+	\item sort call and put options by maturity and strike price
+	\item average bid-ask quotes for each contract
+	\item preprocess: apply filters as in Chang, Christoffersen, Jacobs (2013) (see document Stefano)
+	\item only consider OTM contracts
+	\item discard call with moneyness $<$ 0.97, put with moneyness $>$ 1.03
+\end{enumerate}
+\item construct continuous grid 
+\begin{enumerate}
+	\item for each day and each maturity: interpolate implied volatilities over moneyness domain, using cubic spline (use only days with at least 2 OTM calls and 2 OTM puts)
+	\item outside of observed moneyness domain: extrapolate
+	\item obtain: 1,000 IV between moneyness of $0.01$\% and $300$\%.
+\end{enumerate}
+\item construct moments
+\begin{enumerate}
+	\item map IV to call and put prices: call for moneyness $>$ 1, put for moneyness $<$ 1
+	\item approxmiate integrals: Lobatto quadrature
+	\item linear interpolation for corresponding moments
+\end{enumerate}
+\end{enumerate}
+
+Other things to consider
+\begin{itemize}
+\item need comparable numbers of OTM puts and calls in longer-horizon maturities
+\end{itemize}
+
+How to construct IV?
+\begin{itemize}
+\item threshold: $\kappa = 0$, process to risk-free: $b = F_{t}exp(\kappa)$
+\item model-free corridor risk-neutral volatility as in Andersen, Bondarenko, Gonzalez-Perez (2015), Andersen and Bondarenko (2007), Carr, Madan (1999)
+\end{itemize}
+
+
+\section{What are the acutal steps and computations?}\label{sec:3}
+
+\textbf{P-Expectation}\\
+
+$\mathbb{E}_{t}^{\mathbb{P}} \left[ RV_{t,h}^{U/D} (\kappa) \right] $: compute the sum as in \ref{eq:RV_p}.\\
+
+see document: Realized Variance for cleaning and other steps.\\
+
+\textbf{Q-Expectation}\\
+
+$\mathbb{E}_{t}^{\mathbb{Q}} \left[ RV_{t,h}^{U/D} (\kappa) \right]$. try to find a way to compute the integral from \ref{eq:Ex_q}.\\
+
+\begin{enumerate}
+\item preprocess the data (step 1 above/Stefanos document)
+\item compute the integral above
+\item interpolate and extrapolate (step 2 above)
+
+\end{enumerate}
+
+\section{Remaining Questions}
+(all references of sections and step refer to this document)
+\begin{enumerate}
+\item section \ref{sec:2}, step 2: So this they do after they constructed the IV? Sounds to me as if they skip the most important step.
+\item section \ref{sec:2}, step 3: Why to they map IV to put and call prices, what integrals do they compute? If they already have the IV, there are no more integrals to compute, or?
+\item section \ref{sec:3}, step 2: How will we compute the integrals? They mention Lobatto quadrature, Nikola refered us to the computation of the VIX.
+\end{enumerate}
+
+\end{document}

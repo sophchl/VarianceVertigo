@@ -1,6 +1,6 @@
 
 # the raw data as it is too big
-VariancePython/data/raw/
+variance-python/data/raw/
 
 .Rproj.user
 .Rhistory
