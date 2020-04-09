@@ -45,14 +45,13 @@ This is the expectation calculated using option data. The authors use so called 
 
 \begin{align}\label{eq:Ex_q}
 IV_{t,h}^{U} = \mathbb{E}_{t}^{\mathbb{Q}} \left[ RV_{t,h}^{U} (\kappa) \right] \approx 2 \int_{F_{t}epx(\kappa_{F}}^{\infty} \frac{M_{0}(K)}{K^{2}} \diff K,\\
-
 IV_{t,h}^{D} = \mathbb{E}_{t}^{\mathbb{Q}} \left[ RV_{t,h}^{D} (\kappa) \right] \approx 2 \int_{0}^{F_{t}epx(\kappa_{F}} \frac{M_{0}(K)}{K^{2}} \diff K
 \end{align}
 with
 \begin{align*}
-M_{0}(K) = min(P_{t}(K), C_{t}(K))
+M_{0}(K) = \text{min}(P_{t}(K), C_{t}(K))
 \end{align*}
-and with $\kappa_{F} = (\kappa - r_{t}^{f})$ to get consistent thresholds when computing realized and option-implied volatility .\\
+where we take put and call with maturity h and $\kappa_{F} = (\kappa - r_{t}^{f})$ to get consistent thresholds when computing realized and option-implied volatility .\\
 
 For the intuition and derivation of this formula: see other QExp document.
 
@@ -77,7 +76,7 @@ Description of procedure
 \end{enumerate}
 \item construct moments
 \begin{enumerate}
-	\item map IV to call and put prices: call for moneyness $>$ 1, put for moneyness $<$ 1
+	\item map IV to call and put prices: call for K/S $>$ 1 (OTM), put for S/K $<$ 1 (OTM)
 	\item approxmiate integrals: Lobatto quadrature
 	\item linear interpolation for corresponding moments
 \end{enumerate}
