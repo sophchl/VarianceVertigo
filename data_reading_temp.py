@@ -29,21 +29,21 @@ def my_time_filter(df, start_date, end_date):
     return(filtered_df)
 
 
-#%% process/add tbill (tb2)
+#%% process/add tbill (tb)
 
-tbill_raw2 = pd.read_csv('data/raw/tbill/rf3m.csv')
-tb2 = tbill_raw2[:]
+tbill_raw = pd.read_csv('variance-python/data/raw/tbill/rf3m.csv')
+tb = tbill_raw[:]
 
-print(tb2.columns)
-tb2.columns  = ['ident', 'date', 'bidytm', 'askytm', 'nomytm']
-tb2['date'] = pd.to_datetime(tb2['date'])
+print(tb.columns)
+tb.columns  = ['ident', 'date', 'bidytm', 'askytm', 'nomytm']
+tb['date'] = pd.to_datetime(tb['date'])
 
-tb2['rfm'] = ((1+(tb2.nomytm)/100)**(1/12))-1
-tb2['rfy'] = tb2.nomytm/100
+tb['rfm'] = ((1+(tb.nomytm)/100)**(1/12))-1
+tb['rfy'] = tb.nomytm/100
 
-data_all = pd.merge(tb2[['date', 'rfm', 'rfy']], data_all, on = 'date')
+data_all = pd.merge(tb[['date', 'rfm', 'rfy']], data_all, on = 'date')
 
-#%% process/add tbill (tb3)
+#%% process/add tbill (tb)
 
 #tbill_raw3 = pd.read_csv('data/raw/3mtbill3.csv')
 #tb3 = tbill_raw3[:]
@@ -57,7 +57,7 @@ data_all = pd.merge(tb2[['date', 'rfm', 'rfy']], data_all, on = 'date')
 
 #%% process/add spx 
 
-spx_raw = pd.read_csv('data/raw/spx/spx_monthly.csv')
+spx_raw = pd.read_csv('variance-python/data/raw/spx/spx_monthly.csv')
 spx = spx_raw[:]
 
 spx.columns = ['date', 'vwred', 'vwrid', 'ewred', 'edrid', 'value', 'rtrnm']
@@ -65,9 +65,9 @@ spx['date'] = pd.to_datetime(spx['date'], format='%Y%m%d')
 
 spx['rtrny'] = (1 + spx.rtrnm)**(12) - 1
 
+# calculate a monthly return for vwred, vwrid, ewred, edrid
 for i in range(1,5):
     spx[('rtrnm_' + str(i))] = (spx.iloc[:,i] - spx.iloc[:,i].shift(1))/spx.iloc[:,i].shift(1)
-
 
 data_all = pd.merge(spx[['date', 'rtrnm', 'rtrny', 'rtrnm_1', 'rtrnm_2', 'rtrnm_3', 'rtrnm_4']], data_all, on = 'date')
 
@@ -75,13 +75,13 @@ data_all = pd.merge(spx[['date', 'rtrnm', 'rtrny', 'rtrnm_1', 'rtrnm_2', 'rtrnm_
 
 # some attempts to get their numbers
 
-# take difference of log return
+# take difference of log return - that is I think how it should be done
 data_all['excessya'] = 12*np.log(1 + data_all.rtrnm) - np.log(1 + data_all.rfy)
 
-# difference of absolute return  log afterwards
+# difference of absolute return log afterwards
 data_all['excessyb'] = 12* np.log(1 + (data_all.rtrnm - data_all.rfm))
 
-# same with annualized returns
+# same with annualized returns - first should be idetical to first overall
 data_all['excessyc'] = np.log(1 + data_all.rtrny) - np.log(1 + data_all.rfy)
 data_all['excessyd'] = np.log(1 + (data_all.rtrny - data_all.rfy))
 
