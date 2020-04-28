@@ -12,38 +12,42 @@ import numpy as np
 import pandas as pd
 import datetime as dt
 
+kappa = 0
+
 #%% import data
 
-mydata = pd.read_csv("variance-python/data/raw/spxhf4/5minspx20073.csv",)
+spx = pd.read_csv("variance-python/data/raw/spxhf4/5minspx20074.csv", index_col = 0)
+spx.index = pd.to_datetime(spx.index)
 
 #%% calculate return and realized variances
 
-mydata['rtrn'] = np.log(mydata.bid) - np.log(mydata.bid.shift(1))
+spx['rtrn'] = np.log(spx.mid) - np.log(spx.mid.shift(1))
 
 # create mydata2: aggregate to rv daily data
-mydata2 = (mydata[['rtrn']]**2).resample('1D').sum()
-mydata2.columns = ['rv']
+spx_daily = (spx[['rtrn']]**2).resample('1D').sum()
+spx_daily.columns = ['rv']
 
-# add squared overnight return
-spx1 = spx.resample('1T').mean()
-mydata2['open'] = spx1[spx1.index.time == dt.time(9,31,0)].bid.resample('1D').mean()
-mydata2['close'] = spx1[spx1.index.time == dt.time(16,0,0)].bid.resample('1D').mean()
-mydata2['overnight'] = np.log(mydata2['open']) - np.log(mydata2['close'].shift(1))
-mydata2['rv2'] = mydata2['rv'] + mydata2['overnight']**2
+# add squared overnight return (have to do resample sum to get to daily data, but sum of only one value)
+spx_daily['open'] = spx[spx.index.time == dt.time(9,30,0)].mid.resample('1D').sum()
+spx_daily['close'] = spx[spx.index.time == dt.time(16,0,0)].mid.resample('1D').sum()
+spx_daily['overnight'] = np.log(spx_daily['open']) - np.log(spx_daily['close'].shift(1))
+spx_daily['rv2'] = spx_daily['rv'] + spx_daily['overnight']**2
+
+# 732 Nan rows out of 4482 
 
 #%% calculate upside and downside realized variance
 
-mydata2['rv_u'] = (mydata[mydata['rtrn'] > kappa]['rtrn']**2).resample('1D').sum()
-mydata2['rv_d'] = (mydata[mydata['rtrn'] <= kappa]['rtrn']**2).resample('1D').sum()
+spx_daily['rv_u'] = (spx[spx['rtrn'] > kappa]['rtrn']**2).resample('1D').sum()
+spx_daily['rv_d'] = (spx[spx['rtrn'] <= kappa]['rtrn']**2).resample('1D').sum()
 
-# test
-print(False in round((mydata2['rv_u'] + mydata2['rv_d']),10) == round(mydata2['rv'],10))
+# test if up ad down rv sums to rv (if result is False we are good)
+print("Does sum of rv up and down deviate from rv?", False in round((spx_daily['rv_u'] + spx_daily['rv_d']),10) == round(spx_daily['rv'],10))
 
 # add overnight 
-mydata2['rv_u2'] = mydata2['rv_u'] + mydata2[mydata2['overnight'] > kappa]['overnight']**2
-mydata2['rv_d2'] = mydata2['rv_d'] + mydata2[mydata2['overnight'] <= kappa]['overnight']**2
+spx_daily['rv_u2'] = spx_daily['rv_u'] + spx_daily[spx_daily['overnight'] > kappa]['overnight']**2
+spx_daily['rv_d2'] = spx_daily['rv_d'] + spx_daily[spx_daily['overnight'] <= kappa]['overnight']**2
 
-mydata2 = mydata2.drop(['close', 'open', 'overnight'], axis = 1)
+spx_daily = spx_daily.drop(['close', 'open', 'overnight'], axis = 1)
 
 #%% apply scaling
 
