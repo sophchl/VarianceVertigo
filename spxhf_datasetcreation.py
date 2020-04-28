@@ -77,7 +77,6 @@ spx5 = separate_tradingday_overnight(spx5)[0]
 spx5 = spx5.drop(['open', 'close'], axis = 1)
 
 spx5[spx5.isnull().any(axis = 1)]
-# we have nans now
 
 
 #%% join data 2007 - 2020 and save them
