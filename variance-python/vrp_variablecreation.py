@@ -76,7 +76,6 @@ ivu.index = cut_dates['dates']
 cut_rv = rv[(rv.index >= start) & (rv.index < end)]
 
 
-
 #%% create one dataframe per h
 
 '''

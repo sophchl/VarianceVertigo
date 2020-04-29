@@ -14,7 +14,6 @@ output: RV upside and downside, daily frequency
 import numpy as np
 import pandas as pd
 import datetime as dt
-from matplotlib import pyplot
 
 #%% set variables
 
