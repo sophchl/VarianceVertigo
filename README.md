@@ -8,4 +8,5 @@ In this directory you find:
 * helpful-documents: latex files we made to document our theoretical approach before starting the code
 * variance-python: our python project and code
 * written: the latex code
+* gitignore: the files to be ignored when pushing git
 
