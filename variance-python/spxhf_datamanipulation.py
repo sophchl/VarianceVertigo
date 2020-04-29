@@ -25,7 +25,7 @@ kappa = 0
 spx = pd.read_csv("data/processed/spxhf/spx5min.csv", index_col = 0)
 spx.index = pd.to_datetime(spx.index)
 
-oxford_data = pd.read_csv("data/raw/oxford5min/oxfordmanrealizedvolatilityindices.csv", )
+oxford_data = pd.read_csv("data/processed/oxford5min/oxfordmanrealizedvolatilityindices.csv", )
 oxford_data['date'] = oxford_data.iloc[:,0].str.slice(0,10,1)
 oxford_data.index = pd.to_datetime(oxford_data.date)
 
