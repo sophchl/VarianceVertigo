@@ -42,13 +42,11 @@ pd.DataFrame(dates['__function_workspace__'])
 #%% import data
 
 # dates
-
 dates = pd.read_csv('data/processed/ivs/dates.csv', header = None)
 dates = dates.rename(columns={0:'dates'})
 dates['dates'] = pd.to_datetime(dates['dates'])
 
 # ivs
-
 ivd = pd.read_csv("data/processed/ivs/IV_D_interpolated_030107_to_071015.csv", header = None)
 ivu = pd.read_csv("data/processed/ivs/IV_U_interpolated_030107_to_071015.csv", header = None)
 
@@ -56,8 +54,10 @@ ivu = pd.read_csv("data/processed/ivs/IV_U_interpolated_030107_to_071015.csv", h
 ivd.columns = ['h1', 'h2', 'h3', 'h6', 'h9', 'h12']
 ivu.columns = ['h1', 'h2', 'h3', 'h6', 'h9', 'h12']
 
-# rv
+ivu = ivu.sort_index()
+ivd = ivd.sort_index()
 
+# rv
 rv = pd.read_csv("data/processed/rv/rv.csv", index_col = 0)
 rv.index = pd.to_datetime(rv.index)
 
@@ -87,9 +87,19 @@ maturity (h_days, h_days = 21, 42, 63, 126, 189, 252) in days.
 Per h we have a dataset with the following rows:
 For each day i: from ivu, ivd row i, column h_month and from rv the sum of rows (i-h_days to i-1).
 '''
+# compare dates of rv and ivu/ivd
+missing_dates_rv = ivu.index[~ivu.index.isin(cut_rv.index)]
+print(missing_dates_rv)
 
-print(ivd.index)
-print(cut_rv.index)
+# interpolate the 15 missing days
+add_to_rv = pd.DataFrame(np.nan, index = missing_dates_rv, columns = cut_rv.columns)
+cut_rv = cut_rv.append(add_to_rv)
+cut_rv = cut_rv.sort_index()
+cut_rv = cut_rv.interpolate(method = 'linear')
+
+# if both below are false, the indexes are the same
+False in (ivu.index == ivd.index)
+False in (ivu.index == cut_rv.index)
 
 tradingdays_month = 21
 h_month = np.array([1,2,3,6,9,12])

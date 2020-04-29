@@ -112,28 +112,16 @@ spx_daily['rv_d2'] = spx_daily.apply(add_overnight_down, args = (kappa, 0), axis
 # manual check (looks ok, what do you think?)
 spx_daily[['rv_d', 'rv_u', 'overnight', 'rv_d2', 'rv_u2']]
 
+spx_daily['rtrn_daily'] = np.log(spx_daily['close']) - np.log(spx_daily['open'])
+
 # remove variables we don't need
 spx_daily = spx_daily.drop(['close', 'open', 'overnight'], axis = 1)
 
 check_for_nans(spx_daily)
 
-#%% apply scaling (silvias code, my data2 is what I named spx_daily)
-
-'''
-sample_var= np.var(mydata2['rv_tot'])
-mydata2['rv_scaled']= mydata2['rv_tot']/sample_var
-sample_avg=np.mean(mydata2['rv_scaled'])
-
-mydata2['rv_U_scaled']=(mydata2['rv_U_tot'] * sample_var) / (sample_avg)
-mydata2['rv_D_scaled']=(mydata2['rv_D_tot'] * sample_var) / (sample_avg)
-mydata2['rv_scaled']=mydata2['rv_U_scaled']+mydata2['rv_D_scaled']
-mydata2['date'] = mydata2.index
-mydata2['month'] = pd.to_datetime(mydata2['date'], format='%Y-%m-%d').apply(lambda x: x.strftime('%Y-%m'))
-
-'''
 #%% apply scaling, my code 
 
-sample_var_returns = np.var(spx.rtrn) # modification: variance of returns, not rv or?
+sample_var_returns = np.var(spx_daily.rtrn_daily) 
 sample_avg_rv = np.mean(spx_daily['rv2']) # modification: average of unscaled rv or?
 
 spx_daily['rv_scaled']= spx_daily['rv2']/sample_var_returns

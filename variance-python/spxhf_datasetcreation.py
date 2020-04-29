@@ -18,7 +18,6 @@ to the "data/raw" and the "data/processeed" directory.
 
 #%% setup
 
-import os
 import numpy as np
 import pandas as pd
 import datetime as dt
@@ -33,10 +32,12 @@ def separate_tradingday_overnight(data):
     night = data.loc[nightindex,]
     return(day, night)
 
-'''
-# commented out because code runs long and I saved an intermediate result afterwards so don't run if not necessary
+
 
 #%% loop over all files in directory to import the data from manual download
+# commented out because code runs long and I saved an intermediate result afterwards so don't run if not necessary
+
+'''
 # directly aggregate to mide price in 5min during trading day
 
 # this section takes quite long!
@@ -160,6 +161,11 @@ print('number of days in dataset', len(np.unique(spx['date'])))
 
 spx.to_csv("data/raw/spxhf4/5minspx20073.csv")
 
+#%% check for zeros (2 rows)
+
+spx = spx.replace(0, np.nan)
+spx[spx.mid.eq(0)]
+
 #%% which dates still have Nans?
 
 rows_w_nan = spx[spx.isnull().any(axis = 1)]
@@ -174,13 +180,15 @@ for i in range(1,len(np.unique(rows_w_nan.index.date))):
     
 print('Nans per day that has Nans:', list_nan_per_day)
 
-#%% interpolate missing values per day
+
+#%% interpolate missing 5-min values (91)
 
 spx['mid'] = spx['mid'].interpolate()
 
 rows_w_nan = spx[spx.isnull().any(axis = 1)]
 days_w_nan = np.unique(rows_w_nan.index.date)
 print('number of Nans:', len(days_w_nan))
+
 
 #%% save this version (2007 - 2020, no Nan)
 
@@ -189,6 +197,7 @@ spx.to_csv("data/processed/spxhf/spx5min.csv")
 
 #%% sorted temporal checks
 
+'''
 # temporal check: time frame we have for option data
 start = dt.date(2007,1,3)
 end = dt.date(2015,10,7)
@@ -196,6 +205,7 @@ spx = spx[(spx.date >= start) & (spx.date < end)]
 
 rows_remove_c = spx[~spx['date'].isin(available_dates['date'])]
 np.unique(rows_remove_c['date'])
+'''
     
 
 
