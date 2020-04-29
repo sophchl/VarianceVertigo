@@ -9,12 +9,11 @@ This is a temporary script file.
 
 #%% load our modules via import
 
-
 #%% import the data 
 
 #%% run the models
 
-#%% plto the results
+#%% plot the results
 
 #%% robustness tests
 

@@ -3,14 +3,16 @@
 Created on Sun Mar 29 09:07:17 2020
 
 @author: Sophia
+
+input:
+output:
+    
 """
 
 #%% load dependencies 
 
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-#from datetime import datetime
 
 #%% global variables
 

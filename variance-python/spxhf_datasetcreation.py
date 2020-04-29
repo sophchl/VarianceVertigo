@@ -4,11 +4,15 @@ Created on Sat Apr  4 11:32:13 2020
 
 @author: Sophia
 
-This code loops over the single files that contain the spx high-frequency data
-and creates one dataset. Several files are saved into the "data/raw" files on
-the way to have multiple points where the code can be started from.
-The final version is saved both to the "data/raw" and the "data/processeed"
-directory.
+input: multiple csv files of hf spy data
+output: one csv files with 5-min spx data
+
+description:
+This code loops over the single files that contain the spy high-frequency data
+and creates one dataset to approximate spx.
+Several files are saved into the "data/raw" files on the way to have multiple
+points where the code can be started from. The final version is saved both 
+to the "data/raw" and the "data/processeed" directory.
 
 """
 
@@ -19,10 +23,6 @@ import numpy as np
 import pandas as pd
 import datetime as dt
 import pandas_market_calendars as mcal
-
-#%% set parameters
-
-kappa = 0
 
 #%% functions needed
 
