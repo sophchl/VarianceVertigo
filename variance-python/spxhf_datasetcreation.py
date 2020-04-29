@@ -3,6 +3,13 @@
 Created on Sat Apr  4 11:32:13 2020
 
 @author: Sophia
+
+This code loops over the single files that contain the spx high-frequency data
+and creates one dataset. Several files are saved into the "data/raw" files on
+the way to have multiple points where the code can be started from.
+The final version is saved both to the "data/raw" and the "data/processeed"
+directory.
+
 """
 
 #%% setup
@@ -29,7 +36,8 @@ def separate_tradingday_overnight(data):
 
 #%% loop over all files in directory to import the data from manual download
 # directly aggregate to mide price in 5min during trading day
-# do that only once!!
+
+# do that only once (takes quite long)!!
 
 data_directory = "variance-python/data/raw/spxhf3"
 
@@ -44,17 +52,19 @@ for file in os.listdir(data_directory):
         df = df.drop(['BID', 'OFR', 'DATE', 'TIME', 'SYMBOL'], axis = 1)
         df = df.resample('5T').median()
         df = separate_tradingday_overnight(df)[0]
-        list_dataframes.append(df2)
+        list_dataframes.append(df)
         print(file)
         continue
     else:
         continue
     
-#%% create one big dataframe, sort by date and time, separate day and night
-# do that only once
+#%% create one big dataframe and safe it to be able to continue from here
+
+# do that only once (after the loop above was executed)
 
 spx1 = pd.concat(list_dataframes)
 spx1 = spx1.sort_index()
+
 spx1.to_csv("variance-python/data/raw/spxhf4/5minspx2007.csv")
 
 #%% import data from 2007
@@ -155,6 +165,7 @@ print('number of Nans:', len(days_w_nan))
 #%% save this version (2007 - 2020, no Nan)
 
 spx.to_csv("variance-python/data/raw/spxhf4/5minspx20074.csv")
+spx.to_csv("variance-python/data/processed/spxhf/spx5min.csv")
     
 
 

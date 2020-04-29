@@ -9,6 +9,16 @@ This is a temporary script file.
 
 #%% load our modules via import
 
+
+#%% import the data 
+
+#%% run the models
+
+#%% plto the results
+
+#%% robustness tests
+
+
 #%% examples
 
 # example on working with modules (main source: https://docs.python.org/3/tutorial/modules.html)
@@ -27,16 +37,6 @@ example.my_latex_table(fibonacci, 'example_table')
 example.my_graphic_saver(fibonacci, 'example_graphic')
 
 
-#%% import the data 
-
-#%% run the models
-
-#%% plto the results
-
-#%% robustness tests
-
-
-    
     
 
 
