@@ -4,8 +4,8 @@ Created on Sat Apr  4 11:32:13 2020
 
 @author: Sophia
 
-input: multiple csv files of hf spy data
-output: one csv files with 5-min spx data
+input: multiple csv files of hf spy data (from raw)
+output: one csv files with 5-min spx data (to raw and processed)
 
 description:
 This code loops over the single files that contain the spy high-frequency data
@@ -33,10 +33,13 @@ def separate_tradingday_overnight(data):
     night = data.loc[nightindex,]
     return(day, night)
 
+'''
+# commented out because code runs long and I saved an intermediate result afterwards so don't run if not necessary
+
 #%% loop over all files in directory to import the data from manual download
 # directly aggregate to mide price in 5min during trading day
 
-# do that only once (takes quite long)!!
+# this section takes quite long!
 
 data_directory = "data/raw/spxhf3"
 
@@ -59,12 +62,11 @@ for file in os.listdir(data_directory):
     
 #%% create one big dataframe and safe it to be able to continue from here
 
-# do that only once (after the loop above was executed)
-
 spx1 = pd.concat(list_dataframes)
 spx1 = spx1.sort_index()
 
 spx1.to_csv("data/raw/spxhf4/5minspx2007.csv")
+'''
 
 #%% import data from 2007
 

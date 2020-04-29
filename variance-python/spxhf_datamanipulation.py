@@ -4,8 +4,8 @@ Created on Tue Apr 28 14:53:09 2020
 
 @author: Sophia
 
-input: spy 5min data
-output: RV upside and downside, daily frequency
+input: spy 5min data (from processed)
+output: RV upside and downside, daily frequency (to processed)
 
 """
 
