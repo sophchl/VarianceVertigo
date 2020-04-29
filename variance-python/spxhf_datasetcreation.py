@@ -33,13 +33,12 @@ def separate_tradingday_overnight(data):
     night = data.loc[nightindex,]
     return(day, night)
 
-
 #%% loop over all files in directory to import the data from manual download
 # directly aggregate to mide price in 5min during trading day
 
 # do that only once (takes quite long)!!
 
-data_directory = "variance-python/data/raw/spxhf3"
+data_directory = "data/raw/spxhf3"
 
 list_dataframes = []
 
@@ -65,16 +64,16 @@ for file in os.listdir(data_directory):
 spx1 = pd.concat(list_dataframes)
 spx1 = spx1.sort_index()
 
-spx1.to_csv("variance-python/data/raw/spxhf4/5minspx2007.csv")
+spx1.to_csv("data/raw/spxhf4/5minspx2007.csv")
 
 #%% import data from 2007
 
-spx1 = pd.read_csv("variance-python/data/raw/spxhf4/5minspx2007.csv", index_col = 0)
+spx1 = pd.read_csv("data/raw/spxhf4/5minspx2007.csv", index_col = 0)
 spx1.index = pd.to_datetime(spx1.index)
  
 #%% import the data 2008 - 2020
 
-spx2_raw = pd.read_csv("variance-python/data/raw/spxhf2/SPY/SPY.csv", index_col = 0)
+spx2_raw = pd.read_csv("data/raw/spxhf2/SPY/SPY.csv", index_col = 0)
 spx2_raw.index = pd.to_datetime(spx2_raw.index)
 spx2_raw['date'] = spx2_raw.index.date
 spx2_raw['time'] = spx2_raw.index.time
@@ -96,24 +95,40 @@ spx = pd.concat([spx1, spx5])
 
 print('Are there overlaps?', True in spx.index.duplicated(keep = "first"))
 
-spx.to_csv("variance-python/data/raw/spxhf4/5minspx20072.csv")
+spx.to_csv("data/raw/spxhf4/5minspx20072.csv")
 
 #%% import dataset 2007 - 2020
 
-spx = pd.read_csv("variance-python/data/raw/spxhf4/5minspx20072.csv", index_col = 0)
+spx = pd.read_csv("data/raw/spxhf4/5minspx20072.csv", index_col = 0)
 spx.index = pd.to_datetime(spx.index)
+
+#%% add original dates for Nan detection
+
+spx2_raw = pd.read_csv("data/raw/spxhf2/SPY/SPY.csv", index_col = 0)
+spx2_raw.index = pd.to_datetime(spx2_raw.index)
+spx1 = pd.read_csv("data/raw/spxhf4/5minspx2007.csv", index_col = 0)
+spx1.index = pd.to_datetime(spx1.index)
+
+available_dates = pd.concat([pd.DataFrame(np.unique(spx1.index.date)), 
+                             pd.DataFrame(np.unique(spx2_raw.index.date))])
+available_dates.columns = ['date']
+
+spx['date'] = spx.index.date
 
 #%% check for missing values (remove holiday and weekend)
 
-print('length of dataset initial:', len(spx))
+# look at initial dataset
 missing_days = pd.date_range(start = dt.date(2008,1,2), end = dt.date(2020,4,9)).difference(spx.index.date)
-print('number of missing days:', len(missing_days))
+print('length of dataset initial:', len(spx))
+print('number of missing days compared to all dates 2.1.2008 - 9.4.2020:', len(missing_days))
 print('number of Nans:', spx.isnull().sum())
+print('number of days in dataset', len(np.unique(spx['date'])))
 
 # remove weekends 
 spx = spx[spx.index.dayofweek < 5]
 print('length of dataset without weekend:', len(spx))
 print('number of Nans:', spx.isnull().sum())
+print('number of days in dataset', len(np.unique(spx['date'])))
 
 # remove non-trading days
 nyse = mcal.get_calendar('NYSE')
@@ -124,21 +139,24 @@ spx['to_drop'] = [1 if x in no_trading_days else 0 for x in spx.index.date]
 index_to_drop = spx[spx['to_drop'] == 1].index
 spx = spx.drop(index = index_to_drop, columns = ['to_drop'])
 
-print('length of dataset witout holiday days:', len(spx))
+print('length of dataset without holiday days:', len(spx))
 print('number of Nans:', spx.isnull().sum())
+print('number of days in dataset', len(np.unique(spx['date'])))
+
+# look what Nans we have left
 spx.isnull().values.any()
 spx[spx.isna().any(axis=1)]
 
-# remove days that were not in original sample (probably non-trading days too)
-spx['date'] = spx.index.date
-spx = spx[spx['date'].isin(spx2_raw['date'])]
+# remove days that were not in original sample (probably non-trading days, too)
+spx = spx[spx['date'].isin(available_dates['date'])]
                                  
-print('length of dataset witout days that were not in sample before:', len(spx))
+print('length of dataset without days that were not in sample before:', len(spx))
 print('number of Nans:', spx.isnull().sum())
+print('number of days in dataset', len(np.unique(spx['date'])))
 
 #%% save this version (2007 - 2020, no days with all Nan but some intraday Nan)
 
-spx.to_csv("variance-python/data/raw/spxhf4/5minspx20073.csv")
+spx.to_csv("data/raw/spxhf4/5minspx20073.csv")
 
 #%% which dates still have Nans?
 
@@ -164,8 +182,18 @@ print('number of Nans:', len(days_w_nan))
 
 #%% save this version (2007 - 2020, no Nan)
 
-spx.to_csv("variance-python/data/raw/spxhf4/5minspx20074.csv")
-spx.to_csv("variance-python/data/processed/spxhf/spx5min.csv")
+spx.to_csv("data/raw/spxhf4/5minspx20074.csv")
+spx.to_csv("data/processed/spxhf/spx5min.csv")
+
+#%% sorted temporal checks
+
+# temporal check: time frame we have for option data
+start = dt.date(2007,1,3)
+end = dt.date(2015,10,7)
+spx = spx[(spx.date >= start) & (spx.date < end)]
+
+rows_remove_c = spx[~spx['date'].isin(available_dates['date'])]
+np.unique(rows_remove_c['date'])
     
 
 

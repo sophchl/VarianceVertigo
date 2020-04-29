@@ -80,9 +80,6 @@ spx_daily['close'] = spx[spx.index.time == dt.time(16,0,0)].mid.resample('1D').s
 spx_daily['overnight'] = np.log(spx_daily['open']) - np.log(spx_daily['close'].shift(1))
 spx_daily['rv2'] = spx_daily['rv'] + spx_daily['overnight']**2
 
-# again delete days that were not in dataset before (resample adds them)
-spx_daily = spx_daily[spx_daily.index.isin(spx.index.date)]
-
 check_for_nans(spx_daily)
 
 # how many days and Nans?
@@ -104,9 +101,6 @@ spx_daily.rv.plot()
 spx_daily['rv_u'] = (spx[spx['rtrn'] > kappa]['rtrn']**2).resample('1D').sum()
 spx_daily['rv_d'] = (spx[spx['rtrn'] <= kappa]['rtrn']**2).resample('1D').sum()
 
-# again delete days that were not in dataset before (resample adds them)
-spx_daily = spx_daily[spx_daily.index.isin(spx.index.date)]
-
 check_for_nans(spx_daily)
 
 # test if up ad down rv sums to rv (if result is False we are good)
@@ -126,6 +120,7 @@ check_for_nans(spx_daily)
 
 #%% apply scaling (silvias code, my data2 is what I named spx_daily)
 
+'''
 sample_var= np.var(mydata2['rv_tot'])
 mydata2['rv_scaled']= mydata2['rv_tot']/sample_var
 sample_avg=np.mean(mydata2['rv_scaled'])
@@ -136,6 +131,7 @@ mydata2['rv_scaled']=mydata2['rv_U_scaled']+mydata2['rv_D_scaled']
 mydata2['date'] = mydata2.index
 mydata2['month'] = pd.to_datetime(mydata2['date'], format='%Y-%m-%d').apply(lambda x: x.strftime('%Y-%m'))
 
+'''
 #%% apply scaling, my code 
 
 sample_var_returns = np.var(spx.rtrn) # modification: variance of returns, not rv or?
@@ -149,8 +145,6 @@ spx_need = spx_daily[['rv2', 'rv_u2', 'rv_d2', 'rv_scaled', 'rv_u_scaled', 'rv_d
 spx_need.columns = ['rv', 'rv_u', 'rv_d', 'rv_sc', 'rv_u_sc', 'rv_d_sc']
 
 check_for_nans(spx_need)
-
-#%% accumulating to h
 
 #%% export the data
 
