@@ -106,7 +106,7 @@ spx_daily.rv.plot()
 spx_daily['rtrn_daily'] = np.log(spx_daily['close']) - np.log(spx_daily['close']).shift(1)
 
 # remove first 1 day because overnight return and daily returns gives nan
-spx_daily = spx_daily.iloc[2:]
+spx_daily = spx_daily.iloc[1:]
 
 #%% calculate upside and downside realized variance
 

@@ -63,37 +63,39 @@ rv.index = pd.to_datetime(rv.index)
 
 #%% add dates to ivs and put all dataframes to same length
 
-# cut off dates where we don't have ivs computed
+# cut off dates of rv where we don't have ivs computed
 # from name of dataset, start: 03.01.2007, end: 07.10.2015
 
 start = dt.datetime(2007,1,3)
 end = dt.datetime(2015,10,7)
 
-cut_dates = dates[(dates['dates'] >= start) & (dates['dates'] < end)]
-ivd.index = cut_dates['dates']
-ivu.index = cut_dates['dates']
+cut_dates_rv = dates[(dates['dates'] >= start) & (dates['dates'] < end)]
+ivd.index = cut_dates_rv['dates']
+ivu.index = cut_dates_rv['dates']
 
 cut_rv = rv[(rv.index >= start) & (rv.index < end)]
 
-# we have to delete the first row of both ivs and rv
-# return is nan in first row, hence overnight return set to -1, hence scaled variables really big
-cut_rv = cut_rv.drop(dt.date(2007,1,3), axis = 0)
-ivu = ivu.drop(dt.date(2007,1,3), axis = 0)
-ivd = ivd.drop(dt.date(2007,1,3), axis = 0)
-
-# compare dates of rv and ivu/ivd
-missing_dates_rv = ivu.index[~ivu.index.isin(cut_rv.index)]
-print(missing_dates_rv)
-
-# interpolate the 15 missing days
+# interpolate dates in rv that are missing
+missing_dates_rv = ivd.index[~ivd.index.isin(cut_rv.index)]
+print('interpolate days:', len(missing_dates_rv))
 add_to_rv = pd.DataFrame(np.nan, index = missing_dates_rv, columns = cut_rv.columns)
 cut_rv = cut_rv.append(add_to_rv)
 cut_rv = cut_rv.sort_index()
 cut_rv = cut_rv.interpolate(method = 'linear')
 
+# we dont have first row of rv nan because of returns
+cut_ivu = ivu.iloc[1:]
+cut_ivd = ivd.iloc[1:]
+cut_rv = cut_rv.iloc[1:]
+
+# compare dates of rv and ivu/ivd
+missing_dates_rv = cut_ivu.index[~cut_ivu.index.isin(cut_rv.index)]
+print(missing_dates_rv)
+
+
 # if both below are false, the indexes are the same
-print('Any difference in indexes of ivs?', False in (ivu.index == ivd.index))
-print('Any difference in index ov ivs and rv?', False in (ivu.index == cut_rv.index))
+print('Any difference in indexes of ivs?', False in (cut_ivu.index == cut_ivd.index))
+print('Any difference in index ov ivs and rv?', False in (cut_ivu.index == cut_rv.index))
 
 #%% In the following we need to sum rv over the past days to accumulate to heach h
 
@@ -132,10 +134,10 @@ h = 1
 df1 = pd.DataFrame(columns = ["rv", "rvu", "rvd", "ivu", "ivd"], index = cut_rv.index)
 rvu_accum = cut_rv['rv_u_sc'].rolling(window = h_days[h-1]).sum()
 df1["rvu"] = rvu_accum.shift(periods = 1)
-rvd_accum =
+rvd_accum = cut_rv['rv_d_sc'].rolling(window = h_days[h-1]).sum()
 df1["rvd"] = cut_rv['rv_d_sc']
-df1["ivu"] = ivu.iloc[:,h-1]
-df1["ivd"] = ivd.iloc[:,h-1]
+df1["ivu"] = cut_ivu.iloc[:,h-1]
+df1["ivd"] = cut_ivd.iloc[:,h-1]
 
 
 
