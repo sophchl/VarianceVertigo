@@ -33,7 +33,6 @@ def separate_tradingday_overnight(data):
     return(day, night)
 
 
-
 #%% loop over all files in directory to import the data from manual download
 # commented out because code runs long and I saved an intermediate result afterwards so don't run if not necessary
 
@@ -118,7 +117,7 @@ available_dates.columns = ['date']
 
 spx['date'] = spx.index.date
 
-#%% check for missing values (remove holiday and weekend)
+#%% check for missing values (remove holiday and weekend days)
 
 # look at initial dataset
 missing_days = pd.date_range(start = dt.date(2008,1,2), end = dt.date(2020,4,9)).difference(spx.index.date)
@@ -161,12 +160,16 @@ print('number of days in dataset', len(np.unique(spx['date'])))
 
 spx.to_csv("data/raw/spxhf4/5minspx20073.csv")
 
-#%% check for zeros (2 rows)
+#%% replace mid = 0 with nan to interpolate later
+
+print('set mid = 0 to nan for rows:', len(spx[spx.mid.eq(0)]))
 
 spx = spx.replace(0, np.nan)
-spx[spx.mid.eq(0)]
 
-#%% which dates still have Nans?
+days_after_zero_removal = len(np.unique(spx['date']))
+rows_after_zero_removal = len(spx)
+
+#%% remove days with too many Nans
 
 rows_w_nan = spx[spx.isnull().any(axis = 1)]
 days_w_nan = np.unique(rows_w_nan.index.date)
@@ -174,12 +177,41 @@ print('number of days with Nans:', len(days_w_nan))
 
 # how many nans per date?
 list_nan_per_day = []
-for i in range(1,len(np.unique(rows_w_nan.index.date))):
+for i in range(0,len(np.unique(rows_w_nan.index.date))):
     count = len(rows_w_nan[rows_w_nan.index.date == days_w_nan[i]])
     list_nan_per_day.append(count)
-    
 print('Nans per day that has Nans:', list_nan_per_day)
 
+# take days with x nans as missing because interpolating so many values per day is misleading
+remove = 0.3*(((16-9.5)*60)/5)
+for i in range(1,len(days_w_nan)):
+    if list_nan_per_day[i] > remove:
+        spx = spx.drop(spx[spx['date'] == days_w_nan[i]].index)
+    else:
+        continue
+    
+days_after_removal_many_nan = len(np.unique(spx['date']))
+rows_after_removal_many_nan = len(spx)
+print('removed days with too many nan:', days_after_zero_removal - days_after_removal_many_nan)
+print('removed rows with too many nan:', rows_after_zero_removal - rows_after_removal_many_nan)
+
+#%% remove rows with very big drops 
+
+spx.mid.plot()
+
+difference = spx.mid.pct_change().shift(periods = -1)
+difference[difference > 0.5]
+
+#print(spx[spx['date'] == dt.date(2007,12,24)])
+#print(spx[spx['date'] == dt.date(2007,12,26)])
+
+# there is a big outlier 
+spx = spx.drop(difference[difference>0.5].index)
+
+days_after_removal_big_drop = len(np.unique(spx['date']))
+rows_after_removal_big_drop = len(spx)
+print('removed days with too big drops:', days_after_removal_many_nan - days_after_removal_big_drop)
+print('removed rows with too big drops:', rows_after_removal_many_nan - rows_after_removal_big_drop)
 
 #%% interpolate missing 5-min values (91)
 
@@ -189,6 +221,10 @@ rows_w_nan = spx[spx.isnull().any(axis = 1)]
 days_w_nan = np.unique(rows_w_nan.index.date)
 print('number of Nans:', len(days_w_nan))
 
+days_after_interpolation = len(np.unique(spx['date']))
+rows_after_interpolation = len(spx)
+print('added days after interpolation:', days_after_interpolation - days_after_removal_big_drop)
+print('added rows after interpolation:', rows_after_interpolation - rows_after_removal_big_drop)
 
 #%% save this version (2007 - 2020, no Nan)
 

@@ -73,17 +73,23 @@ print('same number of days in spx and spx_daily?', len(np.unique(spx[['date']]))
 
 check_for_nans(spx_daily)
 
-# add squared overnight return (have to do resample.sum to get to daily data, but sum of only one value)
+# add open and close (have to do resample.sum to get to daily data, but sum of only one value)
 spx_daily['open'] = spx[spx.index.time == dt.time(9,30,0)].mid.resample('1D').sum()
 spx_daily['close'] = spx[spx.index.time == dt.time(16,0,0)].mid.resample('1D').sum()
+
+# interpolate 0s in open and close (1 row when I checked)
+spx_daily = spx_daily.replace(0, np.nan)
+spx_daily['close'] = spx_daily['close'].interpolate()
+
+# add squared overnight return
 spx_daily['overnight'] = np.log(spx_daily['open']) - np.log(spx_daily['close'].shift(1))
 spx_daily['rv2'] = spx_daily['rv'] + spx_daily['overnight']**2
 
 check_for_nans(spx_daily)
 
-# how many days and Nans?
+# how many days?
 print('spx 5min data contains', len(np.unique(spx[['date']])), 'days. The daily data contains ',
-      len(spx_daily), 'days, and ',len(spx_daily[spx_daily.isnull().any(axis=1)]), 'NaNs.')
+      len(spx_daily), 'days.')
 
 # compare to oxford rv
 oxford_data = oxford_data[oxford_data.Symbol == '.SPX']
@@ -94,6 +100,13 @@ oxford_data.rv5.plot()
 spx_daily.rv.plot()
 
 # our data is slightly off but hard to see
+
+#%% calculate daily return for scaling later
+    
+spx_daily['rtrn_daily'] = np.log(spx_daily['close']) - np.log(spx_daily['close']).shift(1)
+
+# remove first 1 day because overnight return and daily returns gives nan
+spx_daily = spx_daily.iloc[2:]
 
 #%% calculate upside and downside realized variance
 
@@ -112,8 +125,6 @@ spx_daily['rv_d2'] = spx_daily.apply(add_overnight_down, args = (kappa, 0), axis
 # manual check (looks ok, what do you think?)
 spx_daily[['rv_d', 'rv_u', 'overnight', 'rv_d2', 'rv_u2']]
 
-spx_daily['rtrn_daily'] = np.log(spx_daily['close']) - np.log(spx_daily['open'])
-
 # remove variables we don't need
 spx_daily = spx_daily.drop(['close', 'open', 'overnight'], axis = 1)
 
@@ -121,7 +132,7 @@ check_for_nans(spx_daily)
 
 #%% apply scaling, my code 
 
-sample_var_returns = np.var(spx_daily.rtrn_daily) 
+sample_var_returns = np.nanvar(spx_daily.rtrn_daily) 
 sample_avg_rv = np.mean(spx_daily['rv2']) # modification: average of unscaled rv or?
 
 spx_daily['rv_scaled']= spx_daily['rv2']/sample_var_returns
