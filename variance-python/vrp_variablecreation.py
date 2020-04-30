@@ -18,27 +18,6 @@ import scipy.io as sio
 
 #%% set variables
 
-#%% import dates and try to handle them
-
-dates = sio.loadmat('data/processed/ivs/_dates.mat')
-
-# looks like that is a dictionary
-
-for i in dates.keys():
-    print(i)
-    print('contains')
-    print(dates[i])
-
-# looks like what we need is in 'None'
-print('type of None is', type(dates['None']))
-print(dates['None'])
-
-# or in '__function_workspace__' ?
-print('type of __function_workspace__ is', type(dates['__function_workspace__']))
-print(dates['__function_workspace__'])
-
-pd.DataFrame(dates['__function_workspace__'])
-
 #%% import data
 
 # dates
@@ -47,55 +26,42 @@ dates = dates.rename(columns={0:'dates'})
 dates['dates'] = pd.to_datetime(dates['dates'])
 
 # ivs
-ivd = pd.read_csv("data/processed/ivs/IV_D_interpolated_030107_to_071015.csv", header = None)
-ivu = pd.read_csv("data/processed/ivs/IV_U_interpolated_030107_to_071015.csv", header = None)
-
-# we have to manually set headers becaut they are not contained in the csv files
-ivd.columns = ['h1', 'h2', 'h3', 'h6', 'h9', 'h12']
-ivu.columns = ['h1', 'h2', 'h3', 'h6', 'h9', 'h12']
-
-ivu = ivu.sort_index()
-ivd = ivd.sort_index()
+ivd = pd.read_csv("data/processed/ivs/IV_D_030100_to_291217.csv", index_col = 6)
+ivu = pd.read_csv("data/processed/ivs/IV_U_030100_to_291217.csv", index_col = 6) 
+ivd.index = pd.to_datetime(ivd.index)
+ivu.index = pd.to_datetime(ivu.index)
 
 # rv
 rv = pd.read_csv("data/processed/rv/rv.csv", index_col = 0)
 rv.index = pd.to_datetime(rv.index)
 
-#%% add dates to ivs and put all dataframes to same length
+#%% set the right timeframe where data overlap
 
 # cut off dates of rv where we don't have ivs computed
-# from name of dataset, start: 03.01.2007, end: 07.10.2015
+start_date_iv = ivu.index[0]
+end_date_iv = ivu.index[-1]
+cut_rv = rv[(rv.index >= start_date_iv) & (rv.index <= end_date_iv)]
 
-start = dt.datetime(2007,1,3)
-end = dt.datetime(2015,10,7)
-
-cut_dates_rv = dates[(dates['dates'] >= start) & (dates['dates'] < end)]
-ivd.index = cut_dates_rv['dates']
-ivu.index = cut_dates_rv['dates']
-
-cut_rv = rv[(rv.index >= start) & (rv.index < end)]
+start_date_rv = rv.index[0]
+end_date_rv = rv.index[-1]
+cut_ivu = ivu[(ivu.index >= start_date_rv) & (ivu.index <= end_date_rv)]
+cut_ivd = ivd[(ivd.index >= start_date_rv) & (ivd.index <= end_date_rv)]
 
 # interpolate dates in rv that are missing
-missing_dates_rv = ivd.index[~ivd.index.isin(cut_rv.index)]
+missing_dates_rv = cut_ivu.index[~cut_ivu.index.isin(cut_rv.index)]
 print('interpolate days:', len(missing_dates_rv))
 add_to_rv = pd.DataFrame(np.nan, index = missing_dates_rv, columns = cut_rv.columns)
 cut_rv = cut_rv.append(add_to_rv)
 cut_rv = cut_rv.sort_index()
 cut_rv = cut_rv.interpolate(method = 'linear')
 
-# we dont have first row of rv nan because of returns
-cut_ivu = ivu.iloc[1:]
-cut_ivd = ivd.iloc[1:]
-cut_rv = cut_rv.iloc[1:]
-
-# compare dates of rv and ivu/ivd
-missing_dates_rv = cut_ivu.index[~cut_ivu.index.isin(cut_rv.index)]
-print(missing_dates_rv)
-
-
 # if both below are false, the indexes are the same
 print('Any difference in indexes of ivs?', False in (cut_ivu.index == cut_ivd.index))
 print('Any difference in index ov ivs and rv?', False in (cut_ivu.index == cut_rv.index))
+
+# compare dates of rv and ivu/ivd
+missing_dates_rv = cut_ivu.index[~cut_ivu.index.isin(cut_rv.index)]
+print('Days that are in iv but not in rv:', missing_dates_rv)
 
 #%% In the following we need to sum rv over the past days to accumulate to heach h
 
@@ -128,16 +94,32 @@ tradingdays_month = 21
 h_month = np.array([1,2,3,6,9,12])
 h_days = h_month * tradingdays_month
 
-list_dataframes = []
 
-h = 1
-df1 = pd.DataFrame(columns = ["rv", "rvu", "rvd", "ivu", "ivd"], index = cut_rv.index)
-rvu_accum = cut_rv['rv_u_sc'].rolling(window = h_days[h-1]).sum()
-df1["rvu"] = rvu_accum.shift(periods = 1)
-rvd_accum = cut_rv['rv_d_sc'].rolling(window = h_days[h-1]).sum()
-df1["rvd"] = cut_rv['rv_d_sc']
-df1["ivu"] = cut_ivu.iloc[:,h-1]
-df1["ivd"] = cut_ivd.iloc[:,h-1]
+list_dataframes = []
+dict_dataframes = {}
+
+for i in range(0,len(h_days)):
+    df = pd.DataFrame(columns = ["rvu", "rvd", "ivu", "ivd"]) 
+    rvu_accum = cut_rv['rv_u_sc'].rolling(window = h_days[i]).sum()
+    df["rvu"] = rvu_accum.shift(periods = 1)
+    rvd_accum = cut_rv['rv_d_sc'].rolling(window = h_days[i]).sum()
+    df["rvd"] = cut_rv['rv_d_sc']
+    df["ivu"] = cut_ivu.iloc[:,i]
+    df["ivd"] = cut_ivd.iloc[:,i]
+    dict_dataframes[h_month[i]] = df
+    list_dataframes.append(df)
+
+#%% calculate VRP
+
+for df in list_dataframes:
+    df['vrpu'] = df['ivu'] - df['rvu']
+    df['vrpd'] = df['ivd'] - df['rvd']
+    df['vrp'] = df['vrpu'] + df['vrpd']
+    
+
+#%% add the excess returns
+
+
 
 
 
