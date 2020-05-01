@@ -34,12 +34,10 @@ def separate_tradingday_overnight(data):
 
 
 #%% loop over all files in directory to import the data from manual download
-# commented out because code runs long and I saved an intermediate result afterwards so don't run if not necessary
+# this section of the code runs long and I saved an intermediate result afterwards 
+# so don't run if not necessary
 
-'''
 # directly aggregate to mide price in 5min during trading day
-
-# this section takes quite long!
 
 data_directory = "data/raw/spxhf3"
 
@@ -61,12 +59,12 @@ for file in os.listdir(data_directory):
         continue
     
 #%% create one big dataframe and safe it to be able to continue from here
+# this section can only be run if the secion above was run
 
 spx1 = pd.concat(list_dataframes)
 spx1 = spx1.sort_index()
 
 spx1.to_csv("data/raw/spxhf4/5minspx2007.csv")
-'''
 
 #%% import data from 2007
 

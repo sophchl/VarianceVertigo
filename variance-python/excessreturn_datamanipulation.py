@@ -17,6 +17,12 @@ import numpy as np
 import pandas as pd
 import datetime as dt
 
+#%% set parameters
+
+start_date_paper = '1996-09-30'
+end_date_paper = '2015-03-31'
+end_date_crisis = '2007-12-31'
+
 #%% define functions
 
 def my_time_filter(df, start_date, end_date):
@@ -43,7 +49,8 @@ tb['avba'] = (tb.bidytm + tb.askytm)/2
 
 # create monthly rf dataset (use only rfy)
 tb['rfy'] = tb.avba/100
-tb['rfm'] = ((1+(tb.avba)/100)**(1/12))-1
+tb['rfm'] = ((1+tb.rfy)**(1/12))-1
+tb['rfd'] = ((1+tb.rfy)**(1/(12*21)))-1
 rf_monthly = tb[['rfy', 'rfm']]
 
 # create daily rf dataset
@@ -52,6 +59,8 @@ rf_daily = tb[['ln_rfd']].resample('1D').sum()
 rf_daily = rf_daily.replace(0, np.nan)
 rf_daily = rf_daily.bfill()
 rf_daily.columns = ['rf']
+
+# check: np.log(1+tb.rfd) should equal rf_daily.rf
 
 #%% process/add spx daily
 
@@ -82,10 +91,15 @@ spx_daily.index.name = "date"
 
 all_daily = pd.merge(spx_daily['return'], rf_daily, on = "date")
 
-# Stefano: these are daily returns, multiplying them by 12 you don't make them annualized.
-# Moreover, why do you want to annualize daily returns?
-# I think that 12 is not necessary and we should delete it
-all_daily['excess_return'] = 12*(all_daily['return'] - all_daily['rf'])
+all_daily['excess_return'] = all_daily['return'] - all_daily['rf']
+
+# check the summary statustics
+
+data_daily_rep = my_time_filter(all_daily, start_date_paper, end_date_paper)
+print(data_daily_rep.mean(axis = 0)*100*12*21)
+
+data_daily_precrisis = my_time_filter(all_daily, start_date_paper, end_date_crisis)
+print(data_daily_precrisis.mean(axis = 0)*100*12*21)
 
 #%% process/add spx monthly
 
@@ -103,15 +117,11 @@ all_monthly = pd.merge(spx_monthly['rtrnm'], rf_monthly['rfy'], on = "date")
 # take difference of log return 
 all_monthly['excess_return'] = 12*np.log(1 + all_monthly.rtrnm) - np.log(1 + all_monthly.rfy)
 
-start_date_paper = '1996-09-30'
-end_date_paper = '2015-03-31'
-end_date_crisis = '2007-12-31'
+data_monthly_rep = my_time_filter(all_monthly, start_date_paper, end_date_paper)
+print(data_monthly_rep.mean(axis = 0)*100)
 
-data_rep = my_time_filter(all_monthly, start_date_paper, end_date_paper)
-print(data_rep.mean(axis = 0)*100)
-
-data_precrisis = my_time_filter(all_monthly, start_date_paper, end_date_crisis)
-print(data_precrisis.mean(axis = 0)*100)
+data_monthly_precrisis = my_time_filter(all_monthly, start_date_paper, end_date_crisis)
+print(data_monthly_precrisis.mean(axis = 0)*100)
 
 
 #%% save results

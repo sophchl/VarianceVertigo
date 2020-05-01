@@ -126,6 +126,14 @@ for df in list_dataframes:
     df['vrpd'] = df['ivd'] - df['rvd']
     df['vrp'] = df['vrpu'] + df['vrpd']
     
+#%% save datasets
+
+names_dataframes = ['h1', 'h2', 'h3', 'h6', 'h9', 'h12']
+
+for i in range(0,len(list_dataframes)):
+    list_dataframes[i].to_csv('data/processed/models/' + names_dataframes[i])
+
+    
 
 
 
