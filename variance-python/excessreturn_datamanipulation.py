@@ -9,6 +9,8 @@ output: daily and monthly excess returns (to processed)
     
 """
 
+# Stefano: I believe that the daily returns are 12 times higher than they should be. The rest is fine.
+
 #%% load dependencies
 
 import numpy as np
@@ -79,6 +81,10 @@ spx_daily.index.name = "date"
 #%% create one daily dataframe and create daily excess return (annualized)
 
 all_daily = pd.merge(spx_daily['return'], rf_daily, on = "date")
+
+# Stefano: these are daily returns, multiplying them by 12 you don't make them annualized.
+# Moreover, why do you want to annualize daily returns?
+# I think that 12 is not necessary and we should delete it
 all_daily['excess_return'] = 12*(all_daily['return'] - all_daily['rf'])
 
 #%% process/add spx monthly
