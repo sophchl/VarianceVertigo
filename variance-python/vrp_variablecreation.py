@@ -9,6 +9,10 @@ output:
     
 """
 
+
+# Stefano: the code is fine, once we change returns I think there are no problems anymore
+
+
 #%% load dependencies
 
 import numpy as np
@@ -39,12 +43,14 @@ rv = pd.read_csv("data/processed/rv/rv.csv", index_col = 0)
 rv.index = pd.to_datetime(rv.index)
 
 # excessreturn
+# Stefano: using these returns we lose information for the first month
 excess = pd.read_csv("data/processed/excessreturn/excessreturn.csv", index_col = 0)
 excess.index = pd.to_datetime(excess.index)
 
 #%% set the right timeframe where data overlap
 
 common_index = ivu.index.intersection(rv.index)
+# Stefano:this is the moment in which we ignore the first month
 common_index = common_index.intersection(excess.index)
 start = common_index[0]
 end = common_index[-1]
