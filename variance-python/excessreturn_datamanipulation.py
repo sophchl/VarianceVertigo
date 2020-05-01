@@ -4,8 +4,8 @@ Created on Sun Mar 29 09:07:17 2020
 
 @author: Sophia
 
-input:
-output:
+input: daily and monthly spx returns, monthly 3m tbill rate data (from raw2)
+output: daily and monthly excess returns (to processed)
     
 """
 
