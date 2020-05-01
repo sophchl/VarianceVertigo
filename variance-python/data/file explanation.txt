@@ -1,0 +1,3 @@
+raw: raw data for high-frequency code. all files in this file are excluded from git because they are too big
+raw2: raw data at daily or monthly requency
+processed: processed data

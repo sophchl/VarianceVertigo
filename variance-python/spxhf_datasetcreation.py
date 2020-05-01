@@ -16,7 +16,7 @@ to the "data/raw" and the "data/processeed" directory.
 
 """
 
-#%% setup
+#%% load depdendencies
 
 import numpy as np
 import pandas as pd

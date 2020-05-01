@@ -9,7 +9,7 @@ output: RV upside and downside, daily frequency (to processed)
 
 """
 
-#%% setup
+#%% load dependencies
 
 import numpy as np
 import pandas as pd
