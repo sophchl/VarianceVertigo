@@ -104,7 +104,6 @@ tradingdays_month = 21
 h_month = np.array([1,2,3,6,9,12])
 h_days = h_month * tradingdays_month
 
-
 list_dataframes = []
 dict_dataframes = {}
 
@@ -128,10 +127,10 @@ for df in list_dataframes:
     
 #%% save datasets
 
-names_dataframes = ['h1', 'h2', 'h3', 'h6', 'h9', 'h12']
+names_dataframes = ['h01', 'h02', 'h03', 'h06', 'h09', 'h12']
 
 for i in range(0,len(list_dataframes)):
-    list_dataframes[i].to_csv('data/processed/models/' + names_dataframes[i])
+    list_dataframes[i].to_csv('data/processed/vrp/' + names_dataframes[i] + '.csv')
 
     
 

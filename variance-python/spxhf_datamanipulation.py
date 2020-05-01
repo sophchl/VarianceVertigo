@@ -15,7 +15,7 @@ import numpy as np
 import pandas as pd
 import datetime as dt
 
-#%% set variables
+#%% set parameters
 
 kappa = 0
 

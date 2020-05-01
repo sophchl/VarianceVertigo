@@ -129,6 +129,28 @@ print(data_monthly_precrisis.mean(axis = 0)*100)
 all_daily.to_csv("data/processed/excessreturn/excessreturn_daily.csv")
 all_monthly.to_csv("data/processed/excessreturn/excessreturn_monthly.csv")
 
+#%% create one dataframe per k
+
+tradingdays_month = 21
+k_month = np.array([1,2,3,6,9,12])
+k_days = k_month*tradingdays_month
+list_dataframes = []
+
+for i in range(0,len(k_days)):
+    df = pd.DataFrame(columns = ['return'])
+    return_cum = all_daily['excess_return'].rolling(window = k_days[i]).sum()
+    df['return'] = return_cum.shift(-(k_days[i]-1))
+    list_dataframes.append(df)
+    
+names_dataframes = ['k01', 'k02', 'k03', 'k06', 'k09', 'k12']
+
+for i in range(0,len(list_dataframes)):
+    list_dataframes[i].to_csv('data/processed/excessreturn/' + names_dataframes[i] + '.csv')
+
+# check code: the sum from row 1:22 should stand at tade 2007-01-04
+print(all_daily['excess_return'][1:22].sum())
+print(list_dataframes[0]['return'][0:5])
+
 #%% still guessing what is the right tbill...
 
 '''
