@@ -4,14 +4,10 @@ Created on Wed Apr 29 10:43:08 2020
 
 @author: Sophia
 
-input:
-output:
+input: implied volatility, realized volatility and excess returns as single datasets (from processed)
+output: one dataset per aggregation level h
     
 """
-
-
-# Stefano: the code is fine, once we change returns I think there are no problems anymore
-
 
 #%% load dependencies
 
@@ -26,11 +22,6 @@ def my_time_filter(df,start,end):
 
 #%% import data
 
-# dates
-dates = pd.read_csv('data/processed/ivs/dates.csv', header = None)
-dates = dates.rename(columns={0:'dates'})
-dates['dates'] = pd.to_datetime(dates['dates'])
-
 # ivs
 ivu = pd.read_csv("data/processed/ivs/IV_U_030100_to_291217.csv", index_col = 6) 
 ivu.index = pd.to_datetime(ivu.index)
@@ -43,14 +34,12 @@ rv = pd.read_csv("data/processed/rv/rv.csv", index_col = 0)
 rv.index = pd.to_datetime(rv.index)
 
 # excessreturn
-# Stefano: using these returns we lose information for the first month
-excess = pd.read_csv("data/processed/excessreturn/excessreturn.csv", index_col = 0)
+excess = pd.read_csv("data/processed/excessreturn/excessreturn_daily.csv", index_col = 0)
 excess.index = pd.to_datetime(excess.index)
 
 #%% set the right timeframe where data overlap
 
 common_index = ivu.index.intersection(rv.index)
-# Stefano:this is the moment in which we ignore the first month
 common_index = common_index.intersection(excess.index)
 start = common_index[0]
 end = common_index[-1]
@@ -68,10 +57,18 @@ cut_rv = cut_rv.append(add_to_rv)
 cut_rv = cut_rv.sort_index()
 cut_rv = cut_rv.interpolate(method = 'linear')
 
+# interpolate dates in excess returns that are missing
+missing_dates_excess = cut_ivu.index[~cut_ivu.index.isin(cut_excess.index)]
+print('interpolate days:', len(missing_dates_excess))
+add_to_excess = pd.DataFrame(np.nan, index = missing_dates_excess, columns = cut_excess.columns)
+cut_excess = cut_excess.append(add_to_excess)
+cut_excess = cut_excess.sort_index()
+cut_excess = cut_excess.interpolate(method = 'linear')
+
 # if both below are false, the indexes are the same
 print('Any difference in indexes of ivs?', False in (cut_ivu.index == cut_ivd.index))
 print('Any difference in index ov ivs and rv?', False in (cut_ivu.index == cut_rv.index))
-#print('Any difference in index ov ivs and excess?', False in (cut_ivu.index == cut_excess.index))
+print('Any difference in index ov ivs and excess?', False in (cut_ivu.index == cut_excess.index))
 
 # compare dates of rv and ivu/ivd
 missing_dates_rv = cut_ivu.index[~cut_ivu.index.isin(cut_rv.index)]
