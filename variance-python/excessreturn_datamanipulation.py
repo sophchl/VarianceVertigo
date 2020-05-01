@@ -139,7 +139,7 @@ list_dataframes = []
 for i in range(0,len(k_days)):
     df = pd.DataFrame(columns = ['return'])
     return_cum = all_daily['excess_return'].rolling(window = k_days[i]).sum()
-    df['return'] = return_cum.shift(-(k_days[i]-1))
+    df['return'] = return_cum.shift(-k_days[i])
     list_dataframes.append(df)
     
 names_dataframes = ['k01', 'k02', 'k03', 'k06', 'k09', 'k12']
