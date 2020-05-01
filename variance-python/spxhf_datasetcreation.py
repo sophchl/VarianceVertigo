@@ -160,7 +160,7 @@ print('number of days in dataset', len(np.unique(spx['date'])))
 
 spx.to_csv("data/raw/spxhf4/5minspx20073.csv")
 
-#%% replace mid = 0 with nan to interpolate later
+#%% replace mid = 0 with nan to interpolate later (I row when I checked)
 
 print('set mid = 0 to nan for rows:', len(spx[spx.mid.eq(0)]))
 
