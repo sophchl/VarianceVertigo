@@ -84,14 +84,14 @@ spx_daily = spx_daily.replace(0, np.nan)
 spx_daily['close'] = spx_daily['close'].interpolate()
 
 # calculate returns
-spx_daily['return'] = np.log(spx_daily['close']) - np.log(spx_daily['close']).shift(1)
+spx_daily['rtrn'] = np.log(spx_daily['close']) - np.log(spx_daily['close']).shift(1)
 spx_daily.index.name = "date"
 
 #%% create one daily dataframe and create daily excess return (annualized)
 
-all_daily = pd.merge(spx_daily['return'], rf_daily, on = "date")
+all_daily = pd.merge(spx_daily['rtrn'], rf_daily, on = "date")
 
-all_daily['excess_return'] = all_daily['return'] - all_daily['rf']
+all_daily['excess_return'] = all_daily['rtrn'] - all_daily['rf']
 
 # check the summary statustics
 
@@ -137,9 +137,9 @@ k_days = k_month*tradingdays_month
 list_dataframes = []
 
 for i in range(0,len(k_days)):
-    df = pd.DataFrame(columns = ['return'])
+    df = pd.DataFrame(columns = ['rtrn'])
     return_cum = all_daily['excess_return'].rolling(window = k_days[i]).sum()
-    df['return'] = return_cum.shift(-k_days[i])
+    df['rtrn'] = return_cum.shift(-k_days[i])
     list_dataframes.append(df)
     
 names_dataframes = ['k01', 'k02', 'k03', 'k06', 'k09', 'k12']
@@ -149,7 +149,7 @@ for i in range(0,len(list_dataframes)):
 
 # check code: the sum from row 1:22 should stand at tade 2007-01-04
 print(all_daily['excess_return'][1:22].sum())
-print(list_dataframes[0]['return'][0:5])
+print(list_dataframes[0]['rtrn'][0:5])
 
 #%% still guessing what is the right tbill...
 

@@ -16,6 +16,7 @@ import numpy as np
 import pandas as pd
 import statsmodels.api as sm
 import statsmodels.formula.api as smf
+import statsmodels.stats as sms
 
 #%% set parameters
 
@@ -67,14 +68,42 @@ ex_return = pd.read_csv("data/processed/excessreturn/excessreturn_daily.csv", in
 
 #%% one-variable regressions
 
-# data in format data_hk, model in format model_hk_i, i = 1 for vrup, i = 2 for vrpd
-xh1_data = list_vrp_data[0][['vrpu', 'vrpd']]
-yk1_data = list_return_data[0]
-data_11 = pd.merge(xh1_data, yk1_data, on = 'date') 
-check_for_nans(data_11)
 
-model_11_1 = smf.ols('return ~ vrpu', data = data_11).fit()
-model_11_2 = smf.ols('return ~ vrpd', data = data_11).fit()
+for k in range(0,len(k_month)):
+    
+    # select the regressand
+    yk1_data = list_return_data[k]
+    
+    for h in range(0,len(h_month)):
+        
+        # select the regressor
+        xh1_data = list_vrp_data[h][['vrpu', 'vrpd']]
+         
+        # create the regression dataset
+        data = pd.merge(xh1_data, yk1_data, on = 'date') 
+        check_for_nans(data)
+         
+        # estimate a model vor vrpu and vrpd each
+        model_1 = smf.ols('rtrn ~ vrpu', data = data, missing = 'drop').fit(cov_type='HAC', cov_kwds={'maxlags':1})
+        model_2 = smf.ols('rtrn ~ vrpd', data = data, missing = 'drop').fit(cov_type='HAC', cov_kwds={'maxlags':1})
+
+        # print results (can also be ommitted)
+        print(model_1.summary())
+        print(model_2.summary())
+
+        # create a latex output and save it to file
+        latex_output_1 = model_1.summary().as_latex()
+        latex_output_2 = model_2.summary().as_latex()
+
+        filename = "reg" + "k" + str(k_month[k]) + "h" + str(h_month[h]) 
+        
+        file_1 = open("results/regression/" + filename + "vrp_u.tex", 'a')
+        file_1.write(latex_output_1)
+        file_1.close()
+
+        file_2 = open("results/regression/" + filename + "vrp_d.tex", 'a')
+        file_2.write(latex_output_2)
+        file_2.close()
 
 
 
