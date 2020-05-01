@@ -3,68 +3,147 @@
 Created on Tue Apr 28 14:53:09 2020
 
 @author: Sophia
+
+input: spy 5min data (from processed)
+output: RV upside and downside, daily frequency (to processed)
+
 """
 
-#%% setup
+#%% load dependencies
 
-import os
 import numpy as np
 import pandas as pd
 import datetime as dt
 
+#%% set variables
+
 kappa = 0
+
+#%% functions needed
+
+def check_for_nans(data):
+    # does nan check
+    rows_w_nans = data[data.isnull().any(axis = 1)]
+    number_nans = len(rows_w_nans)
+    print('number of nans is:', number_nans, ' \n rows with nans are: \n', rows_w_nans)
+    
+def add_overnight_up(data, kappa, filler):
+    # if overnigth return larger kappa, add it to rv_u, else leave rv_u as is
+    if data['overnight'] > kappa:
+        val = data['rv_u'] + data['overnight']**2
+    elif data['overnight'] <= kappa:
+        val = data['rv_u']
+    else:
+        val = -1
+    return val
+
+def add_overnight_down(data, kappa, filler):
+    # if overnigth return smaller/equal kappa, add it to rv_d, else leave rv_d as is
+    if data['overnight'] <= kappa:
+        val = data['rv_d'] + data['overnight']**2
+    elif data['overnight'] > kappa:
+        val = data['rv_d']
+    else:
+        val = -1
+    return val
 
 #%% import data
 
-spx = pd.read_csv("variance-python/data/raw/spxhf4/5minspx20074.csv", index_col = 0)
+spx = pd.read_csv("data/processed/spxhf/spx5min.csv", index_col = 0)
 spx.index = pd.to_datetime(spx.index)
+
+oxford_data = pd.read_csv("data/processed/oxford5min/oxfordmanrealizedvolatilityindices.csv", )
+oxford_data['date'] = oxford_data.iloc[:,0].str.slice(0,10,1)
+oxford_data.index = pd.to_datetime(oxford_data.date)
 
 #%% calculate return and realized variances
 
 spx['rtrn'] = np.log(spx.mid) - np.log(spx.mid.shift(1))
 
-# create mydata2: aggregate to rv daily data
+check_for_nans(spx)
+
+# aggregate to rv daily data (rv = sum of squared returns)
 spx_daily = (spx[['rtrn']]**2).resample('1D').sum()
 spx_daily.columns = ['rv']
 
-# add squared overnight return (have to do resample sum to get to daily data, but sum of only one value)
+# delete days that were not in dataset before (probably weekend and holiday, see checks in "spxhf_datasetcreation") 
+spx_daily = spx_daily[spx_daily.index.isin(spx.index.date)]
+
+print('same number of days in spx and spx_daily?', len(np.unique(spx[['date']])) == len(spx_daily))
+
+check_for_nans(spx_daily)
+
+# add open and close (have to do resample.sum to get to daily data, but sum of only one value)
 spx_daily['open'] = spx[spx.index.time == dt.time(9,30,0)].mid.resample('1D').sum()
 spx_daily['close'] = spx[spx.index.time == dt.time(16,0,0)].mid.resample('1D').sum()
+
+# interpolate 0s in open and close (1 row when I checked)
+spx_daily = spx_daily.replace(0, np.nan)
+spx_daily['close'] = spx_daily['close'].interpolate()
+
+# add squared overnight return
 spx_daily['overnight'] = np.log(spx_daily['open']) - np.log(spx_daily['close'].shift(1))
 spx_daily['rv2'] = spx_daily['rv'] + spx_daily['overnight']**2
 
-# 732 Nan rows out of 4482 
+check_for_nans(spx_daily)
+
+# how many days?
+print('spx 5min data contains', len(np.unique(spx[['date']])), 'days. The daily data contains ',
+      len(spx_daily), 'days.')
+
+# compare to oxford rv
+oxford_data = oxford_data[oxford_data.Symbol == '.SPX']
+oxford_data = oxford_data[['rv5', 'open_price', 'close_price']]
+oxford_data = oxford_data[oxford_data.index.year >= 2008]
+
+oxford_data.rv5.plot()
+spx_daily.rv.plot()
+
+# our data is slightly off but hard to see
+
+#%% calculate daily return for scaling later
+    
+spx_daily['rtrn_daily'] = np.log(spx_daily['close']) - np.log(spx_daily['close']).shift(1)
+
+# remove first 1 day because overnight return and daily returns gives nan
+spx_daily = spx_daily.iloc[1:]
 
 #%% calculate upside and downside realized variance
 
 spx_daily['rv_u'] = (spx[spx['rtrn'] > kappa]['rtrn']**2).resample('1D').sum()
 spx_daily['rv_d'] = (spx[spx['rtrn'] <= kappa]['rtrn']**2).resample('1D').sum()
 
+check_for_nans(spx_daily)
+
 # test if up ad down rv sums to rv (if result is False we are good)
 print("Does sum of rv up and down deviate from rv?", False in round((spx_daily['rv_u'] + spx_daily['rv_d']),10) == round(spx_daily['rv'],10))
-
+        
 # add overnight 
-spx_daily['rv_u2'] = spx_daily['rv_u'] + spx_daily[spx_daily['overnight'] > kappa]['overnight']**2
-spx_daily['rv_d2'] = spx_daily['rv_d'] + spx_daily[spx_daily['overnight'] <= kappa]['overnight']**2
+spx_daily['rv_u2'] = spx_daily.apply(add_overnight_up, args = (kappa, 0), axis=1)
+spx_daily['rv_d2'] = spx_daily.apply(add_overnight_down, args = (kappa, 0), axis=1)
 
+# manual check (looks ok, what do you think?)
+spx_daily[['rv_d', 'rv_u', 'overnight', 'rv_d2', 'rv_u2']]
+
+# remove variables we don't need
 spx_daily = spx_daily.drop(['close', 'open', 'overnight'], axis = 1)
 
-#%% apply scaling
+check_for_nans(spx_daily)
 
-#%% accumulating
+#%% apply scaling, my code 
 
-#%% dropped
+sample_var_returns = np.nanvar(spx_daily.rtrn_daily) 
+sample_avg_rv = np.mean(spx_daily['rv2']) # modification: average of unscaled rv or?
 
-# what is the latest and earliest time we have per day? 08:59:51 - 18:30:04 (first 1,0000)
-# not very neat though
+spx_daily['rv_scaled']= spx_daily['rv2']/sample_var_returns
+spx_daily['rv_u_scaled']=(spx_daily['rv_u2'] * sample_var_returns) / (sample_avg_rv)
+spx_daily['rv_d_scaled']=(spx_daily['rv_d2'] * sample_var_returns) / (sample_avg_rv)
 
-def get_fl_time(data, length):
-    for day in data.iloc[1:length,].groupby(data.iloc[1:length,].index.date):
-        print(min(data.index.time), max(data.index.time))
-        
-get_fl_time(day, 500)
+spx_need = spx_daily[['rv2', 'rv_u2', 'rv_d2', 'rv_scaled', 'rv_u_scaled', 'rv_d_scaled']]
+spx_need.columns = ['rv', 'rv_u', 'rv_d', 'rv_sc', 'rv_u_sc', 'rv_d_sc']
 
-#(mydata[['rtrn']]**2).groupby(mydata.index.date).sum()
+check_for_nans(spx_need)
 
-# separate day and night
+#%% export the data
 
+spx_need.to_csv("data/processed/rv/rv.csv")
