@@ -29,13 +29,16 @@ h_month = [1,2,3,6,9,12]
 k_month = [1,2,3,6,9,12]
 k_days = k_month*tradingdays_month
 
+# trading days in our period of interest
+nyse = mcal.get_calendar('NYSE')
+
 #%% functions needed
 
 def check_for_nans(data):
     # does nan check
     rows_w_nans = data[data.isnull().any(axis = 1)]
     number_nans = len(rows_w_nans)
-    print('total number of rwos is:', len(data), '\n number of nans is:', number_nans, ' \n rows with nans are: \n', rows_w_nans)
+    print('total number of rows is:', len(data), '\n number of nans is:', number_nans)
 
 #%% load data
 
@@ -68,6 +71,8 @@ ex_return = pd.read_csv("data/processed/excessreturn/excessreturn_daily.csv", in
 
 #%% one-variable regressions
 
+k_month = [1]
+h_month = [1]
 
 for k in range(0,len(k_month)):
     
@@ -88,8 +93,30 @@ for k in range(0,len(k_month)):
         # remember you do many check_for_nans in all your codes...
         
         data = pd.merge(xh1_data, yk1_data, on = 'date') 
+                
+        # do nan and day check
+        
+        start = max(yk1_data.index[0], xh1_data.index[0])
+        end = min(yk1_data.index[-1], xh1_data.index[-1])
+        early = nyse.schedule(start_date = start, end_date = end)
+        
+        yk1_data2 = yk1_data[(yk1_data.index >= start) & (yk1_data.index <= end)]
+        xh1_data2 = xh1_data[(xh1_data.index >= start) & (xh1_data.index <= end)]
+        
+        print('yk1 ranges from', yk1_data.index[0], 'to', yk1_data.index[-1], 'number of days is:', len(yk1_data.index), '.\n',
+              'xh1 ranges from', xh1_data.index[0], 'to', xh1_data.index[-1], 'number of days is:', len(xh1_data.index), '.\n',
+              'their common date range is', start, 'to', end, 'number of trading days in that range is:', len(early.index), '.\n',
+              'yk1 in common range has days:', len(yk1_data2.index), 
+              'xh1 in common range has days:', len(xh1_data2.index),                  
+              'the merged dataframes ranges from:', data.index[0], 'to', data.index[-1], 'number of days is:', len(data.index), '.')
+        
+        print(xh1_data.index[~xh1_data.index.isin(yk1_data.index)])
+        print(yk1_data.index[~yk1_data.index.isin(xh1_data.index)])
+        
+        check_for_nans(yk1_data)
+        check_for_nans(xh1_data)
         check_for_nans(data)
-         
+        
         # estimate a model vor vrpu and vrpd each
         model_1 = smf.ols('rtrn ~ vrpu', data = data, missing = 'drop').fit(cov_type='HAC', cov_kwds={'maxlags':1})
         model_2 = smf.ols('rtrn ~ vrpd', data = data, missing = 'drop').fit(cov_type='HAC', cov_kwds={'maxlags':1})
