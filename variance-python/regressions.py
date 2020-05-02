@@ -80,6 +80,13 @@ for k in range(0,len(k_month)):
         xh1_data = list_vrp_data[h][['vrpu', 'vrpd']]
          
         # create the regression dataset
+        
+        # Stefano: merging we lose some rows from xh_1_data, even though all 
+        # the dates in VRPs should belong to the excess return dataframe too.
+        # My guess is: is it possible that computing the daily equity return
+        # we faced some nans without noticing it? But it's strange because I 
+        # remember you do many check_for_nans in all your codes...
+        
         data = pd.merge(xh1_data, yk1_data, on = 'date') 
         check_for_nans(data)
          
