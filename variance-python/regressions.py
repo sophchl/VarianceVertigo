@@ -4,8 +4,8 @@ Created on Fri May  1 17:18:15 2020
 
 @author: Sophia
 
-input: spy 5min data (from processed)
-output: RV upside and downside, daily frequency (to processed)
+input: vrp and excess returns (from processed)
+output: in-sample regression results (to results)
 
 """
 
@@ -191,7 +191,7 @@ for k in range(0,len(k_month)):
         latex_output_1 = model_1.summary().as_latex()
         latex_output_2 = model_2.summary().as_latex()
         latex_output_3 = model_3.summary().as_latex()
-        latex_output_4 = model_3.summary().as_latex()
+        latex_output_4 = model_4.summary().as_latex()
         
         file_1 = open("results/regression/vrp_u.tex", 'a')
         file_1.write("regression model for VRPU, k = " + str(k_month[k]) + " h = " + str(h_month[h]))
@@ -217,6 +217,7 @@ for k in range(0,len(k_month)):
         file_4.write("\\\ \n\n")
         file_4.close()
         
+        # append the output to model list
         list_models_upside.append(model_1)
         list_models_downside.append(model_2)
         list_models_total.append(model_3)
@@ -262,6 +263,31 @@ for k in range(0,len(k_month)):
         model_2 = smf.ols('rtrn ~ ivu + ivd', data = data, missing = 'drop').fit(cov_type='HAC', cov_kwds={'maxlags':1})
         model_3 = smf.ols('rtrn ~ rvu + rvd', data = data, missing = 'drop').fit(cov_type='HAC', cov_kwds={'maxlags':1})
 
+        # create a latex output and save it to file
+        latex_output_1 = model_1.summary().as_latex()
+        latex_output_2 = model_2.summary().as_latex()
+        latex_output_3 = model_3.summary().as_latex()
+        
+        file_1 = open("results/regression/vrp_both.tex", 'a')
+        file_1.write("regression model for VRPU, k = " + str(k_month[k]) + " h = " + str(h_month[h]))
+        file_1.write(latex_output_1)
+        file_1.write("\\\ \n\n")
+        file_1.close()
+
+        file_2 = open("results/regression/iv_both.tex", 'a')
+        file_2.write("regression model for VRPD, k = " + str(k_month[k]) + " h = " + str(h_month[h]))
+        file_2.write(latex_output_2)
+        file_2.write("\\\ \n\n")
+        file_2.close()
+        
+        file_3 = open("results/regression/rv_both.tex", 'a')
+        file_3.write("regression model for VRP, k = " + str(k_month[k]) + " h = " + str(h_month[h]))
+        file_3.write(latex_output_3)
+        file_3.write("\\\ \n\n")
+        file_3.close()
+        
+        
+        # append the output to model list
         list_models_premium.append(model_1)
         list_models_iv.append(model_2)
         list_models_rv.append(model_3)
