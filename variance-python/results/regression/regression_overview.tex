@@ -2,6 +2,7 @@
 
 \usepackage{booktabs}
 \usepackage{array}
+\usepackage{lscape}
 
 \begin{document}
 
@@ -15,8 +16,8 @@ h & \multicolumn{2}{c}{1} & \multicolumn{2}{c}{2} & \multicolumn{2}{c}{3} & \mul
 
 \cline{2-3} \cline{4-5} \cline{6-7} \cline{8-9} \cline{10-11} \cline{12-13}
 
- & t-stat & $\bar{R}^{2}$ & t-stat & $\bar{R}^{2}$ &  t-stat & $\bar{R}^{2}$ &  
- t-stat & $\bar{R}^{2}$ &  t-stat & $\bar{R}^{2}$ &  t-stat & $\bar{R}^{2}$ \\[6pt]
+ & p-val & $\bar{R}^{2}$ & p-val & $\bar{R}^{2}$ &  p-val & $\bar{R}^{2}$ &  
+ p-val & $\bar{R}^{2}$ &  p-val & $\bar{R}^{2}$ &  p-val & $\bar{R}^{2}$ \\[6pt]
  
 \hline\\[0.000000001pt]
 
@@ -50,6 +51,44 @@ k & \multicolumn{12}{l}{Panel B: Realized upside variance} \\[7pt]
 \hspace*{-3cm}
 \end{center}
 
+\newpage
+\begin{landscape}
+
+\begin{center}
+\hspace*{-3cm}
+\begin{tabular}{@{\extracolsep{5pt}}rrrrrrrrrrrrrrrrrrr@{}}
+
+\hline
+
+h & \multicolumn{3}{c}{1} & \multicolumn{3}{c}{2} & \multicolumn{3}{c}{3} & \multicolumn{3}{c}{6} & \multicolumn{3}{c}{9} & \multicolumn{3}{c}{12} \\[6pt]
+
+\cline{2-4} \cline{5-7} \cline{8-10} \cline{11-13} \cline{14-16} \cline{17-19}
+
+ & \multicolumn{2}{c}{p-val} & $\bar{R}^{2}$ & \multicolumn{2}{c}{p-val} & $\bar{R}^{2}$ &  \multicolumn{2}{c}{p-val} & $\bar{R}^{2}$ & \multicolumn{2}{c}{p-val} & $\bar{R}^{2}$ &  \multicolumn{2}{c}{p-val} & $\bar{R}^{2}$ & \multicolumn{2}{c}{p-val} & $\bar{R}^{2}$ \\[6pt]
+
+\cline{2-3} \cline{5-6} \cline{8-9} \cline{11-12} \cline{14-15} \cline{17-18}
+
+& up & down & & up & down & & up & down & & up & down & & up & down & & up & down \\ 
+ 
+\hline\\[0.000000001pt]
+
+k & \multicolumn{18}{l}{Panel A: Variance Risk Premium} \\[7pt]
+
+\hline
+
+1 & 0.0 & 0.238 & 0.044 & 0.005 & 0.76 & 0.011 & 0.001 & 0.006 & 0.033 & 0.353 & 0.503 & 0.001 & 0.002 & 0.124 & 0.015 & 0.0 & 0.208 & 0.016 \\[6pt]
+2 & 0.005 & 0.76 & 0.011 & 0.001 & 0.006 & 0.033 & 0.353 & 0.503 & 0.001 & 0.002 & 0.124 & 0.015 & 0.0 & 0.208 & 0.016 & 0.001 & 0.604 & 0.017 \\[6pt]
+3 & 0.001 & 0.006 & 0.033 & 0.353 & 0.503 & 0.001 & 0.002 & 0.124 & 0.015 & 0.0 & 0.208 & 0.016 & 0.001 & 0.604 & 0.017 & 0.0 & 0.0 & 0.032 \\[6pt]
+6 & 0.353 & 0.503 & 0.001 & 0.002 & 0.124 & 0.015 & 0.0 & 0.208 & 0.016 & 0.001 & 0.604 & 0.017 & 0.0 & 0.0 & 0.032 & 0.0 & 0.0 & 0.078 \\[6pt]
+9 & 0.002 & 0.124 & 0.015 & 0.0 & 0.208 & 0.016 & 0.001 & 0.604 & 0.017 & 0.0 & 0.0 & 0.032 & 0.0 & 0.0 & 0.078 & 0.009 & 0.172 & 0.014 \\[6pt]
+12 & 0.0 & 0.208 & 0.016 & 0.001 & 0.604 & 0.017 & 0.0 & 0.0 & 0.032 & 0.0 & 0.0 & 0.078 & 0.009 & 0.172 & 0.014 & 0.0 & 0.005 & 0.043 \\[6pt]
+
+\hline
+
+\end{tabular}
+\hspace*{-3cm}
+\end{center}
+\end{landscape}
 
 \end{document}
 
@@ -58,7 +97,6 @@ k & \multicolumn{12}{l}{Panel B: Realized upside variance} \\[7pt]
 % @{\extracolsep{6pt}}rrrrrrrrrrrrr@{}
 % \newcolumntype{C}{>{\centering\arraybackslash} m{0.6cm} }  %# New column type
 % {m{0.5cm} m{0.9cm} m{0.8cm} m{0.8cm} m{0.8cm} m{0.8cm} m{0.8cm} m{0.8cm} m{0.8cm} m{0.8cm} m{0.8cm} m{0.8cm} m{0.8cm}}
-
 
 
 

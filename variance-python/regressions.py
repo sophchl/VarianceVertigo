@@ -112,7 +112,7 @@ for k in range(0,len(k_month)):
         check_for_nans(xh1_data)
         check_for_nans(data)
         
-        # estimate a model vor vrpu and vrpd each
+        # estimate a model for vrpu and vrpd each
         model_1 = smf.ols('rtrn ~ vrpu', data = data, missing = 'drop').fit(cov_type='HAC', cov_kwds={'maxlags':1})
         model_2 = smf.ols('rtrn ~ vrpd', data = data, missing = 'drop').fit(cov_type='HAC', cov_kwds={'maxlags':1})
 
@@ -141,7 +141,108 @@ for k in range(0,len(k_month)):
         list_models_upside.append(model_1)
         list_models_downside.append(model_2)
 
-#%% add results to latex
+#%% function to create latex code
+
+def model_list_to_latex1(list_models):
+    
+    length = int((len(list_models)/6))
+    list_of_lines = []
+    
+    for i in range(0,length):
+        my_line = (str(k_month[i]) + " & " + 
+                   str(list_models[i].pvalues[1].round(3)) + " & " +
+                   str(list_models[i].rsquared_adj.round(3)) + " & " +
+                   str(list_models[i+1].pvalues[1].round(3)) + " & " +
+                   str(list_models[i+1].rsquared_adj.round(3)) + " & " +
+                   str(list_models[i+2].pvalues[1].round(3)) + " & " +
+                   str(list_models[i+2].rsquared_adj.round(3)) + " & " +
+                   str(list_models[i+3].pvalues[1].round(3)) + " & " +
+                   str(list_models[i+3].rsquared_adj.round(3)) + " & " +
+                   str(list_models[i+4].pvalues[1].round(3)) + " & " + 
+                   str(list_models[i+4].rsquared_adj.round(3)) + " & " +
+                   str(list_models[i+5].pvalues[1].round(3)) + " & " + 
+                   str(list_models[i+5].rsquared_adj.round(3)) + " \\\[6pt]")
+        list_of_lines.append(my_line)
+        list_of_lines.append("\n")
+
+    panel = "".join(list_of_lines)
+    return(panel)
+
+def model_list_to_latex2(list_models):
+    
+    length = int((len(list_models)/6))
+    list_of_lines = []
+    
+    for i in range(0,length):
+        my_line = (str(k_month[i]) + " & " + 
+                   
+                   str(list_models[i].pvalues[1].round(3)) + " & " +
+                   str(list_models[i].pvalues[2].round(3)) + " & " +
+                   str(list_models[i].rsquared_adj.round(3)) + " & " +
+                   str(list_models[i+1].pvalues[1].round(3)) + " & " +
+                   str(list_models[i+1].pvalues[2].round(3)) + " & " +
+                   str(list_models[i+1].rsquared_adj.round(3)) + " & " +
+                   str(list_models[i+2].pvalues[1].round(3)) + " & " +
+                   str(list_models[i+2].pvalues[2].round(3)) + " & " +
+                   str(list_models[i+2].rsquared_adj.round(3)) + " & " +
+                   str(list_models[i+3].pvalues[1].round(3)) + " & " +
+                   str(list_models[i+3].pvalues[2].round(3)) + " & " +
+                   str(list_models[i+3].rsquared_adj.round(3)) + " & " +
+                   str(list_models[i+4].pvalues[1].round(3)) + " & " + 
+                   str(list_models[i+4].pvalues[2].round(3)) + " & " + 
+                   str(list_models[i+4].rsquared_adj.round(3)) + " & " +
+                   str(list_models[i+5].pvalues[1].round(3)) + " & " + 
+                   str(list_models[i+5].pvalues[2].round(3)) + " & " + 
+                   str(list_models[i+5].rsquared_adj.round(3)) + " \\\[6pt]")
+        list_of_lines.append(my_line)
+        list_of_lines.append("\n")
+
+    panel = "".join(list_of_lines)
+    return(panel)
+
+
+#%% add to latex
+
+panelA = model_list_to_latex1(list_models_downside)
+panelB = model_list_to_latex1(list_models_upside)
+ 
+file_3 = open("results/regression/regression_overview.tex", "a")
+file_3.write(panelA)
+file_3.write(panelB)
+file_3.close()
+
+#%% regression with 2 variables
+
+list_models_both = []
+
+for k in range(0,len(k_month)):
+    
+    # select the regressand
+    yk1_data = list_return_data[k]
+    
+    for h in range(0,len(h_month)):
+        
+        # select the regressor
+        xh1_data = list_vrp_data[h][['vrpu', 'vrpd']]
+         
+        # create the regression dataset
+        
+        data = pd.merge(xh1_data, yk1_data, on = 'date') 
+                
+        # estimate the model with both vrpu, vrpd
+        model = smf.ols('rtrn ~ vrpu + vrpd', data = data, missing = 'drop').fit(cov_type='HAC', cov_kwds={'maxlags':1})
+
+        list_models_both.append(model)
+        
+#%% add to latex
+
+panelC = model_list_to_latex2(list_models_both) 
+
+file_3 = open("results/regression/regression_overview.tex", "a")
+file_3.write(panelC)
+file_3.close() 
+        
+#%% old: create latex code without function
 
 length = int((len(list_models_downside)/6))
 list_of_lines_down = []
@@ -186,66 +287,4 @@ for i in range(0,length):
     list_of_lines_up.append("\n")
     
 panelB = "".join(list_of_lines_up)
- 
-file_3 = open("results/regression/regression_overview.tex", "a")
-file_3.write(panelA)
-file_3.write(panelB)
-file_3.close()
-
-
-list_models_upside[1].summary()
-#%% one nice latex output
-
-'''
-
-from pylatex import Document, Table, MultiColumn
-
-model_1.rsquared_adj
-model_1.tvalues
-model_1.params
-model_1.pvalues
-
-doc = Document()
-
-fill_columns = 'c | c c | c c | c c | c c | c c | c c'
-table = Table(fill_columns)
-table.add_hline()
-table.add_row(('h', 
-               MultiColumn(2, align = 'c', data = h_month[0]),
-               MultiColumn(2, align = 'c', data = h_month[1]),
-               MultiColumn(2, align = 'c', data = h_month[2]),
-               MultiColumn(2, align = 'c', data = h_month[3]),
-               MultiColumn(2, align = 'c', data = h_month[4]),
-               MultiColumn(2, align = 'c', data = h_month[5]),
-               ))
-table.add_hline()
-table.add_row((' ',
-               't-Stat', '$\bar_{R}_^{2}$',
-               't-Stat', '$\bar_{R}_^{2}$',
-               't-Stat', '$\bar_{R}_^{2}$',
-               't-Stat', '$\bar_{R}_^{2}$',
-               't-Stat', '$\bar_{R}_^{2}$',
-               't-Stat', '$\bar_{R}_^{2}$'
-               ))
-table.add_hline()
-table.add_row(('k',
-               MultiColumn(12, align = 'c', data = 'Panel A: Realized downside variance')
-               ))
-table.add_hline()
-table.add_row((1,
-               list_models_downside[0].tvalues, list_models_downside[0].rsquared_adj,
-               list_models_downside[1].tvalues, list_models_downside[1].rsquared_adj,
-               list_models_downside[2].tvalues, list_models_downside[2].rsquared_adj,
-               list_models_downside[3].tvalues, list_models_downside[3].rsquared_adj,
-               list_models_downside[4].tvalues, list_models_downside[4].rsquared_adj,
-               list_models_downside[5].tvalues, list_models_downside[5].rsquared_adj
-               ))
-table.add_hline()
-
-doc.append(table)
-doc.generate_pdf()
-
-'''
-
-
 
