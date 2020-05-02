@@ -52,6 +52,7 @@ for file in os.listdir(data_directory_vrp):
     df = pd.read_csv(filename, index_col = 0)
     df.index = pd.to_datetime(df.index)
     df.index.name = "date"
+    df['skw'] = df.vrpu - df.vrpd
     list_vrp_data.append(df)
     
 names_dataframes = ['k01', 'k02', 'k03', 'k06', 'k09', 'k12']
@@ -74,6 +75,8 @@ ex_return = pd.read_csv("data/processed/excessreturn/excessreturn_daily.csv", in
 
 list_models_upside = []
 list_models_downside = []
+list_models_total = []
+list_models_skw = []
 
 for k in range(0,len(k_month)):
     
@@ -83,11 +86,13 @@ for k in range(0,len(k_month)):
     for h in range(0,len(h_month)):
         
         # select the regressor
-        xh1_data = list_vrp_data[h][['vrpu', 'vrpd']]
+        xh1_data = list_vrp_data[h][['vrpu', 'vrpd', 'vrp', 'skw']]
          
         # create the regression dataset
         
         data = pd.merge(xh1_data, yk1_data, on = 'date') 
+        
+        '''
                 
         # do nan and day check
         
@@ -112,19 +117,19 @@ for k in range(0,len(k_month)):
         check_for_nans(xh1_data)
         check_for_nans(data)
         
-        # estimate a model for vrpu and vrpd each
+        '''
+        
+        # estimate a model for vrp, vrpu and vrpd each
         model_1 = smf.ols('rtrn ~ vrpu', data = data, missing = 'drop').fit(cov_type='HAC', cov_kwds={'maxlags':1})
         model_2 = smf.ols('rtrn ~ vrpd', data = data, missing = 'drop').fit(cov_type='HAC', cov_kwds={'maxlags':1})
-
-        # print results (can also be ommitted)
-        #print(model_1.summary())
-        #print(model_2.summary())
-
+        model_3 = smf.ols('rtrn ~ vrp', data = data, missing = 'drop').fit(cov_type='HAC', cov_kwds={'maxlags':1})
+        model_4 = smf.ols('rtrn ~ skw', data = data, missing = 'drop').fit(cov_type='HAC', cov_kwds={'maxlags':1})
+        
         # create a latex output and save it to file
         latex_output_1 = model_1.summary().as_latex()
         latex_output_2 = model_2.summary().as_latex()
-
-        filename = "reg" + "k" + str(k_month[k]) + "h" + str(h_month[h]) 
+        latex_output_3 = model_3.summary().as_latex()
+        latex_output_4 = model_3.summary().as_latex()
         
         file_1 = open("results/regression/vrp_u.tex", 'a')
         file_1.write("regression model for VRPU, k = " + str(k_month[k]) + " h = " + str(h_month[h]))
@@ -138,8 +143,22 @@ for k in range(0,len(k_month)):
         file_2.write("\\\ \n\n")
         file_2.close()
         
+        file_3 = open("results/regression/vrp.tex", 'a')
+        file_3.write("regression model for VRP, k = " + str(k_month[k]) + " h = " + str(h_month[h]))
+        file_3.write(latex_output_3)
+        file_3.write("\\\ \n\n")
+        file_3.close()
+        
+        file_4 = open("results/regression/skew.tex", 'a')
+        file_4.write("regression model for skewness, k = " + str(k_month[k]) + " h = " + str(h_month[h]))
+        file_4.write(latex_output_4)
+        file_4.write("\\\ \n\n")
+        file_4.close()
+        
         list_models_upside.append(model_1)
         list_models_downside.append(model_2)
+        list_models_total.append(model_3)
+        list_models_skw.append(model_4)
 
 #%% function to create latex code
 
@@ -203,12 +222,16 @@ def model_list_to_latex2(list_models):
 
 #%% add to latex
 
-panelA = model_list_to_latex1(list_models_downside)
-panelB = model_list_to_latex1(list_models_upside)
+panelA = model_list_to_latex1(list_models_total)
+panelB = model_list_to_latex1(list_models_downside)
+panelC = model_list_to_latex1(list_models_upside)
+panelD = model_list_to_latex1(list_models_skw)
  
 file_3 = open("results/regression/regression_overview.tex", "a")
 file_3.write(panelA)
 file_3.write(panelB)
+file_3.write(panelC)
+file_3.write(panelD)
 file_3.close()
 
 #%% regression with 2 variables
