@@ -15,7 +15,7 @@ import numpy as np
 import pandas as pd
 import datetime as dt
 
-#%% set variables
+#%% set parameters
 
 kappa = 0
 
@@ -130,7 +130,7 @@ spx_daily = spx_daily.drop(['close', 'open', 'overnight'], axis = 1)
 
 check_for_nans(spx_daily)
 
-#%% apply scaling, my code 
+#%% apply scaling
 
 sample_var_returns = np.nanvar(spx_daily.rtrn_daily) 
 sample_avg_rv = np.mean(spx_daily['rv2']) # modification: average of unscaled rv or?

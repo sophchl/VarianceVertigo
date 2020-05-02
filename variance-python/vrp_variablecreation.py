@@ -13,12 +13,20 @@ output: one dataset per aggregation level h
 
 import numpy as np
 import pandas as pd
+import pandas_market_calendars as mcal
 
 #%% define functions
 
 def my_time_filter(df,start,end):
     cut_df = df[(df.index >= start) & (df.index <= end)]
     return cut_df
+
+def check_for_nans(data):
+    # does nan check
+    rows_w_nans = data[data.isnull().any(axis = 1)]
+    number_nans = len(rows_w_nans)
+    print('number of nans is:', number_nans, ' \n rows with nans are: \n', rows_w_nans)
+   
 
 #%% import data
 
@@ -39,6 +47,7 @@ excess.index = pd.to_datetime(excess.index)
 
 #%% set the right timeframe where data overlap
 
+# 1st: cut our data to the same start end end
 common_index = ivu.index.intersection(rv.index)
 common_index = common_index.intersection(excess.index)
 start = common_index[0]
@@ -49,9 +58,27 @@ cut_ivd = my_time_filter(ivd, start, end)
 cut_rv = my_time_filter(rv, start, end)
 cut_excess = my_time_filter(excess, start, end)
 
+# 2nd: make ure the days in between start and end are the same
+
+# find all trading days in the period where our data overlaps
+nyse = mcal.get_calendar('NYSE')
+early = nyse.schedule(start_date = start, end_date = end)
+
+# summarize our data availability
+print('iv ranges from', ivu.index[0], 'to', ivu.index[-1], 'number of days is:', len(ivu.index), '.\n'
+      'rv ranges from', rv.index[0], 'to', rv.index[-1], 'number of days is:', len(rv.index), '.\n'
+      'rtrn range from', excess.index[0], 'to', excess.index[-1], 'number of days is:', len(excess.index), '.\n'
+      'their common date range is', start, 'to', end, 'number of trading days in that range is:', len(early.index), '.\n'
+      'the cut dataframes have number of days: iv:', len(cut_ivu.index), ', rv:', len(cut_rv.index), ', excess:', len(cut_excess.index), '.')
+
+# check for nans (none present)
+check_for_nans(cut_ivu)
+check_for_nans(cut_rv)
+check_for_nans(cut_excess)
+
 # interpolate dates in rv that are missing
 missing_dates_rv = cut_ivu.index[~cut_ivu.index.isin(cut_rv.index)]
-print('interpolate days:', len(missing_dates_rv))
+print('interpolate days in rv:', len(missing_dates_rv))
 add_to_rv = pd.DataFrame(np.nan, index = missing_dates_rv, columns = cut_rv.columns)
 cut_rv = cut_rv.append(add_to_rv)
 cut_rv = cut_rv.sort_index()
@@ -59,7 +86,7 @@ cut_rv = cut_rv.interpolate(method = 'linear')
 
 # interpolate dates in excess returns that are missing
 missing_dates_excess = cut_ivu.index[~cut_ivu.index.isin(cut_excess.index)]
-print('interpolate days:', len(missing_dates_excess))
+print('interpolate days in rtrn:', len(missing_dates_excess))
 add_to_excess = pd.DataFrame(np.nan, index = missing_dates_excess, columns = cut_excess.columns)
 cut_excess = cut_excess.append(add_to_excess)
 cut_excess = cut_excess.sort_index()
@@ -73,6 +100,7 @@ print('Any difference in index ov ivs and excess?', False in (cut_ivu.index == c
 # compare dates of rv and ivu/ivd
 missing_dates_rv = cut_ivu.index[~cut_ivu.index.isin(cut_rv.index)]
 print('Days that are in iv but not in rv:', missing_dates_rv)
+
 
 #%% In the following we need to sum rv over the past days to accumulate to heach h
 
@@ -104,7 +132,6 @@ tradingdays_month = 21
 h_month = np.array([1,2,3,6,9,12])
 h_days = h_month * tradingdays_month
 
-
 list_dataframes = []
 dict_dataframes = {}
 
@@ -126,12 +153,17 @@ for df in list_dataframes:
     df['vrpd'] = df['ivd'] - df['rvd']
     df['vrp'] = df['vrpu'] + df['vrpd']
     
+#%% check for nans
+
+for df in list_dataframes:
+    check_for_nans(df)
+    
 #%% save datasets
 
-names_dataframes = ['h1', 'h2', 'h3', 'h6', 'h9', 'h12']
+names_dataframes = ['h01', 'h02', 'h03', 'h06', 'h09', 'h12']
 
 for i in range(0,len(list_dataframes)):
-    list_dataframes[i].to_csv('data/processed/models/' + names_dataframes[i])
+    list_dataframes[i].to_csv('data/processed/vrp/' + names_dataframes[i] + '.csv')
 
     
 

@@ -18,6 +18,7 @@ to the "data/raw" and the "data/processeed" directory.
 
 #%% load depdendencies
 
+import os
 import numpy as np
 import pandas as pd
 import datetime as dt
@@ -31,7 +32,6 @@ def separate_tradingday_overnight(data):
     nightindex = data.index.difference(day.index)
     night = data.loc[nightindex,]
     return(day, night)
-
 
 #%% loop over all files in directory to import the data from manual download
 # this section of the code runs long and I saved an intermediate result afterwards 
