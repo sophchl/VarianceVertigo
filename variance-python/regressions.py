@@ -44,11 +44,12 @@ def model_list_to_latex1(list_models):
     # the loop is in such a strange way (divide by 6, but take i+..) because we want 
     # one line per k, and every 6 values k increases by one
     # list_models includes model_kh as model_11, model12, model13.., model21, model22,...
-    length = int((len(list_models)/6))
-    list_of_lines = []
     
-    for i in range(0,length):
-        my_line = (str(k_month[i]) + " & " + 
+    list_of_lines = []
+    list_month_repeat = [1,1,1,1,1,1,2,2,2,2,2,2,3,3,3,3,3,3,6,6,6,6,6,6,9,9,9,9,9,9,12,12,12,12,12,12]
+    
+    for i in [0,6,12,18,24,30]:
+        my_line = (str(list_month_repeat[i]) + " & " + 
                    str(list_models[i].pvalues[1].round(3)) + " & " +
                    str(list_models[i].rsquared_adj.round(3)) + " & " +
                    str(list_models[i+1].pvalues[1].round(3)) + " & " +
@@ -72,12 +73,12 @@ def model_list_to_latex1(list_models):
 def model_list_to_latex2(list_models):
     # this function creates a latex code for our models in two variables
     # see model_list_to_latex1
-    length = int((len(list_models)/6))
-    list_of_lines = []
     
-    for i in range(0,length):
-        my_line = (str(k_month[i]) + " & " + 
-                   
+    list_of_lines = []
+    list_month_repeat = [1,1,1,1,1,1,2,2,2,2,2,2,3,3,3,3,3,3,6,6,6,6,6,6,9,9,9,9,9,9,12,12,12,12,12,12]
+    
+    for i in [0,6,12,18,24,30]:
+        my_line = (str(list_month_repeat[i]) + " & " + 
                    str(list_models[i].pvalues[1].round(3)) + " & " +
                    str(list_models[i].pvalues[2].round(3)) + " & " +
                    str(list_models[i].rsquared_adj.round(3)) + " & " +
