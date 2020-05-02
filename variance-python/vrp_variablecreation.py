@@ -34,7 +34,6 @@ def check_for_nans(data):
 ivu = pd.read_csv("data/processed/ivs/IV_U_030100_to_291217.csv", index_col = 6) 
 ivu.index = pd.to_datetime(ivu.index)
 ivd = pd.read_csv("data/processed/ivs/IV_D_030100_to_291217.csv", index_col = 6)
-
 ivd.index = pd.to_datetime(ivd.index)
 
 # rv

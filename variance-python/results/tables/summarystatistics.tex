@@ -1,0 +1,41 @@
+\documentclass{article}
+
+\usepackage{booktabs}
+\usepackage[left=2cm, right=2cm,
+top=3cm, bottom=2.5cm, footskip = 1.5cm]{geometry}
+\usepackage{caption}
+
+\begin{document}
+
+\section{summary statistics}
+
+In the following we describe the data used for our analysis and compare it to the summary statistics presented by the original paper. Before going into detail we would like to mention that our analysis presents several limitation with respect to the dataset. Firstly we did not have the same time period of data available, limiting our analysis to the years 2007 to 2017 compared to 1996 to 2015. Secondly, the daily variables are aggregated to periods between one month and one year for the models and unfortunately we were uncertain which aggregation period was presented in the reported summary statistics.  Thirdly, we assumed the aggregation periods were constructed overlapping but can not be certain of this. Hence were not able to replicate the exact summary statistics that the authors presented and can not assume that our replication dataset matches that of the original paper. As a consequence, we limit ourselves to comparing the variables in their relative size to one another.\\
+
+The total variance risk premium and downside variance risk premium are on average positive over our sample period. The upside variance risk premium however is on average negative. This aligns both with the authors theoretical and empirical findings, assuming that investors dislike bad uncertainty and are hence willing to pay a premium to be hedged against variation in bad uncertainty and vice versa. The realized variance is on average positive over the sample period both for the upside and downside measure, as is the implied volatility. Excess returns were on average 0.46$\%$ per day.\\
+
+
+
+Table \ref{table1} presents the summary statistics of the data used in our models. 
+
+
+\begin{table}[h]
+\begin{center}
+\caption{summary statistics}
+\label{table1}
+\begin{tabular}{l|rrr|rr|rr|r}
+\toprule
+{} &  $VRP$ &  $VRP^{U}$  &   $VRP^{D}$  &   $RV^{U}$ &    $RV^{D}$ &    $IV^{U}$  &          $IV^{D}$ & excess return\\
+\midrule
+mean  &     0.067227 &    -0.034161 &     0.101388 &     0.147523 &     0.168599 &     0.112790 &     0.268409 &     0.460595 \\
+std   &     0.250356 &     0.135721 &     0.165122 &     0.246959 &     0.321733 &     0.155481 &     0.347752 &     4.809556 \\
+min   &    -3.344685 &    -1.812280 &    -1.532405 &     0.008506 &     0.004881 &     0.006662 &     0.043216 &   -35.874178 \\
+max   &     1.911116 &     0.397544 &     1.513572 &     2.346593 &     3.166236 &     1.732368 &     3.522595 &    20.273505 \\
+\bottomrule
+\end{tabular}\\
+\end{center}
+\textit{Notes:} This table reports the summary statistic for the variables used in our model. For representative purposes only the aggregation period of one months is displayed. The variables reported are in percentage and non-annualized.
+\end{table}
+
+\end{document}
+
+
