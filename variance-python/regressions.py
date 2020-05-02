@@ -40,6 +40,73 @@ def check_for_nans(data):
     rows_w_nans = data[data.isnull().any(axis = 1)]
     number_nans = len(rows_w_nans)
     print('total number of rows is:', len(data), '\n number of nans is:', number_nans)
+    
+
+def model_list_to_latex1(list_models):
+    # this function creates a latex code for our models in one variable
+    # the loop is in such a strange way (divide by 6, but take i+..) because we want 
+    # one line per k, and every 6 values k increases by one
+    # list_models includes model_kh as model_11, model12, model13.., model21, model22,...
+    length = int((len(list_models)/6))
+    list_of_lines = []
+    
+    for i in range(0,length):
+        my_line = (str(k_month[i]) + " & " + 
+                   str(list_models[i].pvalues[1].round(3)) + " & " +
+                   str(list_models[i].rsquared_adj.round(3)) + " & " +
+                   str(list_models[i+1].pvalues[1].round(3)) + " & " +
+                   str(list_models[i+1].rsquared_adj.round(3)) + " & " +
+                   str(list_models[i+2].pvalues[1].round(3)) + " & " +
+                   str(list_models[i+2].rsquared_adj.round(3)) + " & " +
+                   str(list_models[i+3].pvalues[1].round(3)) + " & " +
+                   str(list_models[i+3].rsquared_adj.round(3)) + " & " +
+                   str(list_models[i+4].pvalues[1].round(3)) + " & " + 
+                   str(list_models[i+4].rsquared_adj.round(3)) + " & " +
+                   str(list_models[i+5].pvalues[1].round(3)) + " & " + 
+                   str(list_models[i+5].rsquared_adj.round(3)) + " \\\[6pt]")
+        
+        list_of_lines.append(my_line)
+        list_of_lines.append("\n")
+
+    panel = "".join(list_of_lines)
+    return(panel)
+
+
+def model_list_to_latex2(list_models):
+    # this function creates a latex code for our models in two variables
+    # see model_list_to_latex1
+    length = int((len(list_models)/6))
+    list_of_lines = []
+    
+    for i in range(0,length):
+        my_line = (str(k_month[i]) + " & " + 
+                   
+                   str(list_models[i].pvalues[1].round(3)) + " & " +
+                   str(list_models[i].pvalues[2].round(3)) + " & " +
+                   str(list_models[i].rsquared_adj.round(3)) + " & " +
+                   str(list_models[i+1].pvalues[1].round(3)) + " & " +
+                   str(list_models[i+1].pvalues[2].round(3)) + " & " +
+                   str(list_models[i+1].rsquared_adj.round(3)) + " & " +
+                   str(list_models[i+2].pvalues[1].round(3)) + " & " +
+                   str(list_models[i+2].pvalues[2].round(3)) + " & " +
+                   str(list_models[i+2].rsquared_adj.round(3)) + " & " +
+                   str(list_models[i+3].pvalues[1].round(3)) + " & " +
+                   str(list_models[i+3].pvalues[2].round(3)) + " & " +
+                   str(list_models[i+3].rsquared_adj.round(3)) + " & " +
+                   str(list_models[i+4].pvalues[1].round(3)) + " & " + 
+                   str(list_models[i+4].pvalues[2].round(3)) + " & " + 
+                   str(list_models[i+4].rsquared_adj.round(3)) + " & " +
+                   str(list_models[i+5].pvalues[1].round(3)) + " & " + 
+                   str(list_models[i+5].pvalues[2].round(3)) + " & " + 
+                   str(list_models[i+5].rsquared_adj.round(3)) + " \\\[6pt]")
+        
+        list_of_lines.append(my_line)
+        list_of_lines.append("\n")
+
+    panel = "".join(list_of_lines)
+    return(panel)
+
+
 
 #%% load data
 
@@ -160,67 +227,8 @@ for k in range(0,len(k_month)):
         list_models_total.append(model_3)
         list_models_skw.append(model_4)
 
-#%% function to create latex code
 
-def model_list_to_latex1(list_models):
-    
-    length = int((len(list_models)/6))
-    list_of_lines = []
-    
-    for i in range(0,length):
-        my_line = (str(k_month[i]) + " & " + 
-                   str(list_models[i].pvalues[1].round(3)) + " & " +
-                   str(list_models[i].rsquared_adj.round(3)) + " & " +
-                   str(list_models[i+1].pvalues[1].round(3)) + " & " +
-                   str(list_models[i+1].rsquared_adj.round(3)) + " & " +
-                   str(list_models[i+2].pvalues[1].round(3)) + " & " +
-                   str(list_models[i+2].rsquared_adj.round(3)) + " & " +
-                   str(list_models[i+3].pvalues[1].round(3)) + " & " +
-                   str(list_models[i+3].rsquared_adj.round(3)) + " & " +
-                   str(list_models[i+4].pvalues[1].round(3)) + " & " + 
-                   str(list_models[i+4].rsquared_adj.round(3)) + " & " +
-                   str(list_models[i+5].pvalues[1].round(3)) + " & " + 
-                   str(list_models[i+5].rsquared_adj.round(3)) + " \\\[6pt]")
-        list_of_lines.append(my_line)
-        list_of_lines.append("\n")
-
-    panel = "".join(list_of_lines)
-    return(panel)
-
-def model_list_to_latex2(list_models):
-    
-    length = int((len(list_models)/6))
-    list_of_lines = []
-    
-    for i in range(0,length):
-        my_line = (str(k_month[i]) + " & " + 
-                   
-                   str(list_models[i].pvalues[1].round(3)) + " & " +
-                   str(list_models[i].pvalues[2].round(3)) + " & " +
-                   str(list_models[i].rsquared_adj.round(3)) + " & " +
-                   str(list_models[i+1].pvalues[1].round(3)) + " & " +
-                   str(list_models[i+1].pvalues[2].round(3)) + " & " +
-                   str(list_models[i+1].rsquared_adj.round(3)) + " & " +
-                   str(list_models[i+2].pvalues[1].round(3)) + " & " +
-                   str(list_models[i+2].pvalues[2].round(3)) + " & " +
-                   str(list_models[i+2].rsquared_adj.round(3)) + " & " +
-                   str(list_models[i+3].pvalues[1].round(3)) + " & " +
-                   str(list_models[i+3].pvalues[2].round(3)) + " & " +
-                   str(list_models[i+3].rsquared_adj.round(3)) + " & " +
-                   str(list_models[i+4].pvalues[1].round(3)) + " & " + 
-                   str(list_models[i+4].pvalues[2].round(3)) + " & " + 
-                   str(list_models[i+4].rsquared_adj.round(3)) + " & " +
-                   str(list_models[i+5].pvalues[1].round(3)) + " & " + 
-                   str(list_models[i+5].pvalues[2].round(3)) + " & " + 
-                   str(list_models[i+5].rsquared_adj.round(3)) + " \\\[6pt]")
-        list_of_lines.append(my_line)
-        list_of_lines.append("\n")
-
-    panel = "".join(list_of_lines)
-    return(panel)
-
-
-#%% add to latex
+#%% add to one-variable resgressions to latex
 
 panelA = model_list_to_latex1(list_models_total)
 panelB = model_list_to_latex1(list_models_downside)
@@ -234,9 +242,11 @@ file_3.write(panelC)
 file_3.write(panelD)
 file_3.close()
 
-#%% regression with 2 variables
+#%% two variable regression
 
-list_models_both = []
+list_models_premium = []
+list_models_iv = []
+list_models_rv = []
 
 for k in range(0,len(k_month)):
     
@@ -246,22 +256,30 @@ for k in range(0,len(k_month)):
     for h in range(0,len(h_month)):
         
         # select the regressor
-        xh1_data = list_vrp_data[h][['vrpu', 'vrpd']]
+        xh1_data = list_vrp_data[h][['vrpu', 'vrpd', 'ivu', 'ivd', 'rvu', 'rvd']]
          
         # create the regression dataset
         
         data = pd.merge(xh1_data, yk1_data, on = 'date') 
                 
         # estimate the model with both vrpu, vrpd
-        model = smf.ols('rtrn ~ vrpu + vrpd', data = data, missing = 'drop').fit(cov_type='HAC', cov_kwds={'maxlags':1})
+        model_1 = smf.ols('rtrn ~ vrpu + vrpd', data = data, missing = 'drop').fit(cov_type='HAC', cov_kwds={'maxlags':1})
+        model_2 = smf.ols('rtrn ~ ivu + ivd', data = data, missing = 'drop').fit(cov_type='HAC', cov_kwds={'maxlags':1})
+        model_3 = smf.ols('rtrn ~ rvu + rvd', data = data, missing = 'drop').fit(cov_type='HAC', cov_kwds={'maxlags':1})
 
-        list_models_both.append(model)
+        list_models_premium.append(model_1)
+        list_models_iv.append(model_2)
+        list_models_rv.append(model_3)
         
 #%% add to latex
 
-panelC = model_list_to_latex2(list_models_both) 
+panelA = model_list_to_latex2(list_models_premium) 
+panelB = model_list_to_latex2(list_models_iv) 
+panelC = model_list_to_latex2(list_models_rv) 
 
 file_3 = open("results/regression/regression_overview.tex", "a")
+file_3.write(panelA)
+file_3.write(panelB)
 file_3.write(panelC)
 file_3.close() 
         
