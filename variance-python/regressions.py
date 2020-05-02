@@ -12,11 +12,8 @@ output: RV upside and downside, daily frequency (to processed)
 #%% load dependencies
 
 import os
-import numpy as np
 import pandas as pd
-import statsmodels.api as sm
 import statsmodels.formula.api as smf
-import statsmodels.stats as sms
 import pandas_market_calendars as mcal
 
 #%% set parameters
@@ -136,8 +133,6 @@ for file in os.listdir(data_directory_return):
     else:
         continue
 
-ex_return = pd.read_csv("data/processed/excessreturn/excessreturn_daily.csv", index_col = 0)
-
 #%% one-variable regressions
 
 list_models_upside = []
@@ -228,7 +223,7 @@ for k in range(0,len(k_month)):
         list_models_skw.append(model_4)
 
 
-#%% add to one-variable resgressions to latex
+#%% add one-variable resgressions to latex
 
 panelA = model_list_to_latex1(list_models_total)
 panelB = model_list_to_latex1(list_models_downside)
@@ -271,7 +266,7 @@ for k in range(0,len(k_month)):
         list_models_iv.append(model_2)
         list_models_rv.append(model_3)
         
-#%% add to latex
+#%% add two-variable regression to latex
 
 panelA = model_list_to_latex2(list_models_premium) 
 panelB = model_list_to_latex2(list_models_iv) 
@@ -282,50 +277,4 @@ file_3.write(panelA)
 file_3.write(panelB)
 file_3.write(panelC)
 file_3.close() 
-        
-#%% old: create latex code without function
-
-length = int((len(list_models_downside)/6))
-list_of_lines_down = []
-for i in range(0,length):
-    my_line = (str(k_month[i]) + " & " + 
-          str(list_models_downside[i].pvalues[1].round(3)) + " & " +
-          str(list_models_downside[i].rsquared_adj.round(3)) + " & " +
-          str(list_models_downside[i+1].pvalues[1].round(3)) + " & " +
-          str(list_models_downside[i+1].rsquared_adj.round(3)) + " & " +
-          str(list_models_downside[i+2].pvalues[1].round(3)) + " & " +
-          str(list_models_downside[i+2].rsquared_adj.round(3)) + " & " +
-          str(list_models_downside[i+3].pvalues[1].round(3)) + " & " +
-          str(list_models_downside[i+3].rsquared_adj.round(3)) + " & " +
-          str(list_models_downside[i+4].pvalues[1].round(3)) + " & " + 
-          str(list_models_downside[i+4].rsquared_adj.round(3)) + " & " +
-          str(list_models_downside[i+5].pvalues[1].round(3)) + " & " + 
-          str(list_models_downside[i+5].rsquared_adj.round(3)) + " \\\[6pt]")
-    list_of_lines_down.append(my_line)
-    list_of_lines_down.append("\n")
-    
-
-panelA = "".join(list_of_lines_down)
-
-
-length = int((len(list_models_upside)/6))
-list_of_lines_up = []
-for i in range(0,length):
-    my_line = (str(k_month[i]) + " & " + 
-          str(list_models_upside[i].pvalues[1].round(3)) + " & " +
-          str(list_models_upside[i].rsquared_adj.round(3)) + " & " +
-          str(list_models_upside[i+1].pvalues[1].round(3)) + " & " +
-          str(list_models_upside[i+1].rsquared_adj.round(3)) + " & " +
-          str(list_models_upside[i+2].pvalues[1].round(3)) + " & " +
-          str(list_models_upside[i+2].rsquared_adj.round(3)) + " & " +
-          str(list_models_upside[i+3].pvalues[1].round(3)) + " & " +
-          str(list_models_upside[i+3].rsquared_adj.round(3)) + " & " +
-          str(list_models_upside[i+4].pvalues[1].round(3)) + " & " + 
-          str(list_models_upside[i+4].rsquared_adj.round(3)) + " & " +
-          str(list_models_upside[i+5].pvalues[1].round(3)) + " & " + 
-          str(list_models_upside[i+5].rsquared_adj.round(3)) + " \\\[6pt]")
-    list_of_lines_up.append(my_line)
-    list_of_lines_up.append("\n")
-    
-panelB = "".join(list_of_lines_up)
 
