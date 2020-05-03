@@ -15,7 +15,7 @@ where $R_t= \frac{S_t-S_{t-1}}{S_{t-1}}$ is the equity return and $R_t^f$ is the
 Both the S\&P 500 composite index and the 3-month T-Bill rate series have been gathered from the CRSP database and we focus our analysis on the 2007-2017 sample period. 
 
 \subsection{RV: High Frequency Data}
-To build the daily $RV^{U/D}$s series, we use 5-minute intraday S\&P 500 data and, once again, we focus on the 2007-2017 sample period, which yields a total of \textbf{insert number} daily observations. The data is available through the Wharton Database.
+To build the daily $RV^{U/D}$s series, we use 5-minute intraday S\&P 500 data and, once again, we focus on the 2007-2017 sample period. The data is available through the Wharton Database.
 
 \vspace{4mm}
 For what concerns the 2007-2008 period, we have gathered tick data from the TAQ database, and subsequently proceeded to delete any duplicate and zero entries to obtain more consistent data. Finally, to obtain 5-minute data and overcome the issue of irregularly spaced data points we have created 5-minute bins by using the median. We have preferred to create these 5-minutes bins with the median rather than the mean value, as the former is more robust to outliers.  
