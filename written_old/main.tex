@@ -2,21 +2,24 @@
 
 \usepackage{mystyle} % read all packages and specifications from mystyle.tex
 
-\newcommand{\Title}{A VARIANCE CHAOS}
+\newcommand{\Title}{FILL TITLE HERE}
 
 % fill in all the details about the paper here - will complete when calling tex/front
 \newcommand{\Project}{Seminar Paper}
 \newcommand{\Programme}{MSc Quantitative Finance}
-\newcommand{\Name}{Silvia Forcina Barrero, Sophia Glaeser, Stefano Nicoli}
-\newcommand{\MatrikelNummer}{19-756-204,19-762-046, 19-762-384}
-\newcommand{\Date}{2020-03-02}
+\newcommand{\Name}{fill our names here}
+\newcommand{\MatrikelNummer}{fill our matriculation number here}
+\newcommand{\Date}{fill deadline here}
 \newcommand{\Semester}{Spring Term 2020}
-\newcommand{\Examinor}{Prof. Dr. Markus Leippold}
-\newcommand{\Supervisor}{Dr. Nikola Vasiljevix}
+\newcommand{\Examinor}{fill examinor here}
+\newcommand{\Supervisor}{fill supervisor here}
 \newcommand{\Chair}{Department of Banking and Finance}
 
-		
+	
 \addbibresource{./bib/bib_file.bib} 
+
+\usepackage{acro}
+\DeclareAcronym{SVI}{short = SVI, long = Google Search Volume Index}
 
 
 \begin{document}
@@ -33,40 +36,32 @@
 	\pagenumbering{Roman}
 	\tableofcontents
 	\listoftables
+	\listoffigures
 	\newpage
+	\printacronyms[exclude-classes=no]
 
+	% input abstract here
+	\newpage	
+	\begin{abstract}
+	\input{tex/abstract}
+	\end{abstract}
 	
 	% input all sections here
 	\newpage
 	\pagenumbering{arabic}
 	\setcounter{page}{1}
-    \input{./tex/0_section.tex}
-    \newpage
 	\input{./tex/1_section.tex}
 	\newpage
 	\input{./tex/2_section.tex} 
 	\newpage
-	\input{./tex/3_section.tex} 
+	
+	% input bibliography, appendix and declaration of independence here
 	\newpage
-	\input{./tex/4_section.tex} 
-	\newpage
-	\input{./tex/5_section.tex} 
-	\newpage
-	\input{./tex/6_section.tex} 
-	\newpage
-
-    % input bibliography, appendix and declaration of independence here
-	\newpage
-	\nocite{*}
 	\printbibliography
 	\newpage
 	%\input{./tex/6_appendix.tex}
 	\clearpage
 	\thispagestyle{empty}
 	%\input{./tex/declaration.tex}
-	
 
 \end{document}
-
-
-	

@@ -1,5 +1,197 @@
 %!TEX root = ../Main.tex
 
-\section{Chapter 2}\label{sec:chapter2}
+\section{Methodology}\label{sec:chapter2}
+In this section we describe the methodology followed to construct the relevant measures used as predictors for markets excess returns.  For what concerns the construction of the relevant variables for the analysis, we have closely followed \textit{Fenou's [2015]} approach, which draws on the vast existing literature of realized and risk-neutral volatility. For what concerns the models, in addition to the replication of the models proposed by \textit{Fenou [2015]}, we implemented new models that would potentially allow us to gain new insights. A more detailed description is given below. 
 
-fill second section here
+First, we decompose equity price changes into positive and negative log-returns with respect to an appropriately chosen threshold. Given the nature of the analysis we set this threshold to zero, however its value can be changed to better suit other types of analysis. In particular, for $\kappa$ suitably chosen it is possible to investigate the tail behavior of returns. 
+
+\subsection{Excess Returns}
+\vspace{4mm}
+We denote the total equity returns at time $t$ as $R_t^e=\frac{S_t+D_t-S_{t-1}}{S_{t-1}}$ where $D_t$ is the dividend paid out in the following period. However, we can consider $D_t$ equal to zero for high enough sampling frequencies. The log of prices is denoted bt $s_t=ln(S_t)$ and consequently log-returns are defined as $r_t=s_t-s_{t-1}$ and excess log returns as $r_t^e=r_t-r_t^f$, where $r_t^f$ indicates the risk-free rate observed at $t-1$. Finally, cumulative excess returns are obtained by summing one-period excess returns, $r_{t \mapsto t+k}=\sum_{j=0}^k r_{t+j}^e$ where k is the prediction horizon. Once the positive returns have been separated from the negative, we can proceed to construct our non-parametric measures of upside and downside variances, and skewness. 
+
+\subsection{Construction of the VRP}
+Following \textit{Fenou [2015]},  we construct the variance risk premium as the difference between option-implied (IV) and realized variances (RV). These two components are the variances under the risk-neutral and physical measures respectively. Hence we need to build the upside and downside variances both under the physical and risk-neutral measure. 
+
+\vspace{4mm}
+We construct the total realized variance of returns for a given trading day $t$ as: 
+\begin{equation}\label{eq:RV}
+RV_{t} = \sum_{j = 1}^{n_{t}} r_{j,t}^{2}
+\end{equation}
+
+where $r_{j,t}^{2}$ is the $j^{th}$ intraday squared log return on day t and $n_{t}$ is the number of intraday returns observed that day. 
+Next, we add to the total realized variance, the squared overnight log-return, that is, the difference in log price between when the market opens at $t$ and when it closes at $t-1$. We assume that the market opens at 9:30 AM and closes at 16:00 PM. 
+\begin{equation}\label{eq:ln}
+r_{overnight} = log(p_{open,t}) - log(p_{close, t-1})
+\end{equation}
+
+Once we obtain the total realized variance series, we ensure that the sample average realized variance equals the sample variance of daily log returns through scaling. 
+
+\vspace{4mm}
+Following \textit{Barndorff-Nielsen et al. [2010}] we decompose the realized variance into upside and downside realized variances: 
+\begin{equation}\label{eq:RVU}
+RV_{t}^{U}(\kappa) =\sum_{j=1}^{n_{t}} r_{j,t}^{2} \mathbb{I}_{[r_{j,t} > \kappa]}
+\end{equation}
+\begin{equation}\label{eq:RVD}
+RV_{t}^{D}(\kappa) = \sum_{j=1}^{n_{t}} r_{j,t}^{2} \mathbb{I}_{[r_{j,t} \leq \kappa]}
+\end{equation}
+where $\kappa$ is the aforementioned threshold set equal to zero. 
+
+Once again, we add the squared overnight returns to the upside and downside realized variances. In particular, we add the log-return to the upside realized variance if this is 'positive', that is, if it exceeds the threshold, and to the downside realized variance if it is 'negative'. The sum of these two measures corresponds to the daily total realized variance, and hence it is necessary to apply the same scaling to both components. In particular, we multiply both components by the ratio of the sample variance of daily log-returns over the sample average of the (pre-scaled) realized variance.
+\begin{equation}\label{eq:scaling}
+RV_{t} = \tilde{RV}_{t} \frac{1}{\sigma_{r}} 
+\end{equation}
+\begin{equation}\label{eq:scaling1}
+RV_{t}^{U/D} = \tilde{RV}_{t}^{U/D}  \frac{\sigma_{r}}{\mu_{RV}}
+\end{equation}
+where $\sigma_{r}$ is the sample variance of the daily log returns, $\mu_{RV}$ is sample average of the (pre-scaled) realized variance, $\tilde{RV}_{t}^{U/D}$ is the unscaled realized variance. 
+
+For a given horizon h, the cumulative realized quantities are obtained by summing the one-day realized quantities over h non-overlapping periods:
+\begin{equation}\label{eq:accumulating}
+RV_{t,h}(\kappa) = \sum_{j=1}^{h} RV_{t+j}(\kappa)
+\end{equation}
+\begin{equation}\label{eq:accumulating1}
+RV_{t,h}^{U}(\kappa) = \sum_{j=1}^{h} RV_{t+j}^{U}(\kappa)
+\end{equation}
+\begin{equation}\label{eq:accumulating2}
+RV_{t,h}^{D}(\kappa) = \sum_{j=1}^{h} RV_{t+j}^{D}(\kappa)
+\end{equation}
+we use $h=1,2,3,6,9,12$ months.
+
+By construction, the sum of the cumulative realized semivariances corresponds to the cumulative realized total variance:
+\begin{equation}\label{eq:tot}
+RV_{t,h}(\kappa) := RV_{t,h}^{U}(\kappa) + RV_{t,h}^{D}(\kappa)
+\end{equation}
+
+Finally, we can define the variance risk premia (VRP) as the premia resulting from bearing upside and downside variance risks: 
+\begin{equation}\label{eq:VRP}
+VRP_{t,h} = \mathbb{E}_{t}^{\mathbb{Q}}[RV_{t,h}] - \mathbb{E}_{t}^{\mathbb{P}}[RV_{t,h}]
+=(\mathbb{E}_{t}^{\mathbb{Q}}[RV^U_{t,h}]-\mathbb{E}_{t}^{\mathbb{P}}[RV^U_{t,h}])+(\mathbb{E}_{t}^{\mathbb{Q}}[RV^D_{t,h}]-\mathbb{E}_{t}^{\mathbb{P}}[RV^D_{t,h}])
+\end{equation}
+
+Hence we can decompose the VRP in its respective upside and downside counterparts: 
+\begin{equation}\label{eq:VRPUD}
+VRP_{t,h} := VRP^U_{t,h}(k)+VRP^D_{t,h}(k)
+\end{equation}
+
+\subsubsection{Construction of the P-Expectation}
+In order to evaluate equation (\ref{eq:VRP}) we need to define $\mathbb{E}_{t}^{\mathbb{P}}[RV^U_{t,h}]$ and $\mathbb{E}_{t}^{\mathbb{P}}[RV^D_{t,h}]$.
+To this end, we characterise the P-expectation through a Random Walk specification:
+\begin{equation}\label{eq:RW}
+\mathbb{E}_{t}^{\mathbb{P}}[RV_{t,h}^{U/D}(\kappa)] = RV_{t-h,h}^{U/D}(\kappa)
+\end{equation}
+Hence we estimate the P-Expectation for period $h$ as the realized variance observed in the the past period. 
+
+\subsubsection{Construction of the Q-Expectation}
+The risk-neutral expectation of $RV_{t,h}$ is built following the methodology of \textit{Andersen and Bondarenko [2007]}. We denote these model-free risk-neutral semivariances as implied semivariances or $IV_{t,h}^{U/D}$. 
+
+We define the implied semivariances as:
+
+\begin{equation} \label{eq:IV def1}
+IV_{t,h}^{U} = \mathbb{E}_{t}^{\mathbb{Q}} \left[ RV_{t,h}^{U} (\kappa) \right] \approx 2 \int_{F_{t}(h)exp(\kappa_{F})}^{\infty} \frac{M_{0}(k)}{k^{2}} dk
+\end{equation}
+
+\begin{equation} \label{eq:IV def2}
+IV_{t,h}^{D} = \mathbb{E}_{t}^{\mathbb{Q}} \left[ RV_{t,h}^{D} (\kappa) \right] \approx 2 \int_{0}^{F_{t}(h)exp(\kappa_{F})} \frac{M_{0}(k)}{k^{2}}  dk
+\end{equation}
+with:
+\begin{equation}
+M_{0}(k) = min(P_{t}(k,h), C_{t}(k,h)), \text{ where}
+\end{equation}
+
+$P_{t}(k,h)$ and $C_{t}(k,h)$ are put and call option prices respectively with strike price $k$ and time-to-maturity $h$. $F_{t}(h)$ is the forward price at time $t$ and tenor $h$. $\kappa_{F}$ is defined as $\kappa_{F}:=(\kappa - r_{t}^{f})h$. In particular, here we assume $\kappa=0$. We observe that we assume that $\kappa$ here is equal to zero.
+
+
+\vspace{4mm}
+Even though this equation gives us a direction to follow to compute the implied semi-variances, we have to handle the fact that their precise calculation requires, for every target maturity $h$, a fine grid (with respect to the strike price) of OTM option prices. However, in order to obtain this fine grid, a thorough process of data cleaning is necessary. In section 3 we present the preliminary data cleaning treatments applied, while in this section we present the methodology used in the more thorough part of the data cleaning process. 
+
+\vspace{4mm}
+The construction of the implied semivariances relies on the following steps:
+\paragraph{Dividend Issue and Implied Forward}
+Since the computation of the BS call and put prices involves the dividend yield, which is hard to properly estimate, we decided to infer forward prices from the forward put-call parity and to apply the BS formula in terms of the forward instead of spot and dividend: 
+\begin{equation}
+C_t(K,h,\sigma)=e^{-\int_{t}^{t+h} r_u  du} (F_t(h) \mathcal{N}(d_1)-K\mathcal{N}(d_2))
+\end{equation}
+\begin{equation}
+d_1=\frac{\ln(\frac{F_t(h)}{K})+\frac{\sigma^2}{2}h}{\sigma \sqrt{h}}\text{  and  } d_2 = d_1-\sigma \sqrt{h},
+\end{equation}
+where $\mathcal{N}$ is the cdf of the standard normal distribution.
+
+\vspace{4mm}
+In order to get the implied forwards, we recall the forward put-call parity:
+\begin{equation}
+ C_t(K,h)+K e^{-\int_{t}^{t+h} r_u du} = P_t(K,h) + F_t(h) e^{-\int_{t}^{t+h} r_u du}.
+\end{equation}
+
+To calculate with as much accuracy as possible the forward rate from this equation, we have to care mainly for two problems:
+\begin{enumerate}
+    \item We need a pair of call and put options with the same strike and the same maturity;
+    \item We need that both prices of this pair are reliable. Therefore, we need that both the put and the call are not ITM (or at least not deep ITM). The only way to solve this issue is to find a pair  $(C_t(K,h),P_t(K,h))$ 'as much ATM as possible'. Hence, it satisfies $K\approx F_t(h)$.
+\end{enumerate}
+The only reason why we downloaded the dividends is because for some pair (K,h) it happens that a couple as in 1. does not exist, so we have to compute the forward with spot and dividends. In order to address 2., once we gathered all the puts and the calls with the same strike and time-to-maturity, we took into consideration the pair $(\hat{C}_t(K,h),\hat{P}_t(K,h))$ that minimizes $|C_t(K,h)-P_t(K,h)|$. So, for every pair (K,h) we computed the implied forward as:
+\begin{align*}
+    F_t(h)=K+ e^{\int_{t}^{t+h} r_u  du} (\hat{C}_t(K,h)-\hat{P}_t(K,h))
+\end{align*}
+Now that we have used the ITM options for the computation of the implied forwards, we can continue our cleaning process deleting:
+\begin{itemize}
+\item call options with forward-moneyness below 1;
+\item put options with forward-moneyness above 1.
+\end{itemize}
+Furthermore, as suggested by \textit{Chang et al.} we decided not to take into consideration the days without at least two OTM calls and two OTM puts. Fortunately, this is not the case in our time period.
+
+\vspace{4mm}
+Having dealt with the dividend issue,  we finally have everything necessary to compute the implied volatility, using the BS formula. In particular, we compute it through the MatLab function blsimpv.
+
+\paragraph{Creation of a fine arbibtrage-free grid}\mbox{}\\
+The most subtle step to have enough data to compute the implied semi-variances is the following one.
+For every single day and for every time-to-maturity present in the filtered options of that day, we want to create a fine grid with respect to the forward-moneyness $\frac{K}{F_t(h)}$ such that no static arbitrage opportunity arises from it. To do this, we followed the algorithm proposed by \textit{Fengler [2009]}, adapting to our purpose the \textit{MatLab}\footnote{we thank the authors who made their code available on \url{https://github.com/marta-riva/duoGozzo/tree/master/IVS_Code}} code. 
+
+\vspace{4mm}
+Even though we do not want to describe with details how the algorithm works, we want to stress that, differently from \textit{Feunou et al. [2015]}, we did not extrapolate the implied volatility for out-of-range levels of moneyness. Instead, for every day and every time-to-maturity, we created a grid that ranges from the minimum to the maximum level of moneyness given on that day, in light of \textit{Andersen et. al [2015]}. We will show the reasoning and consequences of this choice through the following equations.
+
+\paragraph{IV Computation}\mbox{}\\
+We consider:
+\begin{equation}
+ \begin{split}
+ IV_{t,h}^{U}\_approx:= \frac{2}{F_{t}(h)} \int_{exp(-r_{t}^{f}h)}^{max\_fwd\_mon} \frac{M_{0}(Mon_t(h)F_{t}(h))}{Mon_t(h)^{2}} dMon_t(h)\\
+ \le \frac{2}{F_{t}(h)} \int_{exp(-r_{t}^{f}h)}^{\infty} \frac{M_{0}(Mon_t(h)F_{t}(h))}{Mon_t(h)^{2}} d Mon_t(h)=IV_{t,h}^{U}
+ \end{split}
+ \end{equation}
+ 
+ \begin{equation}
+ \begin{split}
+ IV_{t,h}^{D}\_approx:= \frac{2}{F_{t}(h)} \int_{min\_fwd\_mon}^{exp(-r_{t}^{f}h)} \frac{M_{0}(Mon_t(h)F_{t}(h))}{Mon_t(h)^{2}}  dMon_t(h)\\
+\le \frac{2}{F_{t}(h)} \int_{0}^{exp(-r_{t}^{f}h)} \frac{M_{0}(Mon_t(h)F_{t}(h))}{Mon_t(h)^{2}}  dMon_t(h)=IV_{t,h}^{D}
+\end{split}
+\end{equation}
+
+where $max\_fwd\_mon$ and $min\_fwd\_mon$ are the maximum and minimum moneyness level present in the filtered options on that day, respectively. Without explaining step-by-step the representation of the implied semi-variances with respect to the forward moneyness $Mon_t(h):=\frac{K}{F_t(h)}$, we specify that we changed the variable of the integral in order to use our grid.
+
+\vspace{4mm}
+An immediate drawback of using $IV_{t,h}^{U}\_approx$ and $IV_{t,h}^{D}\_approx$ instead of $IV_{t,h}^{U}$ and $IV_{t,h}^{D}$, respectively, is that we are ignoring the tails of the integrals. On the other hand, a benefit of this method is that we avoid the extrapolation procedure, which would lead to not precise estimates of the prices with moneyness close to zero, risking to overestimate the value of that tail. Indeed, looking at $IV_{t,h}^{D}$, if the computation of the OTM put options is not of high quality, the risk is that the denominator $Mon_t(h)^2$ gives to the integral too high and not reliable values. Moreover, since we are not computing the implied semi-variances to do option pricing or other purposes that require an estimation as much precise as possible, but to see whether upside and downside variance risk premium can predict equity excess returns, we believe that underestimating both these variances does not compromise the predictive power of them.
+
+\vspace{4mm}
+The last step of the computation consists in interpolating and extrapolating the implied semi-variances to get $IV_{t,h}^{U}\_approx$ and $IV_{t,h}^{D}\_approx$ with h=1,2,3,6,9,12 months. The extrapolation is a necessary step since we want to compute these values for h=12 months, but in the cleaning procedure, we discarded all the options with time-to-maturity above one year.
+
+\vspace{4mm}
+As a last observation, we want to stress that, as stated by \textit{Jiang et al [2005]}: ''it (the BS model) is merely used as a tool to provide a one-to-one mapping between option prices and implied volatilities". Hence, we can claim that this computation of the implied semi-variances is model-free.
+
+
+\subsection{Construction of the SRP}
+It has been demonstrated that the difference between upside and downside variances (standardized by total variance) satisfies the criteria of a measure of skewness \textit{[Groeneveld and Meeden 1984] [Feunou et al. 2014]}. That is, it is invariant to affine transformations of a random variable, is an odd function of a random variable, and assumes zero value for a symmetrically distributed random variable. This decomposition of the skewness its particularly useful as it relies only on the calculation of the second moment and can therefore be computed in instances with undefined third moments.
+
+\vspace{4mm}
+We build this nonparametric measure of skewness ($RSV_{t,h}$) by subtracting downside variance from upside semi-variance:
+\begin{equation}\label{eq:RSV}
+RSV_{t,h}(\kappa)=RV_{t,h}^U(\kappa)- RV_{t,h}^D(\kappa)
+\end{equation}
+
+Thus we obtain a left-skewed distribution when $RSV_{t,h}(\kappa)<0$ and a right-skewed distribution when $RSV_{t,h}(\kappa)>0$.
+
+\vspace{4mm}
+Similarly to the variance risk premium (VRP), we can characterise a nonparametric and model-free notion of skewness risk premium ($SRP_{t,h}$), as the difference between risk neutral and objective expectations of the realized skewness, or equivalently the difference between the two components of the VRP.
+\begin{equation}\label{eq:SRP}
+SRP_{t,h}=\mathbb{E}_{t}^{\mathbb{Q}}[RSV_{t,h}]-\mathbb{E}_{t}^{\mathbb{P}}[RSV_{t,h}]=VRP^U_{t,h}(k)-VRP^D_{t,h}(k)
+\end{equation}
+
+$SRP_{t,h}$ has a twofold interpretation, it can be viewed as a skewness premium when $RSV_{t,h}(\kappa)<0$ and as skewness discount when $RSV_{t,h}(\kappa)>0$. The former indicates the compensation for an agent who bears downside risk and the latter the amount that the agent is willing to pay to secure a positive return on an investment.
+

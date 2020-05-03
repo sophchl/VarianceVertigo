@@ -1,6 +1,7 @@
 
 # the raw data as it is too big
 variance-python/data/raw/
+matlab_option-cleaning
 
 .Rproj.user
 .Rhistory

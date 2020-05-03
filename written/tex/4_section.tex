@@ -1,0 +1,299 @@
+%!TEX root = ../Main.tex
+
+\section{Results}\label{sec:chapter4}
+
+\subsection{Regression}
+
+The following section aims to present the in-sample regression analysis examining the explanatory power of the variance risk premium (total, upside and downside) and the realized skewness for future excess returns. Following the original paper we aggregate the explanatory variables to the horizons h = 1,2,3,6,9,12 and the excess returns to the horizons k = 1,2,3,6,9,12. We implement two types of models, one regression including one variable at a time, and a second regression comparing for each the variance risk premium, the implied volatility and the realized volatility the respective upside and downside measure. The models then read
+\begin{align}\label{eq:reg1}
+r_{t \rightarrow t+k}^{e} = \beta_{0} + \beta_{1}x_{t}(h) + \epsilon_{t \rightarrow t+k}
+\end{align}
+\begin{align}\label{eq:reg2}
+r_{t \rightarrow t+k}^{e} = \beta_{0} + \beta_{1}x_{t}^{U}(h) + \beta_{2}x_{t}^{D}(h) +  \epsilon_{t \rightarrow t+k}
+\end{align}
+where $r_{t \rightarrow t+k}^{e}$ is the cumulative excess return between time $t$ and $t+k$, $x_{t}(h)$ is one of the predictors (total variance risk premium, upside variance risk premium upside, downside variance risk premium, realized skewness) and $x_{t}^{U}(h)$ and $x_{t}^{D}(h)$ distinguish between the upside and downside measures. As the regressions are replicated using a rolling window the standard errors are based on a autocorrelation and heteroscedasticity robust covariance matrix. We evaluate our models using p-statistics and adjusted R-squareds.
+
+\vspace{4mm}
+The reference paper focuses the empirical analysis on two main points, showing that (i) using the aggregated VRP yields misleading results, because $VRP^{U}$ and $VRP^{D}$ have intrinsically different features and the VRP is mainly driven by $VRP^{D}$ and (ii) predictability of equity returns is mainly driven by the risk-neutral expectation as opposed to the physical probability measure. For the single variable regressions the authors observe the highest explanatory power for the downside realized variance, whereas upside realized variance results are considerably weaker. They also observe the highest adjusted R-squared for a prediction horizon of k=3. For the two variable regressions the authors observe that together with the downside variance risk premium the upside variance risk premium strength is gradually lost, and that the predictability is driven stronger by the implied volatilities than the realized volatilities.
+
+\vspace{4mm}
+Our regression results for model \ref{eq:reg1} are presented in table \ref{table:regression1} and our regression results for model \ref{eq:reg2} are presented in table \ref{table:regression2}.
+
+\vspace{4mm}
+For the single variable regression we find similar patterns as described above, however with weaker distinctive power. We find the highest explanatory power for the total and downside realized variance, whereas the upside realized variance has overall weaker results. Concerning the prediction horizon there is a weak hump to be seek at k=3. However, some results do not fit in the pattern, for example we observe high explanatory power for upside realized variance at high aggregation horizons h.
+
+\vspace{4mm}
+For the two-variable regressions there is no clear pattern to be found when comparing the upside and downside realized variance. However we can confirm, that the predictive results are driven more by the risk-neutral measures than the realized measures.
+
+\vspace{4mm}
+Overall, we are only partly able to confirm our reference papers results. As mentioned previously we have a data availability different to that from the authors and not all of their data treatment was without questions for us. Hence this is a very likely reason why our regression results differ. 
+
+
+\newgeometry{left=0.9cm, right=0.9cm,
+top=1.5cm, bottom=2.5cm, footskip = 1.5cm}
+
+\begin{small}
+\begin{table}[h]
+\begin{center}
+\caption{regressions using one variable at a time}
+\label{table:regression1}
+
+\begin{tabular}{@{\extracolsep{6pt}}rrrrrrrrrrrrr@{}}
+
+\hline
+
+h & \multicolumn{2}{c}{1} & \multicolumn{2}{c}{2} & \multicolumn{2}{c}{3} & \multicolumn{2}{c}{6} & \multicolumn{2}{c}{9} & \multicolumn{2}{c}{12} \\[6pt]
+
+\cline{2-3} \cline{4-5} \cline{6-7} \cline{8-9} \cline{10-11} \cline{12-13}
+
+ & p-val & $\bar{R}^{2}$ & p-val & $\bar{R}^{2}$ &  p-val & $\bar{R}^{2}$ &  
+ p-val & $\bar{R}^{2}$ &  p-val & $\bar{R}^{2}$ &  p-val & $\bar{R}^{2}$ \\[6pt]
+ 
+\hline\\[0.000000001pt]
+
+k & \multicolumn{12}{l}{Panel A: Realized total variance} \\[7pt]
+
+\hline
+
+1 & 0.0 & 0.035 & 0.026 & 0.006 & 0.0 & 0.033 & 0.682 & -0.0 & 0.068 & 0.003 & 0.039 & 0.003 \\[6pt]
+2 & 0.0 & 0.013 & 0.0 & 0.033 & 0.0 & 0.074 & 0.091 & 0.005 & 0.0 & 0.01 & 0.046 & 0.002 \\[6pt]
+3 & 0.0 & 0.023 & 0.0 & 0.048 & 0.0 & 0.033 & 0.0 & 0.023 & 0.0 & 0.026 & 0.005 & 0.005 \\[6pt]
+6 & 0.0 & 0.015 & 0.001 & 0.007 & 0.002 & 0.005 & 0.001 & 0.011 & 0.032 & 0.003 & 0.408 & -0.0 \\[6pt]
+9 & 0.001 & 0.01 & 0.064 & 0.002 & 0.478 & -0.0 & 0.003 & 0.009 & 0.088 & 0.002 & 0.109 & 0.002 \\[6pt]
+12 & 0.014 & 0.005 & 0.332 & 0.0 & 0.502 & 0.0 & 0.004 & 0.008 & 0.044 & 0.002 & 0.044 & 0.006 \\[6pt]
+ 
+\hline\\[0.000000001pt]
+
+k & \multicolumn{12}{l}{Panel B: Realized downside variance} \\[7pt]
+
+\hline
+
+1 & 0.001 & 0.013 & 0.622 & -0.0 & 0.0 & 0.019 & 0.911 & -0.0 & 0.691 & -0.0 & 0.532 & -0.0 \\[6pt]
+2 & 0.02 & 0.004 & 0.0 & 0.02 & 0.0 & 0.067 & 0.705 & -0.0 & 0.473 & 0.0 & 0.319 & 0.0 \\[6pt]
+3 & 0.008 & 0.008 & 0.0 & 0.034 & 0.0 & 0.035 & 0.034 & 0.004 & 0.084 & 0.003 & 0.544 & -0.0 \\[6pt]
+6 & 0.0 & 0.023 & 0.0 & 0.025 & 0.0 & 0.034 & 0.039 & 0.004 & 0.002 & 0.009 & 0.006 & 0.007 \\[6pt]
+9 & 0.0 & 0.031 & 0.0 & 0.034 & 0.0 & 0.031 & 0.001 & 0.01 & 0.0 & 0.017 & 0.334 & 0.002 \\[6pt]
+12 & 0.0 & 0.026 & 0.0 & 0.031 & 0.0 & 0.036 & 0.0 & 0.013 & 0.0 & 0.017 & 0.782 & -0.0 \\[6pt]
+
+
+\hline\\[0.000000001pt]
+
+k & \multicolumn{12}{l}{Panel C: Realized upside variance} \\[7pt]
+
+\hline
+
+1 & 0.0 & 0.043 & 0.003 & 0.011 & 0.0 & 0.025 & 0.436 & 0.001 & 0.002 & 0.012 & 0.0 & 0.014 \\[6pt]
+2 & 0.0 & 0.018 & 0.0 & 0.022 & 0.0 & 0.031 & 0.015 & 0.013 & 0.0 & 0.033 & 0.0 & 0.031 \\[6pt]
+3 & 0.0 & 0.03 & 0.0 & 0.028 & 0.001 & 0.01 & 0.0 & 0.041 & 0.0 & 0.068 & 0.0 & 0.052 \\[6pt]
+6 & 0.071 & 0.002 & 0.138 & 0.001 & 0.0 & 0.006 & 0.0 & 0.076 & 0.0 & 0.068 & 0.0 & 0.05 \\[6pt]
+9 & 0.194 & 0.0 & 0.0 & 0.012 & 0.0 & 0.026 & 0.0 & 0.088 & 0.0 & 0.076 & 0.0 & 0.051 \\[6pt]
+12 & 0.001 & 0.004 & 0.0 & 0.02 & 0.0 & 0.03 & 0.0 & 0.094 & 0.0 & 0.079 & 0.0 & 0.057 \\[6pt]
+
+
+\hline\\[0.000000001pt]
+
+k & \multicolumn{12}{l}{Panel D: Realized Skewness} \\[7pt]
+
+\hline
+
+1 & 0.165 & 0.003 & 0.075 & 0.005 & 0.864 & -0.0 & 0.316 & 0.001 & 0.04 & 0.006 & 0.166 & 0.002 \\[6pt]
+2 & 0.167 & 0.002 & 0.987 & -0.0 & 0.006 & 0.007 & 0.013 & 0.007 & 0.0 & 0.018 & 0.0 & 0.015 \\[6pt]
+3 & 0.146 & 0.002 & 0.519 & 0.0 & 0.055 & 0.006 & 0.014 & 0.01 & 0.0 & 0.025 & 0.0 & 0.02 \\[6pt]
+6 & 0.0 & 0.012 & 0.0 & 0.026 & 0.0 & 0.052 & 0.0 & 0.087 & 0.0 & 0.119 & 0.0 & 0.047 \\[6pt]
+9 & 0.0 & 0.038 & 0.0 & 0.06 & 0.0 & 0.083 & 0.0 & 0.122 & 0.0 & 0.157 & 0.019 & 0.031 \\[6pt]
+12 & 0.0 & 0.044 & 0.0 & 0.069 & 0.0 & 0.095 & 0.0 & 0.136 & 0.0 & 0.162 & 0.076 & 0.022 \\[6pt]
+
+
+\hline
+
+\end{tabular}
+\end{center}
+\textit{Notes}: Regression results of the two variable model. The $R^{2}$s are adjusted $R^{2}$s, the standard errors based on a heteroscedasticity and autocorrelation robust covariance matrix (HAC) to account for the overlap in the regression. 
+\end{table}
+\end{small}
+
+\restoregeometry
+
+\newgeometry{left=0.55cm, right=0.65cm,
+top=0.5cm, bottom=0.5cm, footskip = 1.5cm}
+
+\begin{landscape}
+
+\begin{table}[h]
+\begin{center}
+\caption{regressions comparing upside and downside}
+\label{table:regression2}
+
+\begin{tabular}{@{\extracolsep{5pt}}rrrrrrrrrrrrrrrrrrr@{}}
+
+\hline
+
+h & \multicolumn{3}{c}{1} & \multicolumn{3}{c}{2} & \multicolumn{3}{c}{3} & \multicolumn{3}{c}{6} & \multicolumn{3}{c}{9} & \multicolumn{3}{c}{12} \\[6pt]
+
+\cline{2-4} \cline{5-7} \cline{8-10} \cline{11-13} \cline{14-16} \cline{17-19}
+
+ & \multicolumn{2}{c}{p-val} & $\bar{R}^{2}$ & \multicolumn{2}{c}{p-val} & $\bar{R}^{2}$ &  \multicolumn{2}{c}{p-val} & $\bar{R}^{2}$ & \multicolumn{2}{c}{p-val} & $\bar{R}^{2}$ &  \multicolumn{2}{c}{p-val} & $\bar{R}^{2}$ & \multicolumn{2}{c}{p-val} & $\bar{R}^{2}$ \\[6pt]
+
+\cline{2-3} \cline{5-6} \cline{8-9} \cline{11-12} \cline{14-15} \cline{17-18}
+
+& up & down & & up & down & & up & down & & up & down & & up & down & & up & down \\ 
+ 
+\hline
+
+k & \multicolumn{18}{l}{Panel A: Variance Risk Premium} \\[7pt]
+
+\hline
+
+1 & 0.0 & 0.238 & 0.044 & 0.005 & 0.76 & 0.011 & 0.001 & 0.006 & 0.033 & 0.353 & 0.503 & 0.001 & 0.002 & 0.124 & 0.015 & 0.0 & 0.208 & 0.016 \\[6pt]
+2 & 0.001 & 0.604 & 0.017 & 0.0 & 0.0 & 0.032 & 0.0 & 0.0 & 0.078 & 0.009 & 0.172 & 0.014 & 0.0 & 0.005 & 0.043 & 0.0 & 0.0 & 0.044 \\[6pt]
+3 & 0.0 & 0.408 & 0.03 & 0.0 & 0.0 & 0.048 & 0.191 & 0.0 & 0.037 & 0.0 & 0.662 & 0.041 & 0.0 & 0.01 & 0.079 & 0.0 & 0.0 & 0.07 \\[6pt]
+6 & 0.633 & 0.0 & 0.023 & 0.001 & 0.0 & 0.031 & 0.0 & 0.0 & 0.054 & 0.0 & 0.0 & 0.114 & 0.0 & 0.0 & 0.156 & 0.0 & 0.0 & 0.094 \\[6pt]
+9 & 0.0 & 0.0 & 0.041 & 0.0 & 0.0 & 0.061 & 0.0 & 0.0 & 0.082 & 0.0 & 0.0 & 0.148 & 0.0 & 0.0 & 0.196 & 0.0 & 0.016 & 0.079 \\[6pt]
+12 & 0.0 & 0.0 & 0.044 & 0.0 & 0.0 & 0.069 & 0.0 & 0.0 & 0.094 & 0.0 & 0.0 & 0.163 & 0.0 & 0.0 & 0.203 & 0.0 & 0.076 & 0.076 \\[6pt]
+
+\hline
+
+k & \multicolumn{18}{l}{Panel B: Risk-neutral measures} \\[7pt]
+
+\hline
+
+1 & 0.776 & 0.998 & 0.002 & 0.245 & 0.318 & 0.003 & 0.029 & 0.035 & 0.01 & 0.0 & 0.0 & 0.031 & 0.0 & 0.0 & 0.041 & 0.003 & 0.002 & 0.015 \\[6pt]
+2 & 0.001 & 0.001 & 0.018 & 0.0 & 0.0 & 0.038 & 0.0 & 0.0 & 0.061 & 0.0 & 0.0 & 0.095 & 0.0 & 0.0 & 0.102 & 0.0 & 0.0 & 0.047 \\[6pt]
+3 & 0.0 & 0.0 & 0.034 & 0.0 & 0.0 & 0.064 & 0.0 & 0.0 & 0.095 & 0.0 & 0.0 & 0.151 & 0.0 & 0.0 & 0.16 & 0.0 & 0.0 & 0.069 \\[6pt]
+6 & 0.0 & 0.0 & 0.056 & 0.0 & 0.0 & 0.127 & 0.0 & 0.0 & 0.187 & 0.0 & 0.0 & 0.268 & 0.0 & 0.0 & 0.288 & 0.003 & 0.0 & 0.085 \\[6pt]
+9 & 0.0 & 0.0 & 0.091 & 0.0 & 0.0 & 0.175 & 0.0 & 0.0 & 0.242 & 0.0 & 0.0 & 0.329 & 0.0 & 0.0 & 0.356 & 0.059 & 0.006 & 0.069 \\[6pt]
+12 & 0.0 & 0.0 & 0.099 & 0.0 & 0.0 & 0.186 & 0.0 & 0.0 & 0.259 & 0.0 & 0.0 & 0.365 & 0.0 & 0.0 & 0.399 & 0.07 & 0.01 & 0.075 \\[6pt]
+
+\hline
+
+k & \multicolumn{18}{l}{Panel A: Realized (physical) measures} \\[7pt]
+
+\hline
+
+1 & 0.012 & 0.103 & 0.026 & 0.0 & 0.0 & 0.024 & 0.0 & 0.001 & 0.024 & 0.0 & 0.0 & 0.014 & 0.015 & 0.008 & 0.006 & 0.015 & 0.006 & 0.006 \\[6pt]
+2 & 0.0 & 0.001 & 0.026 & 0.0 & 0.0 & 0.033 & 0.006 & 0.039 & 0.02 & 0.0 & 0.0 & 0.033 & 0.0 & 0.0 & 0.017 & 0.006 & 0.001 & 0.013 \\[6pt]
+3 & 0.0 & 0.002 & 0.034 & 0.001 & 0.029 & 0.024 & 0.103 & 0.33 & 0.011 & 0.0 & 0.0 & 0.028 & 0.0 & 0.0 & 0.029 & 0.02 & 0.003 & 0.017 \\[6pt]
+6 & 0.019 & 0.004 & 0.006 & 0.0 & 0.0 & 0.021 & 0.0 & 0.0 & 0.021 & 0.0 & 0.0 & 0.065 & 0.0 & 0.0 & 0.055 & 0.007 & 0.0 & 0.041 \\[6pt]
+9 & 0.857 & 0.28 & 0.007 & 0.283 & 0.049 & 0.018 & 0.095 & 0.008 & 0.028 & 0.003 & 0.0 & 0.057 & 0.06 & 0.0 & 0.052 & 0.483 & 0.028 & 0.042 \\[6pt]
+12 & 0.869 & 0.272 & 0.014 & 0.721 & 0.162 & 0.022 & 0.669 & 0.121 & 0.026 & 0.294 & 0.008 & 0.053 & 0.306 & 0.012 & 0.052 & 0.602 & 0.29 & 0.053 \\[6pt]
+
+\hline
+
+\end{tabular}
+\end{center}
+\textit{Notes}: Regression results of the two variable model. The $R^{2}$s are adjusted $R^{2}$s, the standard errors based on a heteroscedasticity and autocorrelation robust covariance matrix (HAC) to account for the overlap in the regression. 
+
+\end{table}
+
+\end{landscape}
+
+\restoregeometry
+
+
+\subsection{Out of Sample Analysis}
+In this section we evaluate the forecast ability of downside variance risk premia and its upside and downside decomposition. In particular, we want to demonstrate that our in-sample univariate regressions do not lose predictive ability once they are used for forecasting purposes. 
+
+\vspace{4mm}
+To this end, we follow the literature on predictive accuracy tests and perform recursive expanding window regressions, through the use of the R package \textit{'rollRegres'}. 
+To generate one-period out-of-sample predictions $y_{t+1|t}$ for $y_{t+1}$, we split the total sample of T observations into in-sample and out-of-sample portions. More precisely, we use half of the total sample for the initial in-sample estimation ($[\frac{T}{2}]$) and the second half for the initial forecast evaluation.  We then proceed to estimate the regression coefficients recursively with the last in-sample observation ranging from $t=[\frac{T}{2}]$ to $t=T-1$, and for each t we compute the one-step ahead forecast $t+1$. 
+
+\vspace{4mm}
+ We evaluate the prediction accuracy of the models through the use of the root mean squared error (RMSE). We define the forecast errors as the difference between the observed values and their forecasting quantities:
+ \begin{equation}
+ e_{t+1|t}=y_{t+1}-y_{t+1|t}
+ \end{equation}
+ and the RSME as: 
+  \begin{equation}
+ RMSE=\sqrt{\sum_{i=1}^T \frac{1}{T} e_{t+1|t}^2 }
+  \end{equation}
+  
+\vspace{4mm}
+In the following table we report the main results of our out of sample analysis, in particular, we report the RMSE and average $R^2$ of the out of sample regressions for different construction horizons ($h=1,2,3,6,12$). The regressors considered are the variance risk premia and its upside and downside decomposition. 
+
+
+\begin{tabular}{ p{2cm}||p{4cm}|p{4cm} }
+ \hline
+ \multicolumn{3}{c}{\textbf{h=1}} \\
+ \hline
+ & Average $R^2$ (\%) &  RMSE (\%)   \\
+ \hline
+ $VRP$&   4.82  & 0.29  \\
+  $VRP^D$   & 4.15    & 0.24\\
+ $VRP^U$ &2.47 & 0.13 \\
+  \hline
+\end{tabular}
+
+\vspace{2mm}
+\begin{tabular}{ p{2cm}||p{4cm}|p{4cm} }
+  \hline
+ \multicolumn{3}{c}{\textbf{h=2}} \\
+ \hline
+ & Average $R^2$ (\%) &  RMSE (\%)  \\
+ \hline
+ $VRP$&   5.49  & 0.31  \\
+ $VRP^D$   & 6.33    & 0.24 \\
+ $VRP^U$ &1.50 & 0.11 \\
+ \hline
+\end{tabular}
+
+\vspace{2mm}
+\begin{tabular}{ p{2cm}||p{4cm}|p{4cm} }
+  \hline
+  \multicolumn{3}{c}{\textbf{h=3}} \\
+ \hline
+ & Average $R^2$ (\%) &  RMSE (\%)  \\
+ \hline
+ $VRP$&   3.81  & 0.40  \\
+  $VRP^D$   & 4.68    & 0.34 \\
+ $VRP^U$ &0.96 & 0.12 \\
+ \hline
+\end{tabular}
+
+\vspace{2mm}
+\begin{tabular}{ p{2cm}||p{4cm}|p{4cm} }
+  \hline
+  \multicolumn{3}{c}{\textbf{h=6}} \\
+ \hline
+ & Average $R^2$ (\%) &  RMSE (\%)   \\
+ \hline
+ $VRP$&   2.66  & 0.82   \\
+  $VRP^D$   & 2.99   & 0.77 \\
+ $VRP^U$ & 0.98 & 0.15\\
+ \hline
+\end{tabular}
+
+\vspace{2mm}
+\begin{tabular}{ p{2cm}||p{4cm}|p{4cm} }
+  \hline
+  \multicolumn{3}{c}{\textbf{h=12}} \\
+ \hline
+ & Average $R^2$ (\%) &  RMSE (\%)   \\
+ \hline
+ $VRP$&   2.01  & 1.99   \\
+ $VRP^D$   &1.87  & 1.84  \\
+ $VRP^U$ &1.03 & 0.27  \\
+ \hline
+\end{tabular}
+ 
+ \vspace{4mm} 
+From the table above we can see that for all construction horizons the RMSE is low. We can therefore conclude that our regressions possess good predictive ability. On the other hand, the average $R^2$ of the regressions is extremely low. We can partly blame this on the inclusion of the Great Recession period in our data sample. 
+
+ \vspace{4mm} 
+In general we can observe how the best performance is given by the downside variance risk premia across all construction horizons h. On the other hand, the upside variance risk premia exhibits the worst performance. This is in line with \textit{Fenou' s [2015]} results. We also observe that performance decreases with the construction horizon. In particular, we have a peak  at $h=2$. 
+  
+
+ \vspace{4mm} 
+ These results look promising, and could further be improved by performing multi-step ahead forecasts for $y_{t+k|t}$ with $k=2,3,6,12$ in order to evaluate for which forecast horizon (short, medium or long term) our proposed predictors reach their peak performance.
+
+ \vspace{4mm} 
+It has to be observed that the use of serial correlation and heteroskedasticity robust standard errors (eg. Newey-West) is necessary to obtain consistent results. In this way the overlap in the regression is explicitly taken into account.
+
+
+
+
+
+
+
+
+
+

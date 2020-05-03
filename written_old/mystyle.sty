@@ -1,7 +1,7 @@
 \ProvidesPackage{mystyle}
 
 % Design Page
-\usepackage[left=2.35cm, right=2.35cm,
+\usepackage[left=4cm, right=2cm,
 top=3cm, bottom=2.5cm, footskip = 1.5cm]{geometry} 
 \usepackage[doublespacing]{setspace} % Zeilenabstände regeln
 
@@ -18,9 +18,6 @@ top=3cm, bottom=2.5cm, footskip = 1.5cm]{geometry}
 \usepackage{amssymb} 
 \usepackage{changepage} 		% for adjusting width of page without page break (newgeometry causes page break)
 \usepackage{etoolbox}
-\usepackage{array}
-\usepackage{lscape}
-
 \AtBeginEnvironment{quote}{\singlespacing\small}
 \setlength\parindent{0pt}
 
@@ -37,6 +34,12 @@ top=3cm, bottom=2.5cm, footskip = 1.5cm]{geometry}
 \graphicspath{{../variance-python/results/graphics/}}
 % set graphic path to our python project
 %\usepackage{footmisc}
+
+% should be included last
+\usepackage{hyperref} 
+\renewcommand*{\sectionautorefname}{Section}
+\renewcommand*{\subsectionautorefname}{Section}
+\renewcommand*{\subsubsectionautorefname}{Section}
 
 % Varia 
 \usepackage[all]{nowidow} % to avoid widows and clubs, see also: http://www.tex.ac.uk/FAQ-widows.html
@@ -62,11 +65,12 @@ top=3cm, bottom=2.5cm, footskip = 1.5cm]{geometry}
 ]{csquotes} % komplementäres Paket zu babel; regelt Anführungszeichen.
 		% öffnen mit "` oder \glqq schließen mit "' oder \grqq (einfache Anführungszeichen: \glq und \grq)
 
-% should be included last
-\usepackage{hyperref} 
-\renewcommand*{\sectionautorefname}{Section}
-\renewcommand*{\subsectionautorefname}{Section}
-\renewcommand*{\subsubsectionautorefname}{Section}
+
+% die folgenden Zeilen definieren den Stil von Titelelementen neu, so dass der Titel den Anforderungen des Lehrstuhls PuMa entspricht
+% \addtokomafont{author}{\flushleft}
+% \addtokomafont{date}{\flushleft}
+% \addtokomafont{publishers}{\flushleft}
+
 
 % Bibliography
 \usepackage[
@@ -86,5 +90,18 @@ eprint=false
 % https://www.sharelatex.com/learn/Biblatex_bibliography_styles
 \DefineBibliographyStrings{ngerman}{andothers = {{et\,al\adddot}},}
 \DeclareNameAlias{sortname}{family-given}
+\defbibfilter{academics}{
+  type=article or
+  type=techreport or
+  type=inproceedings or
+  type=conference or
+  type=book or
+  type=incollection or
+  type=report
+}
 
+\defbibfilter{onlines}{
+  type=misc or
+  type=online
+}
 
