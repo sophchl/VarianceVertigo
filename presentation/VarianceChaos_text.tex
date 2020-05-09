@@ -1,0 +1,114 @@
+\documentclass[12pt, letterpaper]{article}
+\usepackage[utf8]{inputenc}
+
+\begin{document}
+
+\section{Slide 1: Title}
+The purpose of our project is to replicate and extend the analysis of the ’Downside Variance Risk Premium’ study by B. Fenou, M.R. Jahan-Parvar and C. Okou.  To this end, we have updated the analysis with more recent data.  \\
+In this presentation we will first present an overview of the original paper, followed by the methodology implemented in the analysis and the data collection and data cleaning process.  Finally the main findings and conclusions are presented, accompanied by propositions for further analysis. 
+
+\section{Slide 2: Overview}
+This study is in contrast to the traditional efficient-market hypothesis of market returns unpredictability and is in line with the current asset pricing research that accepts the long term predictability of equity market returns. 
+
+\vspace{3mm}
+\noindent
+More precisely, it extends the finding of short term predictability of excess returns by the VRP, by proposing a new decomposition of this measure  in terms of upside and downside VRP, by drawing on the intuition that investors favour good uncertainty over bad uncertainty, as the former increases the potential of substantial gains while the latter increases the likelihood of severe losses.
+Finally they define the difference between the two as skewness risk premium (SRP) and evaluate the effectiveness of all these measures as equity market returns predictors. 
+
+\vspace{3mm}
+\noindent
+The main finding of the study is that the downside VRP is the main driver of the VRP, making the upside VRP contribution only marginal.\\
+Moreover it is found that the SRP is a priced factor with significant prediction power for aggregate excess returns. In fact, a positive and significant relation is found between the V RP D and the equity premium, as well as between the skewness risk premia and the equity premium.\\
+The empirical investigation further highlights the fact that the SRP fills the time gap between the traditional long term predictors of excess returns (such as price-dividend or price-earning ratios) and the short term VRP predictor. \\
+Finally, the authors support theoretically their empirical findings through the construction of an equilibrium consumption-based asset pricing model where it is shown that under common distributional assumptions for shocks to the economy, the equity risk premium, upside and downside variance risk premium and skewness risk premium can be derived in closed form.
+
+
+\section{Slide 3: Construction}
+
+BOH 
+
+First, we decompose equity price changes into positive and negative log-returns with respect to an appropriately chosen threshold. Given the nature of the analysis we set this threshold to zero, however its value can be changed to better suit other types of analysis. In particular, for k suitably chosen it is possible to investigate the tail behavior of returns. Once the positive returns have been separated from the negative, we can proceed to construct our non-parametric measures of upside and downside variances, and skewness.
+
+
+\section{Slide 4: Data}
+In order to build the VR and IV we thus need reliable raw data. All the data used in this study is available through the Wharton Database and refers to the 2007-2017 period.
+
+\vspace{3mm}
+\noindent
+For what concerns the excess return we have used the S\&P 500 composite index as a proxy for the aggregate market portfolio and subtracted the risk free rate, proxied by the 3-month T-Bill rate.
+All these return series were collected from CRSP. 
+
+\vspace{3mm}
+\noindent
+To build the daily RV series, our goal is to construct 5-minute intraday S\&P 500 data. In order to obtain this data we have merged these two datasets to create an unique 5-minute intraday dataset comprising the whole period. \\
+For what concerns the 2007-2008 period, we have gathered tick data from the TAQ database, and subsequently proceeded to delete any duplicate and zero entries to obtain more consistent data. Finally, to obtain 5-minute data and overcome the issue of irregularly spaced data points we have created 5-minute bins by using the median. We have preferred to create these 5-minutes bins with the median rather than the mean value, as the former is more robust to outliers. \\
+For what concerns the 2008-2017 period we have obtained minute-data from the Wharton database.\\
+For both datasets, we averaged the market’s bid and ask quotes and have dealt with missing values by recurring to interpolation.
+
+
+\vspace{3mm}
+\noindent
+For what concerns the IV construction, we downloaded the SPX European call and put options from 2007 to 2017 included. For the same period, we got zero curves from ’Zero Coupon Yield Curve’ and, finally, from ’Index Dividend Yield’ we downloaded the continuously compounded S\&P500 dividend yield.
+All of the data used for this computation are found from OptionMetrics.
+
+\vspace{3mm}
+\noindent
+Since not all the options give us reliable information about the market, we decided to apply some preliminary standard filtering procedures to delete illiquid options. In particular:
+
+\begin{itemize}
+\item  we computed the mid price as the average between bid price and ask price. Then we deleted the options with mid price below 3/8\$
+\item  we deleted all the options with too long (>1 year) or too short (<7 days) time-to- maturity;
+\item  we deleted all the options that have not been traded for more than three days in a row.
+\item Since the tenors of the zero curves do not match the maturities of the options, we interpolated linearly the continuously compounded zero-coupon rates to solve this issue.
+\end{itemize}
+
+\section{Slide 5: Methodology}
+In order to evaluate the in sample and out of sample predictive power, two analysis have been carried out. 
+
+\vspace{3mm}
+\noindent
+The objective of the in-sample regression analysis is to examine the explanatory power of the variance risk premium (total, upside and downside) and the realized skewness for future excess returns. Following the original paper we aggregate the explanatory variables to the horizons h = 1,2,3,6,9,12 and the excess returns to the horizons k = 1,2,3,6,9,12. We implement two types of models: one regression including \textbf{one variable at a time}, and a second regression comparing for each the variance risk premium, the implied volatility and the realized volatility the respective upside and downside measure. 
+As we have overlapping data, the standard errors are based on a autocorrelation and heteroscedasticity robust covariance matrix. Finally we evaluate our models using p-statistics and adjusted R-squareds.
+
+\vspace{3mm}
+\noindent
+Subsequently we evaluate the forecast ability of downside variance risk premia and its upside and downside decomposition. In particular, we want to demonstrate that our in-sample univariate regressions do not lose predictive ability once they are used for forecasting purposes.
+To this end, we follow the literature on predictive accuracy tests and perform recursive
+expanding window regressions, through the use of the R package ’rollRegres’. To generate
+one-period out-of-sample predictions we use half of the total sample for
+the initial in-sample estimation and the second half for the initial forecast evaluation. \\
+We then proceed to estimate the regression coefficients recursively with the last in-sample observation, and for each t we compute the one-step ahead forecast t + 1.
+We finally evaluate the prediction accuracy of the models through the use of the root mean squared error (RMSE).
+
+\section{Slide 6: Results}
+
+\section{Slide 7: Discussion}
+Overall, the paper presents a very comprehensive and innovative investigation of the predictability of excess returns. The authors manage to find a medium term predictor of excess returns filling the time gap between the common long term and short term predictions. They implement a comprehensive list of econometric models and construct an economic equilibrium to support their empirical findings. \\
+The main advantage of their approach is that it relies on two facts that have been proven useful in predicting equity returns: distinguishing between positive and negative returns and including option-implied measures in the analysis.
+
+\vspace{3mm}
+\noindent
+However we also found some aspects that complicated the replication for us and that we would hence like to point out. Our main challenge was that part of their analysis was not described in great detail. This concerned not only data treatment but also the implementation of the models. As it is the case with using option data for risk-neutral expectation, a main restriction of the analysis lies in the data treatment, hence this was a significant challenge to our replication. Moreover, we were surprised that they calculated their models using overlapping data, given the fact that their data availability stretched a period from 1996 to 2015.
+
+\vspace{3mm}
+\noindent
+To give an outlook on further models that could be implemented, it might be promising to implement their models using non-overlapping data, hence reducing the problem of large correlation in the variables though it would possibly require limiting the analysis to an aggregation and forecasting horizon of a quarter at the most. Moreover, an investigation of different thresholds k could yield informative results.
+As a larger extension of their approach, it would be interesting to use machine-learning techniques to the question investigated. In the robustness section of the paper, the authors add other well-known predictors of the equity return to their model. In these models particularly it would be interesting to use model-selection techniques that put a penalty on new parameters added, such as lasso or ridge regression. Moreover, we thought about whether it would be possible to use unsupervised learning techniques to separate the variance risk premium, not assuming that upside and downside is the most informative separation for predicting equity returns.
+
+\section{Slide 9: Conclusions}
+We analyzed the paper ’Downside Variance Risk Premia’ study,  we discussed their methodology and investigated whether their results hold in a different time period (2007-2017). 
+
+\vspace{3mm}
+\noindent
+We computed the physical expectation of the realized variance using historical intraday returns and the risk-free one working on European call and put option data observed in the market. 
+
+\vspace{3mm}
+\noindent
+We analyzed the predictability of excess returns using the variance risk premium, realized variance, and implied volatility. Overall, downside variance risk premium has a higher explanatory power for future excess returns and risk-neutral expectations contribute stronger to the predictability than realized measures. 
+
+\vspace{3mm}
+\noindent
+Finally, we proceeded to evaluate the one-step ahead prediction accuracy of our models through expanding window regressions. We have found low RMSE values across all construction horizons with peak performance for h = 2. The best results where obtained when using the downside variance risk premia as predictor.
+
+\end{document}
+
